@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 import withBundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
+import { withContentlayer } from 'next-contentlayer2';
 import createNextIntlPlugin from 'next-intl/plugin';
 import './src/libs/Env';
 
@@ -58,4 +59,4 @@ if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED) {
 }
 
 const nextConfig = configWithPlugins;
-export default nextConfig;
+export default withContentlayer(nextConfig);

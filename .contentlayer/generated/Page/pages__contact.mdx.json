@@ -1,0 +1,20 @@
+{
+  "title": "Contact",
+  "description": "Contact us for any questions or concerns about Skateshop13.\r",
+  "body": {
+    "raw": "\r\nIf you have any questions or concerns about Skateshop13, please contact us using one of the methods below. We will try to respond as soon as possible.\r\n\r\n## Contact Information\r\n\r\n- **Email:** [sadmann898@gmail.com](mailto:sadmann898@gmail.com)\r\n\r\n- **Twitter:** [@sadmann17](https://twitter.com/sadmann17)\r\n\r\n- **Discord:** [sadmann7](https://discord.com/users/sadmann7)\r\n\r\n- **cal.com:** [sadmann7](https://cal.com/sadmann7)\r\n",
+    "code": "var Component=(()=>{var m=Object.create;var a=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var u=Object.getOwnPropertyNames;var f=Object.getPrototypeOf,g=Object.prototype.hasOwnProperty;var x=(e,n)=>()=>(n||e((n={exports:{}}).exports,n),n.exports),_=(e,n)=>{for(var o in n)a(e,o,{get:n[o],enumerable:!0})},c=(e,n,o,s)=>{if(n&&typeof n==\"object\"||typeof n==\"function\")for(let r of u(n))!g.call(e,r)&&r!==o&&a(e,r,{get:()=>n[r],enumerable:!(s=p(n,r))||s.enumerable});return e};var j=(e,n,o)=>(o=e!=null?m(f(e)):{},c(n||!e||!e.__esModule?a(o,\"default\",{value:e,enumerable:!0}):o,e)),w=e=>c(a({},\"__esModule\",{value:!0}),e);var l=x((D,i)=>{i.exports=_jsx_runtime});var C={};_(C,{default:()=>h,frontmatter:()=>y});var t=j(l()),y={title:\"Contact\",description:\"Contact us for any questions or concerns about Skateshop13.\"};function d(e){let n={a:\"a\",h2:\"h2\",li:\"li\",p:\"p\",strong:\"strong\",ul:\"ul\",...e.components};return(0,t.jsxs)(t.Fragment,{children:[(0,t.jsx)(n.p,{children:\"If you have any questions or concerns about Skateshop13, please contact us using one of the methods below. We will try to respond as soon as possible.\"}),`\n`,(0,t.jsx)(n.h2,{id:\"contact-information\",children:\"Contact Information\"}),`\n`,(0,t.jsxs)(n.ul,{children:[`\n`,(0,t.jsxs)(n.li,{children:[`\n`,(0,t.jsxs)(n.p,{children:[(0,t.jsx)(n.strong,{children:\"Email:\"}),\" \",(0,t.jsx)(n.a,{href:\"mailto:sadmann898@gmail.com\",children:\"sadmann898@gmail.com\"})]}),`\n`]}),`\n`,(0,t.jsxs)(n.li,{children:[`\n`,(0,t.jsxs)(n.p,{children:[(0,t.jsx)(n.strong,{children:\"Twitter:\"}),\" \",(0,t.jsx)(n.a,{href:\"https://twitter.com/sadmann17\",children:\"@sadmann17\"})]}),`\n`]}),`\n`,(0,t.jsxs)(n.li,{children:[`\n`,(0,t.jsxs)(n.p,{children:[(0,t.jsx)(n.strong,{children:\"Discord:\"}),\" \",(0,t.jsx)(n.a,{href:\"https://discord.com/users/sadmann7\",children:\"sadmann7\"})]}),`\n`]}),`\n`,(0,t.jsxs)(n.li,{children:[`\n`,(0,t.jsxs)(n.p,{children:[(0,t.jsx)(n.strong,{children:\"cal.com:\"}),\" \",(0,t.jsx)(n.a,{href:\"https://cal.com/sadmann7\",children:\"sadmann7\"})]}),`\n`]}),`\n`]})]})}function h(e={}){let{wrapper:n}=e.components||{};return n?(0,t.jsx)(n,{...e,children:(0,t.jsx)(d,{...e})}):d(e)}return w(C);})();\n;return Component;"
+  },
+  "_id": "pages/contact.mdx",
+  "_raw": {
+    "sourceFilePath": "pages/contact.mdx",
+    "sourceFileName": "contact.mdx",
+    "sourceFileDir": "pages",
+    "contentType": "mdx",
+    "flattenedPath": "pages/contact"
+  },
+  "type": "Page",
+  "slug": "/pages/contact",
+  "slugAsParams": "contact",
+  "readingTime": 1
+}
