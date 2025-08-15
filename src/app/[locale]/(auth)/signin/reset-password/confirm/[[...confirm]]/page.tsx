@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import ResetPasswordConfirmForm from '@/app/[locale]/(auth)/_components/reset-password-confirm-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shell } from '@/components/ui/shell';
+import { Shell } from '@/components/shell';
 
 export const metadata: Metadata = {
   title: 'Reset password',

@@ -2,18 +2,18 @@ import * as React from 'react';
 
 import { cn } from '@/libs/utils';
 
-function Card({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="card"
-      className={cn(
-        'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm',
-        className,
-      )}
-      {...props}
-    />
-  );
-}
+const Card = ({ ref, className, as: Comp = 'div', ...props }: React.HTMLAttributes<HTMLDivElement> & {
+  as?: 'div' | 'section' | 'article';
+} & { ref?: React.RefObject<HTMLDivElement | null> }) => (
+  <Comp
+    ref={ref}
+    className={cn(
+      'rounded-xl border bg-card text-card-foreground shadow',
+      className,
+    )}
+    {...props}
+  />
+);
 
 function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (

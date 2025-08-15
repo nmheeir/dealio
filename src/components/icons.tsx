@@ -1,3 +1,4 @@
+import { CreditCardIcon, ImageIcon, LayoutDashboardIcon, LogOutIcon, MinusIcon, PlusIcon, SettingsIcon, ShoppingCartIcon, TrashIcon } from 'lucide-react';
 import React from 'react';
 
 export type IconProps = React.HtmlHTMLAttributes<SVGElement>;
@@ -36,4 +37,13 @@ export const Icons = {
       />
     </svg>
   ),
+  placeholder: ImageIcon,
+  creditCard: CreditCardIcon,
+  logout: LogOutIcon,
+  layoutDashboard: LayoutDashboardIcon,
+  settings: SettingsIcon,
+  shoppingCart: ShoppingCartIcon,
+  minus: MinusIcon,
+  plus: PlusIcon,
+  trash: TrashIcon,
 };

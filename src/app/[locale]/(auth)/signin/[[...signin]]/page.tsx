@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shell } from '@/components/ui/shell';
+import { Shell } from '@/components/shell';
 import { OAuthSignIn } from '../../_components/oauth-signin';
 import { SignInForm } from '../../_components/signin-form';
 
