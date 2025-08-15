@@ -1,3 +1,5 @@
+'use client';
+
 import { LoaderCircleIcon } from 'lucide-react';
 import React from 'react';
 import { Icons } from '@/components/icons';
@@ -7,13 +9,14 @@ import { logger } from '@/libs/Logger';
 const oauthProviders = [
   { name: 'Google', strategy: 'oauth_google', icon: 'google' },
   { name: 'Discord', strategy: 'oauth_discord', icon: 'discord' },
+  { name: 'Facebook', strategy: 'oauth_facebook', icon: 'facebook' },
 ] satisfies {
   name: string;
   icon: keyof typeof Icons;
   strategy: string;
 }[];
 
-export default function OAuthSignIn() {
+export function OAuthSignIn() {
   const [loading, setLoading] = React.useState<string | null>(null);
 
   // Fake OAuth sign-in
@@ -22,7 +25,7 @@ export default function OAuthSignIn() {
       setLoading(providerStrategy); // đánh dấu provider đang login
 
       // Giả lập network delay 500ms
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       // Fake login success
       logger.info(`Logged in with ${providerStrategy}`);
@@ -37,7 +40,7 @@ export default function OAuthSignIn() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
+    <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:gap-4">
       {oauthProviders.map((provider) => {
         const Icon = Icons[provider.icon];
 
@@ -45,11 +48,11 @@ export default function OAuthSignIn() {
           <Button
             key={provider.strategy}
             variant="outline"
-            className="w-full bg-background"
+            className="w-full bg-background sm:flex-1"
             onClick={() => void oauthSignIn(provider.strategy)}
             disabled={loading !== null}
           >
-            {loading
+            {loading === provider.strategy
               ? (
                   <LoaderCircleIcon
                     className="mr-2 size-4 animate-spin"
@@ -65,5 +68,6 @@ export default function OAuthSignIn() {
         );
       })}
     </div>
+
   );
 }

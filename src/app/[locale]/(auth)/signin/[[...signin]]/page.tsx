@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shell } from '@/components/ui/shell';
-import OAuthSignIn from '../../_components/oauth-signin';
+import { OAuthSignIn } from '../../_components/oauth-signin';
 import { SignInForm } from '../../_components/signin-form';
 
 export const metadata: Metadata = {
@@ -10,30 +10,30 @@ export const metadata: Metadata = {
   description: 'Sign in to your account',
 };
 
-export default function SignPage() {
+export default function SignInPage() {
   return (
-    <Shell className="max-w-lg">
+    <Shell className="max-w-lg p-6">
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Sign in</CardTitle>
           <CardDescription>
             Choose your preferred sign in method
           </CardDescription>
-          <CardContent>
-            <OAuthSignIn />
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-            </div>
-            <SignInForm />
-          </CardContent>
         </CardHeader>
+        <CardContent className="grid gap-4">
+          <OAuthSignIn />
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
+            </div>
+          </div>
+          <SignInForm />
+        </CardContent>
         <CardFooter className="flex flex-wrap items-center justify-between gap-2">
           <div className="text-sm text-muted-foreground">
             <span className="mr-1 hidden sm:inline-block">

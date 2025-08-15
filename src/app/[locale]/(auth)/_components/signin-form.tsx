@@ -1,3 +1,5 @@
+'use client';
+
 import type { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircleIcon } from 'lucide-react';
