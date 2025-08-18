@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { ThemeProvider } from 'next-themes';
 import { notFound } from 'next/navigation';
 import { PostHogProvider } from '@/components/analytics/PostHogProvider';
 import { routing } from '@/libs/I18nRouting';
@@ -50,11 +51,18 @@ export default async function RootLayout(props: {
   return (
     <html lang={locale}>
       <body>
-        <NextIntlClientProvider>
-          <PostHogProvider>
-            {props.children}
-          </PostHogProvider>
-        </NextIntlClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider>
+            <PostHogProvider>
+              {props.children}
+            </PostHogProvider>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

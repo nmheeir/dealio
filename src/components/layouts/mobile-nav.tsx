@@ -2,8 +2,6 @@
 'use client';
 
 import type { MainNavItem } from '@/types';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@radix-ui/react-accordion';
-import { ScrollArea } from '@radix-ui/react-scroll-area';
 import { MenuIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSelectedLayoutSegment } from 'next/navigation';
@@ -12,7 +10,9 @@ import { siteConfig } from '@/config/site';
 import { useMediaQuery } from '@/hooks/use-media-query';
 import { cn } from '@/libs/utils';
 import { Icons } from '../icons';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Button } from '../ui/button';
+import { ScrollArea } from '../ui/scroll-area';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 
 type MobileNavProps = {

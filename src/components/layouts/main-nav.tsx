@@ -1,6 +1,6 @@
 import type { MainNavItem } from '@/types';
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@radix-ui/react-navigation-menu';
 import Link from 'next/link';
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from '@/components/ui/navigation-menu';
 import { siteConfig } from '@/config/site';
 import { cn } from '@/libs/utils';
 import { Icons } from '../icons';

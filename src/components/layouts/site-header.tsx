@@ -1,6 +1,7 @@
 import { siteConfig } from '@/config/site';
 import { CartSheet } from '../checkout/cart-sheet';
 import { ProductsCombobox } from '../products-combobox';
+import { AuthDropdown } from './auth-dropdown';
 import { MainNav } from './main-nav';
 import { MobileNav } from './mobile-nav';
 

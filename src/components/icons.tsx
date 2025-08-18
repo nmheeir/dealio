@@ -1,4 +1,4 @@
-import { CreditCardIcon, ImageIcon, LayoutDashboardIcon, LoaderCircleIcon, LogOutIcon, MinusIcon, PlusIcon, SettingsIcon, ShoppingCartIcon, TrashIcon } from 'lucide-react';
+import { BoxIcon, CheckIcon, CreditCardIcon, EyeIcon, ImageIcon, LaptopIcon, LayoutDashboardIcon, LoaderCircleIcon, LogOutIcon, MaximizeIcon, MinusIcon, MoonIcon, MoveRightIcon, PlusIcon, RocketIcon, SendHorizonalIcon, SendIcon, SettingsIcon, ShoppingCartIcon, StarIcon, SunIcon, TrashIcon, XIcon } from 'lucide-react';
 import React from 'react';
 
 export type IconProps = React.HtmlHTMLAttributes<SVGElement>;
@@ -47,4 +47,17 @@ export const Icons = {
   plus: PlusIcon,
   trash: TrashIcon,
   loaderCircle: LoaderCircleIcon,
+  box: BoxIcon,
+  moveRight: MoveRightIcon,
+  eye: EyeIcon,
+  check: CheckIcon,
+  sun: SunIcon,
+  moon: MoonIcon,
+  laptop: LaptopIcon,
+  cross: XIcon,
+  star: StarIcon,
+  maximize: MaximizeIcon,
+  rocket: RocketIcon,
+  send: SendIcon,
+  sendHorizontal: SendHorizonalIcon,
 };

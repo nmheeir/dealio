@@ -2,14 +2,16 @@
 
 import type { CreateStoreSchema } from '../validations/store';
 
-import { desc, eq } from 'drizzle-orm';
+import { count, countDistinct, desc, eq, sql } from 'drizzle-orm';
 
 import {
+  unstable_cache as cache,
   unstable_noStore as noStore,
   revalidateTag,
 } from 'next/cache';
 import { db } from '@/db';
-import { stores } from '@/db/schema';
+import { products, stores } from '@/db/schema';
+import { orders } from '@/db/schema/orders';
 import { takeFirstOrThrow } from '@/db/utils';
 import { getErrorMessage } from '../handle-error';
 import { slugify } from '../utils';
@@ -32,6 +34,35 @@ export async function getStoreByUserId(input: { userId: string }) {
   } catch (err) {
     return null;
   }
+}
+
+export async function getStoresByUserId(input: { userId: string }) {
+  return await cache(
+    async () => {
+      return db
+        .select({
+          id: stores.id,
+          name: stores.name,
+          slug: stores.slug,
+          description: stores.description,
+          stripeAccountId: stores.stripeAccountId,
+          productCount: count(products.id),
+          orderCount: count(orders.id),
+          customerCount: countDistinct(orders.email),
+        })
+        .from(stores)
+        .leftJoin(products, eq(products.storeId, stores.id))
+        .leftJoin(orders, eq(orders.storeId, stores.id))
+        .groupBy(stores.id)
+        .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
+        .where(eq(stores.userId, input.userId));
+    },
+    [`stores-${input.userId}`],
+    {
+      revalidate: 900,
+      tags: [`stores-${input.userId}`],
+    },
+  )();
 }
 
 export async function createStore(
@@ -65,4 +96,30 @@ export async function createStore(
       error: getErrorMessage(err),
     };
   }
+}
+
+export async function getFeaturedStores() {
+  return await cache(
+    async () => {
+      return db
+        .select({
+          id: stores.id,
+          name: stores.name,
+          slug: stores.slug,
+          description: stores.description,
+          stripeAccountId: stores.stripeAccountId,
+          productCount: count(products.id),
+        })
+        .from(stores)
+        .limit(4)
+        .leftJoin(products, eq(products.storeId, stores.id))
+        .groupBy(stores.id)
+        .orderBy(desc(sql<number>`count(*)`));
+    },
+    ['featured-stores'],
+    {
+      revalidate: 3600, // every hour
+      tags: ['featured-stores'],
+    },
+  )();
 }

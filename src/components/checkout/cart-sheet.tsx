@@ -46,7 +46,7 @@ export async function CartSheet() {
               {itemCount}
             </Badge>
           )}
-          <Icons.cart className="size-4" aria-hidden="true" />
+          <Icons.shoppingCart className="size-4" aria-hidden="true" />
         </Button>
       </SheetTrigger>
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
@@ -96,7 +96,7 @@ export async function CartSheet() {
             )
           : (
               <div className="flex h-full flex-col items-center justify-center space-y-1">
-                <Icons.cart
+                <Icons.shoppingCart
                   className="mb-4 size-16 text-muted-foreground"
                   aria-hidden="true"
                 />

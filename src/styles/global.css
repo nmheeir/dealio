@@ -2,9 +2,13 @@
 
 @import 'tailwindcss';
 
+@plugin '@tailwindcss/typography';
+
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
+
+@config '../../tailwind.config.ts';
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
