@@ -2,7 +2,7 @@
 'use server';
 
 import type { z } from 'zod';
-import type { CartLineItemSchema } from '../validations/cart';
+import type { CartLineItemSchema, deleteCartItemSchema } from '../validations/cart';
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import { unstable_noStore as noStore, revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
@@ -329,44 +329,55 @@ export async function addToCart(rawInput: z.infer<typeof cartItemSchema>) {
 //   }
 // }
 
-// export async function deleteCartItem(
-//   input: z.infer<typeof deleteCartItemSchema>,
-// ) {
-//   noStore();
+export async function deleteCartItem(
+  input: z.infer<typeof deleteCartItemSchema>,
+): Promise<{ data: any; error: string | null }> {
+  noStore();
 
-//   try {
-//     const cartId = cookies().get('cartId')?.value;
+  try {
+    const cookieStore = await cookies();
+    const cartId = cookieStore.get('cartId')?.value;
 
-//     if (!cartId) {
-//       throw new Error('cartId not found, please try again.');
-//     }
+    if (!cartId) {
+      return {
+        data: null,
+        error: 'cartId not found, please try again.',
+      };
+    }
 
-//     const cart = await db.query.carts.findFirst({
-//       where: eq(carts.id, cartId),
-//     });
+    const cart = await db.query.carts.findFirst({
+      where: eq(carts.id, cartId),
+    });
 
-//     if (!cart) {
-//       return;
-//     }
+    if (!cart) {
+      return {
+        data: null,
+        error: 'Cart not found.',
+      };
+    }
 
-//     cart.items
-//       = cart.items?.filter(item => item.productId !== input.productId) ?? [];
+    cart.items = cart.items?.filter(item => item.productId !== input.productId) ?? [];
 
-//     await db
-//       .update(carts)
-//       .set({
-//         items: cart.items,
-//       })
-//       .where(eq(carts.id, cartId));
+    await db
+      .update(carts)
+      .set({
+        items: cart.items,
+      })
+      .where(eq(carts.id, cartId));
 
-//     revalidatePath('/');
-//   } catch (err) {
-//     return {
-//       data: null,
-//       error: getErrorMessage(err),
-//     };
-//   }
-// }
+    revalidatePath('/');
+
+    return {
+      data: cart,
+      error: null,
+    };
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    };
+  }
+}
 
 // export async function deleteCartItems(
 //   input: z.infer<typeof deleteCartItemsSchema>,

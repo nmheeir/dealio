@@ -1,8 +1,8 @@
 /* eslint-disable unused-imports/no-unused-vars */
 'use server';
 
-import type { SearchParams } from 'next/dist/server/request/search-params';
 import type { Product } from '@/db/schema';
+import type { SearchParams } from '@/types';
 import { and, asc, count, desc, eq, gte, inArray, lte, sql } from 'drizzle-orm';
 import {
   unstable_cache as cache,

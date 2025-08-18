@@ -170,3 +170,12 @@ export const productConfig = {
     >[];
   } & Pick<Category, 'id' | 'name' | 'description' | 'image'>)[],
 };
+
+export const productCategories = productConfig.categories.map(category => ({
+  ...category,
+  subcategories: category.subcategories.map(sub => ({
+    ...sub,
+    slug: sub.name.toLowerCase().replace(/\s+/g, '-'), // tạo slug từ name
+    title: sub.name, // tạo title để JSX dùng
+  })),
+}));
