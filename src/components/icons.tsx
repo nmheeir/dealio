@@ -1,4 +1,4 @@
-import { CreditCardIcon, ImageIcon, LayoutDashboardIcon, LogOutIcon, MinusIcon, PlusIcon, SettingsIcon, ShoppingCartIcon, TrashIcon } from 'lucide-react';
+import { CreditCardIcon, ImageIcon, LayoutDashboardIcon, LoaderCircleIcon, LogOutIcon, MinusIcon, PlusIcon, SettingsIcon, ShoppingCartIcon, TrashIcon } from 'lucide-react';
 import React from 'react';
 
 export type IconProps = React.HtmlHTMLAttributes<SVGElement>;
@@ -46,4 +46,5 @@ export const Icons = {
   minus: MinusIcon,
   plus: PlusIcon,
   trash: TrashIcon,
+  loaderCircle: LoaderCircleIcon,
 };

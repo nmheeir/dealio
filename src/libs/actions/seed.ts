@@ -10,12 +10,32 @@ import {
   subcategories,
 } from '@/db/schema';
 import { generateId } from '@/libs/id';
-import { absoluteUrl, slugify } from '@/libs/utils';
+import { slugify } from '@/libs/utils';
 import { logger } from '../Logger';
 
 export async function revalidateItems() {
   logger.info('🔄 Revalidating...');
-  await fetch(absoluteUrl('/api/revalidate'));
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+  const url = `${baseUrl}/api/revalidate`;
+
+  try {
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`Revalidate failed with status ${res.status}`);
+    }
+
+    logger.info('✅ Revalidate completed');
+  } catch (err: unknown) {
+    logger.error('⚠️ Revalidate failed');
+    if (err instanceof Error) {
+      logger.error(err.message);
+    } else {
+      logger.error(JSON.stringify(err));
+    }
+    // không throw để seed không bị fail
+  }
 }
 
 export async function seedCategories() {
