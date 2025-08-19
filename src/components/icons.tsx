@@ -1,4 +1,4 @@
-import { BoxIcon, CheckIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, CircleIcon, CreditCardIcon, EyeIcon, ImageIcon, LaptopIcon, LayoutDashboardIcon, LoaderCircleIcon, LogOutIcon, MaximizeIcon, MinusIcon, MoonIcon, MoveRightIcon, PlusIcon, RocketIcon, SendHorizontalIcon, SendIcon, SettingsIcon, ShoppingCartIcon, StarIcon, SunIcon, TrashIcon, XIcon } from 'lucide-react';
+import { BoxIcon, CheckIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, CircleIcon, CreditCardIcon, EyeIcon, HeartIcon, ImageIcon, LaptopIcon, LayoutDashboardIcon, LoaderCircleIcon, LogOutIcon, MaximizeIcon, MinusIcon, MoonIcon, MoveRightIcon, PlusIcon, RocketIcon, SendHorizontalIcon, SendIcon, SettingsIcon, ShoppingCartIcon, StarIcon, SunIcon, TrashIcon, XIcon } from 'lucide-react';
 import React from 'react';
 
 export type IconProps = React.HtmlHTMLAttributes<SVGElement>;
@@ -91,4 +91,5 @@ export const Icons = {
   chevronLeft: ChevronLeftIcon,
   chevronRight: ChevronRightIcon,
   circle: CircleIcon,
+  heart: HeartIcon,
 };

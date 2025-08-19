@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable tailwindcss/no-custom-classname */
+
 import Link from 'next/link';
 import { ContentSection } from '@/components/content-section';
 import { PageActions, PageHeader, PageHeaderDescription, PageHeaderHeading } from '@/components/page-header';
@@ -27,7 +27,7 @@ export function LobbySkeleton() {
           Foundation for your commerce platform
         </PageHeaderHeading>
         <PageHeaderDescription
-          className="animate-fade-up max-w-[46.875rem]"
+          className="max-w-[46.875rem] animate-fade-up"
           style={{ animationDelay: '0.30s', animationFillMode: 'both' }}
         >
           Skateshop is an open-source platform for building and customizing your
@@ -48,7 +48,7 @@ export function LobbySkeleton() {
           </Link>
         </PageActions>
       </PageHeader>
-      <section className="xs:grid-cols-2 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           <CategoryCardSkeleton key={i} />
         ))}

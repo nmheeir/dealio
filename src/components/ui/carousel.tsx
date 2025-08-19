@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks-extra/no-direct-set-state-in-use-effect */
+// TODO: fic eslint
 'use client';
 
 import type { UseEmblaCarouselType } from 'embla-carousel-react';

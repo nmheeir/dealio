@@ -8,7 +8,7 @@ export const Env = createEnv({
     DATABASE_URL: z.string().min(1),
   },
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().optional(),
+    NEXT_PUBLIC_APP_URL: z.string(),
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
     NEXT_PUBLIC_BETTER_STACK_SOURCE_TOKEN: z.string().optional(),
     NEXT_PUBLIC_BETTER_STACK_INGESTING_HOST: z.string().optional(),

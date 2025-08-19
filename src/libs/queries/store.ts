@@ -2,8 +2,10 @@
 
 import type { CreateStoreSchema } from '../validations/store';
 
-import { count, countDistinct, desc, eq, sql } from 'drizzle-orm';
+import type { Store } from '@/db/schema';
 
+import type { SearchParams } from '@/types';
+import { and, asc, count, countDistinct, desc, eq, isNull, not, sql } from 'drizzle-orm';
 import {
   unstable_cache as cache,
   unstable_noStore as noStore,
@@ -15,6 +17,7 @@ import { orders } from '@/db/schema/orders';
 import { takeFirstOrThrow } from '@/db/utils';
 import { getErrorMessage } from '../handle-error';
 import { slugify } from '../utils';
+import { getStoresSchema } from '../validations/store';
 
 export async function getStoreByUserId(input: { userId: string }) {
   noStore();
@@ -122,4 +125,100 @@ export async function getFeaturedStores() {
       tags: ['featured-stores'],
     },
   )();
+}
+
+export async function getStores(input: SearchParams) {
+  noStore();
+  try {
+    const search = getStoresSchema.parse(input);
+
+    const limit = search.per_page;
+    const offset = (search.page - 1) * limit;
+    const [column, order]
+      = (search.sort?.split('.') as [
+        keyof Store | undefined,
+        'asc' | 'desc' | undefined,
+      ]) ?? [];
+    const statuses = search.statuses?.split('.') ?? [];
+
+    const { data, total } = await db.transaction(async (tx) => {
+      const data = await tx
+        .select({
+          id: stores.id,
+          name: stores.name,
+          slug: stores.slug,
+          description: stores.description,
+          stripeAccountId: stores.stripeAccountId,
+          productCount: count(products.id),
+        })
+        .from(stores)
+        .limit(limit)
+        .offset(offset)
+        .leftJoin(products, eq(stores.id, products.storeId))
+        .where(
+          and(
+            search.user_id ? eq(stores.userId, search.user_id) : undefined,
+            statuses.includes('active') && !statuses.includes('inactive')
+              ? not(isNull(stores.stripeAccountId))
+              : undefined,
+            statuses.includes('inactive') && !statuses.includes('active')
+              ? isNull(stores.stripeAccountId)
+              : undefined,
+          ),
+        )
+        .groupBy(stores.id)
+        .orderBy(
+          input.sort === 'stripeAccountId.asc'
+            ? asc(stores.stripeAccountId)
+            : input.sort === 'stripeAccountId.desc'
+              ? desc(stores.stripeAccountId)
+              : input.sort === 'productCount.asc'
+                ? asc(sql<number>`count(*)`)
+                : input.sort === 'productCount.desc'
+                  ? desc(sql<number>`count(*)`)
+                  : column && column in stores
+                    ? order === 'asc'
+                      ? asc(stores[column])
+                      : desc(stores[column])
+                    : desc(stores.createdAt),
+        );
+
+      const total = await tx
+        .select({
+          count: count(stores.id),
+        })
+        .from(stores)
+        .where(
+          and(
+            search.user_id ? eq(stores.userId, search.user_id) : undefined,
+            statuses.includes('active') && !statuses.includes('inactive')
+              ? not(isNull(stores.stripeAccountId))
+              : undefined,
+            statuses.includes('inactive') && !statuses.includes('active')
+              ? isNull(stores.stripeAccountId)
+              : undefined,
+          ),
+        )
+        .execute()
+        .then(res => res[0]?.count ?? 0);
+
+      return {
+        data,
+        total,
+      };
+    });
+
+    const pageCount = Math.ceil(total / limit);
+
+    return {
+      data,
+      pageCount,
+    };
+  } catch (err) {
+    console.error(err);
+    return {
+      data: [],
+      pageCount: 0,
+    };
+  }
 }

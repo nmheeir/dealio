@@ -62,5 +62,10 @@
     "pcss",
     "postcss",
     "github-actions-workflow"
+  ],
+  "cSpell.words": [
+    "ARCJET",
+    "contentlayer",
+    "POSTHOG"
   ]
 }

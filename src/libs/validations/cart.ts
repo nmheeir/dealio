@@ -42,7 +42,7 @@ export const deleteCartItemsSchema = z.object({
 });
 
 export const updateCartItemSchema = z.object({
-  quantity: z.number().min(0).default(1),
+  quantity: z.number().min(0),
 });
 
 export type CartItemSchema = z.infer<typeof cartItemSchema>;
