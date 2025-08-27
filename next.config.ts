@@ -12,6 +12,9 @@ const baseConfig: NextConfig = {
   },
   poweredByHeader: false,
   reactStrictMode: true,
+  images: {
+    domains: ['picsum.photos'],
+  },
 };
 
 // Initialize the Next-Intl plugin
