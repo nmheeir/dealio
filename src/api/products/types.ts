@@ -1,3 +1,5 @@
+import type { BaseTimeStamp } from '../types';
+
 export type Product = {
   id: string;
   name: string;
@@ -10,3 +12,9 @@ export type Product = {
   category_id: string;
   brand_id: string;
 };
+
+export type ProductImage = {
+  id: string;
+  product_url: string;
+  is_main: boolean;
+} & BaseTimeStamp;

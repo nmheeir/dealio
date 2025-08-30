@@ -8,7 +8,7 @@ export function APIProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient());
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={true} position="top" buttonPosition="top-left" />
+      <ReactQueryDevtools initialIsOpen={true} position="left" buttonPosition="top-left" />
       {children}
     </QueryClientProvider>
   );

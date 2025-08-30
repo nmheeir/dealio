@@ -117,7 +117,7 @@ export function ProductImageCarousel({
                 role="group"
                 key={index}
                 aria-roledescription="slide"
-                src={image.url}
+                src="https://picsum.photos/200/300"
                 alt={image.name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

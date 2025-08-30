@@ -1,15 +1,14 @@
 /* eslint-disable react/no-array-index-key */
+import { Separator } from '@radix-ui/react-separator';
 import { Icons } from '@/components/icons';
-import { ProductCardSkeleton } from '@/components/product-card-skeleton';
-import { Shell } from '@/components/shell';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/libs/utils';
 
-export default function ProductLoading() {
+// TODO: Fix ui
+
+export default function ProductDetailLoading() {
   return (
-    <Shell>
+    <main className="mx-auto space-y-2 px-4 lg:px-16">
       <div className="flex items-center space-x-2">
         <Skeleton className="h-6 w-14" />
         <Skeleton className="h-6 w-14" />
@@ -76,16 +75,6 @@ export default function ProductLoading() {
           <Separator className="md:hidden" />
         </div>
       </div>
-      <div className="space-y-6 overflow-hidden">
-        <Skeleton className="h-7 w-1/4" />
-        <ScrollArea orientation="horizontal" className="pb-3.5">
-          <div className="flex gap-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <ProductCardSkeleton key={i} className="min-w-[260px]" />
-            ))}
-          </div>
-        </ScrollArea>
-      </div>
-    </Shell>
+    </main>
   );
 }

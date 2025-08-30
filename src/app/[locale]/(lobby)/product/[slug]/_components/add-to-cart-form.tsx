@@ -56,7 +56,7 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
     <Form {...form}>
       <form
         className={cn(
-          'flex max-w-[260px] gap-4',
+          'flex gap-4',
           showBuyNow ? 'flex-col' : 'flex-row',
         )}
         onSubmit={form.handleSubmit(onSubmit)}
@@ -119,48 +119,47 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
             <span className="sr-only">Add one item</span>
           </Button>
         </div>
-        <div className="flex items-center space-x-2.5">
-          {showBuyNow
-            ? (
-                <Button
-                  type="button"
-                  aria-label="Buy now"
-                  size="sm"
-                  className="w-full"
-                  onClick={async () => {
-                    setIsBuyingNow(true);
+        <div className="flex w-full flex-col space-y-2.5 sm:flex-row sm:space-y-0 sm:space-x-2.5">
+          {showBuyNow && (
+            <Button
+              type="button"
+              aria-label="Buy now"
+              size="sm"
+              className="w-full sm:w-1/2"
+              onClick={async () => {
+                setIsBuyingNow(true);
 
-                    const { error } = await addToCart({
-                      productId,
-                      quantity: form.getValues('quantity'),
-                    });
+                const { error } = await addToCart({
+                  productId,
+                  quantity: form.getValues('quantity'),
+                });
 
-                    if (error) {
-                      showErrorToast(error);
-                      return;
-                    }
+                if (error) {
+                  showErrorToast(error);
+                  return;
+                }
 
-                    router.push('/cart');
-                    setIsBuyingNow(false);
-                  }}
-                  disabled={isBuyingNow}
-                >
-                  {isBuyingNow && (
-                    <Icons.loaderCircle
-                      className="mr-2 size-4 animate-spin"
-                      aria-hidden="true"
-                    />
-                  )}
-                  Buy now
-                </Button>
-              )
-            : null}
+                router.push('/cart');
+                setIsBuyingNow(false);
+              }}
+              disabled={isBuyingNow}
+            >
+              {isBuyingNow && (
+                <Icons.loaderCircle
+                  className="mr-2 size-4 animate-spin"
+                  aria-hidden="true"
+                />
+              )}
+              Buy now
+            </Button>
+          )}
+
           <Button
             aria-label="Add to cart"
             type="submit"
             variant={showBuyNow ? 'outline' : 'default'}
             size="sm"
-            className="w-full"
+            className="w-full sm:w-1/2"
             disabled={isAddingToCart}
           >
             {isAddingToCart && (
@@ -172,6 +171,7 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
             Add to cart
           </Button>
         </div>
+
       </form>
     </Form>
   );

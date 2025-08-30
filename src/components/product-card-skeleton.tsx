@@ -12,7 +12,7 @@ export function ProductCardSkeleton({
 }: ProductCardSkeletonProps) {
   return (
     <Card
-      className={cn('h-full overflow-hidden rounded-lg', className)}
+      className={cn('overflow-hidden rounded-lg', className)}
       {...props}
     >
       <CardHeader className="border-b p-0">
