@@ -21,7 +21,11 @@ export function CenterSection({ className, images, setApi }: CenterSectionProps)
           <CarouselContent className={cn('rounded-lg', hasOnlyOneImage ? 'ml-0' : '')}>
             {images.map((image, index) => (
               <CarouselItem
-                className={cn('relative aspect-square rounded-lg', hasOnlyOneImage && 'pl-0')}
+                className={cn(
+                  'relative aspect-square rounded-lg',
+                  hasOnlyOneImage && 'pl-0',
+                  'hover:scale-110 transition duration-300',
+                )}
                 key={image.product_url}
               >
                 <Image

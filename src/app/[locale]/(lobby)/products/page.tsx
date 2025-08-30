@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 import type { SearchParams } from '@/types';
 
-import ProductList from './_components/product-page';
+import SearchView from '@/components/search/search-view';
 
 export const metadata: Metadata = {
   title: 'Products',
@@ -17,6 +17,6 @@ export default function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
   return (
-    <ProductList />
+    <SearchView />
   );
 }

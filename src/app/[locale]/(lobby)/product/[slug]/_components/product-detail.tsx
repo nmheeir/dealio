@@ -18,7 +18,7 @@ type ProductDetailProps = {
   slug: string;
 };
 
-export default function ProductDetail({ slug }: ProductDetailProps) {
+export default function ProductDetailSection({ slug }: ProductDetailProps) {
   const { data, isLoading, error } = useProductVariant({
     variables: { slug },
   });
