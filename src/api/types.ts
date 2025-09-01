@@ -15,3 +15,17 @@ export type ApiResponse<T> = {
   message: string;
   data: T;
 };
+
+// Generic pagination response
+export type PaginationResponse<T> = {
+  statusCode: number;
+  message: string;
+  data: PaginationData<T>;
+};
+
+export type PaginationData<T> = {
+  data: T[];
+  total: number;
+  page: number;
+  pageCount: number;
+};

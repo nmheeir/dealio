@@ -14,7 +14,7 @@ type FacetsContentProps = {
 // TODO: Fetch data from api
 
 export default function FacetsContent({ className }: FacetsContentProps) {
-  const [page, setPage] = useQueryState('page', {
+  const [_page, setPage] = useQueryState('page', {
     ...parseAsInteger,
     defaultValue: 1,
     shallow: true,

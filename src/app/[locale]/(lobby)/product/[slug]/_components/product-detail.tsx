@@ -1,13 +1,12 @@
 'use client';
 
 import type { ProductVariant } from '@/api/product-variant/types';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import React from 'react';
 import { useProductVariant } from '@/api/product-variant/use-product-variant';
+import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icons } from '@/components/icons';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import ProductDetailLoading from '../loading/product-detail-loading';
@@ -31,33 +30,13 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
     return notFound();
   }
   const product = data.data;
-  const breadcrumbs = makeBreadcrumbs(product);
 
   return (
     <main className="mx-auto space-y-2 px-4 pb-8 lg:px-16">
       {/* Breadcrumb */}
       <div className="relative flex w-full items-center justify-center gap-10 py-4 md:pt-12">
         <div className="mx-auto w-full max-w-[1024px]">
-          <Breadcrumb>
-            <BreadcrumbList>
-              {breadcrumbs.map((crumb, idx) => (
-                <React.Fragment key={crumb.href}>
-                  <BreadcrumbItem>
-                    {crumb.href
-                      ? (
-                          <BreadcrumbLink asChild>
-                            <Link href={crumb.href}>{crumb.name}</Link>
-                          </BreadcrumbLink>
-                        )
-                      : (
-                          <BreadcrumbPage>{crumb.name}</BreadcrumbPage>
-                        )}
-                  </BreadcrumbItem>
-                  {idx < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
-                </React.Fragment>
-              ))}
-            </BreadcrumbList>
-          </Breadcrumb>
+          <Breadcrumbs items={makeBreadcrumbs(product)} />
         </div>
       </div>
       {/* Product Detail */}

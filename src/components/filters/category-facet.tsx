@@ -50,7 +50,7 @@ function CategoryFacetContent({ onCheckedChangeAction, isCheckedAction }: Omit<C
     return <p className="text-sm text-red-500">Error...</p>;
   }
 
-  const categories = data.data;
+  const categories = data.data.data;
 
   return (
     <AccordionContent className="flex flex-wrap gap-2">

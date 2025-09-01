@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 
-import type { SearchParams } from '@/types';
-
 import SearchView from '@/components/search/search-view';
 
 export const metadata: Metadata = {
@@ -9,14 +7,14 @@ export const metadata: Metadata = {
   description: 'Buy products from our stores',
 };
 
-type ProductsPageProps = {
-  searchParams: SearchParams;
+type SearchPageProps = {
+  searchParams: { q?: string };
 };
 
 export default function ProductsPage({
   searchParams,
-}: ProductsPageProps) {
+}: SearchPageProps) {
   return (
-    <SearchView />
+    <SearchView query={searchParams.q} />
   );
 }

@@ -1,19 +1,44 @@
 'use client';
 
 import React from 'react';
-import ProductListingPage from '@/app/[locale]/(lobby)/products/_components/plp';
+import ProductListingPage from '@/app/[locale]/(lobby)/search/_components/plp';
+import { Breadcrumbs } from '../breadcrumbs';
 import FacetsDesktop from '../filters/facets-desktop';
 import SearchToolbar from './search-toolbar';
 
-export default function SearchView() {
+type SearchViewProps = {
+  query?: string | null;
+};
+
+export default function SearchView({ query }: SearchViewProps) {
   return (
     <div>
       {/* Mobile filter drawer */}
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div>Con cac</div>
+        {/* Breadcrumb */}
+        <div className="mt-4">
+          <Breadcrumbs items={makeBreadcrumbs(query)} />
+        </div>
         <div className="flex items-center justify-between border-b border-gray-200 pt-6 pb-6">
           {/* Base on url */}
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">SKIBIDI</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+            {query
+              ? (
+                  <>
+                    Search results for
+                    {' '}
+                    <span className="text-blue-600">
+                      "
+                      {query}
+                      "
+                    </span>
+                  </>
+                )
+              : (
+                  'All Products'
+                )}
+          </h1>
+
           <SearchToolbar />
         </div>
 
@@ -26,10 +51,26 @@ export default function SearchView() {
             <FacetsDesktop className="hidden lg:block" />
 
             {/* Product grid */}
-            <ProductListingPage />
+            <ProductListingPage query={query} />
           </div>
         </section>
       </main>
     </div>
   );
+}
+
+function makeBreadcrumbs(query?: string | null) {
+  const crumbs = [
+    { name: 'Home', href: '/' },
+    { name: 'Search', href: '/search' },
+  ];
+
+  if (query) {
+    crumbs.push({
+      name: `"${query}"`,
+      href: `/search?q=${encodeURIComponent(query)}`,
+    });
+  }
+
+  return crumbs;
 }

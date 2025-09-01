@@ -1,6 +1,6 @@
 'use client';
 
-import type { Product } from '@/db/schema';
+import type { ProductVariant } from '@/api/product-variant/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -14,9 +14,7 @@ import { Button, buttonVariants } from './ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
 
 type ProductCardProps = {
-  product: Pick<Product, 'id' | 'name' | 'price' | 'images' | 'inventory'> & {
-    category: string | null;
-  };
+  product: ProductVariant;
   variant?: 'default' | 'switchable';
   isAddedToCart?: boolean;
   onSwitch?: () => Promise<void>;
@@ -37,16 +35,16 @@ export function ProductCard({
       className={cn('overflow-hidden rounded-lg', className)}
       {...props}
     >
-      <Link aria-label={product.name} href={`/product/${product.id}`}>
+      <Link aria-label={product.slug} href={`/product/${product.slug}`}>
         <CardHeader className="border-b p-0">
           <AspectRatio ratio={4 / 3}>
             {product.images?.length
               ? (
                   <Image
                     src={
-                      product.images[0]?.url ?? '/images/product-placeholder.webp'
+                      product.images[0]?.product_url ?? '/images/product-placeholder.webp'
                     }
-                    alt={product.images[0]?.name ?? product.name}
+                    alt={product.images[0]?.product_url ?? product.variant_name}
                     className="object-cover"
                     sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
                     fill
@@ -58,11 +56,11 @@ export function ProductCard({
                 )}
           </AspectRatio>
         </CardHeader>
-        <span className="sr-only">{product.name}</span>
+        <span className="sr-only">{product.variant_name}</span>
       </Link>
       <Link href={`/product/${product.id}`} tabIndex={-1}>
         <CardContent className="space-y-1.5 p-4">
-          <CardTitle className="line-clamp-1">{product.name}</CardTitle>
+          <CardTitle className="line-clamp-1">{product.variant_name}</CardTitle>
           <CardDescription className="line-clamp-1">
             {formatPrice(product.price)}
           </CardDescription>

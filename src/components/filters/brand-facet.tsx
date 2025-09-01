@@ -50,9 +50,11 @@ function BrandFacetContent({ onCheckedChangeAction, isCheckedAction }: Omit<Bran
     return <p className="text-sm text-red-500">Error...</p>;
   }
 
+  const brands = data.data.data;
+
   return (
     <AccordionContent className="flex flex-wrap gap-2">
-      {data.data.map(brand => (
+      {brands.map(brand => (
         <Badge
           key={brand.id}
           variant="outline"
