@@ -21,6 +21,7 @@ export default function ProductListingPage({ query }: ProductListingPageProps) {
     name: query,
     brand,
     category,
+    page,
   } });
 
   if (isLoading) {

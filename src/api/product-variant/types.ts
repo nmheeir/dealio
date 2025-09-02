@@ -26,3 +26,8 @@ export type Stock = {
   quantity: number;
   reserved: number;
 } & BaseTimeStamp;
+
+export type SearchProductResponse = {
+  products: Product[];
+  variants: ProductVariant[];
+};

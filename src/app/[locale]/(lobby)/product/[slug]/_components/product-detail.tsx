@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import ProductDetailLoading from '../loading/product-detail-loading';
-import { ProductImages } from './product-images';
+import { ProductDetailImages } from './product-images';
 import ProductTitle from './product-title';
 
 type ProductDetailProps = {
@@ -47,7 +47,7 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
           price="123"
           currency="$"
         />
-        <ProductImages images={data.data.images} />
+        <ProductDetailImages images={data.data.images} />
         <div className="space-y-4 md:col-span-6 md:col-start-8 md:mt-0">
           <ProductTitle
             className="hidden md:col-span-4 md:col-start-9 md:block"

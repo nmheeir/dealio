@@ -13,7 +13,7 @@ type ProductImagesProps = {
   initialActiveIndex?: number;
 };
 
-export function ProductImages({ images, initialActiveIndex = 0 }: ProductImagesProps) {
+export function ProductDetailImages({ images, initialActiveIndex = 0 }: ProductImagesProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [thumbsApi, setThumbsApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(initialActiveIndex);

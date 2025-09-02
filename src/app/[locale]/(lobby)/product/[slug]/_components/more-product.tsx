@@ -1,39 +1,32 @@
+'use client';
+
+import { useSimilarProductVariants } from '@/api/product-variant/use-similar';
 import { ProductCard } from '@/components/product-card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/libs/utils';
+import MoreProductLoading from '../loading/more-product-loading';
 
-// TODO: fetch similar product from brand
+type MoreProductSectionProps = {
+  variantId: string;
+};
 
-export default function MoreProductSection() {
-  const store = {
-    id: 'store-1',
-    name: 'Nike Official Store',
-  };
-
-  const otherProducts = [
+export default function MoreProductSection({ variantId }: MoreProductSectionProps) {
+  const { data, isLoading, error } = useSimilarProductVariants(
     {
-      id: '2',
-      name: 'Nike Air Force 1',
-      price: 149.99,
-      description: 'Iconic basketball shoe, reimagined.',
-      rating: 4.2,
-      inventory: 5,
-      images: [{ id: '2', name: 'AF1', url: '/images/shoe-4.jpg' }],
+      variables:
+       { id: variantId },
     },
-    {
-      id: '3',
-      name: 'Nike Jordan Retro',
-      price: 249.99,
-      description: 'Legendary style with premium build.',
-      rating: 4.8,
-      inventory: 3,
-      images: [{ id: '3', name: 'Jordan', url: '/images/shoe-5.jpg' }],
-    },
-  ];
+  );
 
-  if (!store || otherProducts.length === 0) {
+  if (isLoading) {
+    return <MoreProductLoading />;
+  }
+
+  if (!data || error) {
     return null;
   }
+
+  const similarProductVariants = data.data;
 
   return (
     <div className="space-y-6 overflow-hidden pt-4">
@@ -43,14 +36,12 @@ export default function MoreProductSection() {
           'px-4 lg:px-8',
         )}
       >
-        More products from
-        {' '}
-        {store.name}
+        Similar product
       </h2>
 
       <ScrollArea orientation="horizontal" className="pb-3.5">
         <div className={cn('flex gap-4 px-4', 'px-4 lg:px-8')}>
-          {otherProducts.map(p => (
+          {similarProductVariants.map(p => (
             <ProductCard key={p.id} product={p} className="min-w-[260px]" />
           ))}
         </div>
