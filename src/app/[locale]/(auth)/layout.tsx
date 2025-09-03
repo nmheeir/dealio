@@ -1,9 +1,28 @@
-export default function AuthLayout({ children }: { children: React.ReactNode }) {
+import type React from 'react';
+import { Geist, Geist_Mono } from 'next/font/google';
+
+const geistSans = Geist({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-geist-sans',
+});
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-geist-mono',
+});
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-      <div className="mx-auto my-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="font-sans">
         {children}
-      </div>
-    </div>
+      </body>
+    </html>
   );
 }

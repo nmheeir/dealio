@@ -3,7 +3,7 @@ import type { AxiosError } from 'axios';
 import type { ApiResponse } from '../types';
 import type { SearchProductResponse } from './types';
 import { createQuery } from 'react-query-kit';
-import { client } from '../common';
+import apiClient from '../common/client';
 
 type Variables = {
   query?: string | null;
@@ -21,7 +21,7 @@ export const useSearchProductVariant = createQuery<Response, Variables, AxiosErr
       params.set('query', variables.query);
     }
 
-    return client
+    return apiClient
       .get(`product-variants/search?${params}`)
       .then(response => response.data);
   },

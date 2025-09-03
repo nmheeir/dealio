@@ -5,11 +5,7 @@ import { AuthDropdown } from './auth-dropdown';
 import { MainNav } from './main-nav';
 import { MobileNav } from './mobile-nav';
 
-type SiteHeaderProps = {
-  user: string | null;
-};
-
-export function SiteHeader({ user }: SiteHeaderProps) {
+export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center">
@@ -19,7 +15,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
           <nav className="flex items-center space-x-2">
             <ProductsCombobox />
             <CartSheet />
-            <AuthDropdown user={user} />
+            <AuthDropdown />
           </nav>
         </div>
       </div>

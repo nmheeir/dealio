@@ -3,7 +3,7 @@ import type { ApiResponse } from '../types';
 
 import type { ProductVariant } from './types';
 import { createQuery } from 'react-query-kit';
-import { client } from '../common';
+import apiClient from '../common/client';
 
 type Variables = { slug: string };
 type Response = ApiResponse<ProductVariant>;
@@ -11,7 +11,7 @@ type Response = ApiResponse<ProductVariant>;
 export const useProductVariant = createQuery<Response, Variables, AxiosError>({
   queryKey: ['product-variants'],
   fetcher: (variables) => {
-    return client
+    return apiClient
       .get(`product-variants/${variables.slug}`)
       .then(response => response.data);
   },

@@ -1,3 +1,5 @@
+'use client';
+
 import type { getCategories, getFeaturedProducts } from '@/libs/queries/product';
 import type { getFeaturedStores } from '@/libs/queries/store';
 import Link from 'next/link';

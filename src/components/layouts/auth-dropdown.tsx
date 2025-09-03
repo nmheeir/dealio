@@ -1,7 +1,10 @@
-import type { ButtonProps } from '@/components/ui/button';
-import Link from 'next/link';
+'use client';
 
+import type { ButtonProps } from '@/components/ui/button';
+
+import Link from 'next/link';
 import * as React from 'react';
+import { useAuth } from '@/api/auth/auth-context';
 import { Icons } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -15,20 +18,23 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
-import { getStoreByUserId } from '@/libs/queries/store';
 import { cn } from '@/libs/utils';
 
 type AuthDropdownProps = {
-  user: string | null;
+  className?: string;
 } & React.ComponentPropsWithRef<typeof DropdownMenuTrigger> & ButtonProps;
 
-export async function AuthDropdown({
-  user,
+export function AuthDropdown({
   className,
   ...props
 }: AuthDropdownProps) {
-  if (!user) {
+  const { user, loading, logout, isAuthenticated } = useAuth();
+
+  if (loading) {
+    return null;
+  }
+
+  if (!isAuthenticated || !user) {
     return (
       <Button size="sm" className={cn(className)} {...props} asChild>
         <Link href="/signin">
@@ -39,11 +45,9 @@ export async function AuthDropdown({
     );
   }
 
-  const initials = `${user?.charAt(0) ?? ''} ${
-    user?.charAt(0) ?? ''
+  const initials = `${user.fullname.charAt(0) ?? ''} ${
+    user.fullname.charAt(0) ?? ''
   }`;
-
-  const storePromise = getStoreByUserId({ userId: user });
 
   return (
     <DropdownMenu>
@@ -54,7 +58,7 @@ export async function AuthDropdown({
           {...props}
         >
           <Avatar className="size-8">
-            <AvatarImage src={user} alt={user ?? ''} />
+            <AvatarImage src={user.avatar_url} alt={user.avatar_url ?? ''} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
         </Button>
@@ -63,52 +67,42 @@ export async function AuthDropdown({
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm leading-none font-medium">
-              John
-              {' '}
-              Doe
+              {user.fullname}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              test@test.com
+              {user.role}
             </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <React.Suspense
-          fallback={(
-            <div className="flex flex-col space-y-1.5 p-1">
-              {Array.from({ length: 3 }).map((_, i) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <Skeleton key={i} className="h-6 w-full rounded-sm" />
-              ))}
-            </div>
-          )}
-        >
-          <AuthDropdownGroup storePromise={storePromise} />
-        </React.Suspense>
+        <AuthDropdownGroup />
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/signout">
-            <Icons.logout className="mr-2 size-4" aria-hidden="true" />
-            Log out
+          <Link
+            href=""
+            onClick={(e) => {
+              e.preventDefault();
+              logout();
+            }}
+          >
+            <Icons.logout className="mr-2 size-4 shrink-0" aria-hidden="true" />
+            <span className="flex-1 text-left">Logout</span>
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </Link>
         </DropdownMenuItem>
+
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
 
-type AuthDropdownGroupProps = {
-  storePromise: ReturnType<typeof getStoreByUserId>;
-};
+// TODO: show billing, history, ....
 
-async function AuthDropdownGroup({ storePromise }: AuthDropdownGroupProps) {
-  const store = await storePromise;
-
+function AuthDropdownGroup() {
   return (
     <DropdownMenuGroup>
       <DropdownMenuItem asChild>
-        <Link href={store ? `/store/${store.id}` : '/onboarding'}>
+        <Link href="/onboarding">
           <Icons.layoutDashboard className="mr-2 size-4" aria-hidden="true" />
           Dashboard
           <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>

@@ -3,7 +3,7 @@ import type { ProductVariant } from '../product-variant/types';
 
 import type { PaginationResponse } from '../types';
 import { createQuery } from 'react-query-kit';
-import { client } from '../common';
+import apiClient from '../common/client';
 
 type Response = PaginationResponse<ProductVariant>;
 type Variables = {
@@ -33,7 +33,7 @@ export const useProducts = createQuery<Response, Variables, AxiosError>({
       params.set('page', variables.page.toString());
     }
 
-    return client
+    return apiClient
       .get(`/products/search?${params.toString()}`)
       .then(response => response.data);
   },
