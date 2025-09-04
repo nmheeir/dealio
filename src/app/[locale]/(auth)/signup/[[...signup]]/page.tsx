@@ -1,15 +1,14 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { SigninForm } from '../../_components/signin-form';
+import SignUpForm from '../../_components/signup-form';
 
 export const metadata: Metadata = {
-  title: 'Sign In',
-  description: 'Sign in to your account',
+  title: 'Sign Up',
+  description: 'Sign up to your account',
 };
 
-export default async function SignInPage() {
-  // Server-side auth check
+export default async function SignupPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get('access_token');
 
@@ -18,7 +17,6 @@ export default async function SignInPage() {
   }
 
   return (
-    <SigninForm />
-
+    <SignUpForm />
   );
 }

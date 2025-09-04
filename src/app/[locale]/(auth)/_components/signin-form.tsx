@@ -3,22 +3,26 @@
 import type { LoginCredentials } from '@/api/auth/type';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+
 import { useRouter, useSearchParams } from 'next/navigation';
-import React from 'react';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '@/api/auth/auth-context';
+
 import { LoginCredentialsSchema } from '@/api/auth/type';
 import { Icons } from '@/components/icons';
-import { PasswordInput } from '@/components/password-input';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/libs/utils';
+import { SocialSignin } from './social-signin';
 
-export function SignInForm() {
+export function SigninForm({
+  className,
+  ...props
+}: React.ComponentProps<'form'>) {
   const router = useRouter();
   const searchParams = useSearchParams();
-
   const { login } = useAuth();
 
   const [isRedirecting, setIsRedirecting] = React.useState(false);
@@ -33,8 +37,9 @@ export function SignInForm() {
 
   const {
     handleSubmit,
+    register,
     setError,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = form;
 
   const onSubmit = async (data: LoginCredentials) => {
@@ -47,110 +52,105 @@ export function SignInForm() {
       });
       return;
     }
+
     setIsRedirecting(true);
-
     const redirectTo = searchParams.get('from') || '/';
-
     setTimeout(() => {
       router.replace(redirectTo);
-    }, 500); // 0.5s để show animation
+    }, 500);
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-center text-3xl font-bold">Log in</CardTitle>
-        </CardHeader>
+    <div className="relative flex items-center justify-center">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className={cn('flex flex-col gap-6 w-full max-w-md', className)}
+        {...props}
+      >
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h1 className="text-2xl font-bold">Login to your account</h1>
+          <p className="text-sm text-balance text-muted-foreground">
+            Enter your email below to login to your account
+          </p>
+        </div>
 
-        <CardContent className="space-y-6">
-          <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Hiển thị lỗi root */}
-              {form.formState.errors.root && (
-                <div className="rounded-md border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-                  {form.formState.errors.root.message}
-                </div>
-              )}
-
-              {/* Email */}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel
-                      htmlFor="email"
-                      className="text-sm font-medium tracking-wide text-muted-foreground uppercase"
-                    >
-                      Email
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        className="w-full"
-                        autoComplete="email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Password */}
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel
-                      htmlFor="password"
-                      className="text-sm font-medium tracking-wide text-muted-foreground uppercase"
-                    >
-                      Password
-                    </FormLabel>
-                    <FormControl>
-                      <PasswordInput
-                        id="password"
-                        placeholder="Enter your password"
-                        className="w-full"
-                        autoComplete="current-password"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* Submit button */}
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-full bg-black py-6 text-base font-medium text-white hover:bg-gray-800"
-              >
-                {isSubmitting && (
-                  <Icons.loaderCircle
-                    className="mr-2 size-4 animate-spin"
-                    aria-hidden="true"
-                  />
-                )}
-                Log in
-              </Button>
-            </form>
-          </Form>
-
-          {/* Forgot password */}
-          <div className="text-center">
-            <Link href="/" className="text-sm text-foreground hover:underline">
-              Forgot your password?
-            </Link>
+        {/* Hiển thị lỗi root */}
+        {errors.root && (
+          <div className="rounded-md border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+            {errors.root.message}
           </div>
-        </CardContent>
-      </Card>
+        )}
+
+        <div className="grid gap-6">
+          {/* Email */}
+          <div className="grid gap-3">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              autoComplete="email"
+              {...register('email')}
+              disabled={isSubmitting}
+            />
+            {errors.email && (
+              <p className="text-sm text-red-600">{errors.email.message}</p>
+            )}
+          </div>
+
+          {/* Password */}
+          <div className="grid gap-3">
+            <div className="flex items-center">
+              <Label htmlFor="password">Password</Label>
+              <Link
+                href="/signin/reset-password"
+                className="ml-auto text-sm underline-offset-4 hover:underline"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+            <Input
+              id="password"
+              type="password"
+              autoComplete="current-password"
+              {...register('password')}
+              disabled={isSubmitting}
+            />
+            {errors.password && (
+              <p className="text-sm text-red-600">{errors.password.message}</p>
+            )}
+          </div>
+
+          {/* Submit */}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting && (
+              <Icons.loaderCircle
+                className="mr-2 size-4 animate-spin"
+                aria-hidden="true"
+              />
+            )}
+            Login
+          </Button>
+
+          {/* OAuth divider */}
+          <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+            <span className="relative z-10 bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+
+          {/* OAuth button (GitHub hoặc Google) */}
+          <SocialSignin />
+        </div>
+
+        <div className="text-center text-sm">
+          Don&apos;t have an account?
+          {' '}
+          <Link href="/signup" className="underline underline-offset-4">
+            Sign up
+          </Link>
+        </div>
+      </form>
 
       {/* Overlay khi redirect */}
       {isRedirecting && (
@@ -174,7 +174,8 @@ export function SignInForm() {
               <path
                 className="opacity-75"
                 fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                d="M4 12a8 8 0 018-8V0C5.373 0
+                   0 5.373 0 12h4z"
               >
               </path>
             </svg>

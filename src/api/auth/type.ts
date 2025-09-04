@@ -6,6 +6,12 @@ export const LoginCredentialsSchema = z.object({
   password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
 });
 
+export const SignUpCredentialsSchema = z.object({
+  email: z.email('Email not valid'),
+  password: z.string().min(6, 'Must 6 value or more'),
+},
+);
+
 export const UserSchema = z.object({
   user_id: z.string(),
   // email: z.email(),
@@ -26,6 +32,7 @@ export const AuthResponseSchema = z.object({
 // TypeScript types derived from Zod schemas
 export type User = z.infer<typeof UserSchema>;
 export type LoginCredentials = z.infer<typeof LoginCredentialsSchema>;
+export type SignUpCredentials = z.infer<typeof SignUpCredentialsSchema>;
 export type AuthResponse = z.infer<typeof AuthResponseSchema>;
 
 export type LoginResult = {
