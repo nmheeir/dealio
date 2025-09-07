@@ -13,21 +13,23 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { getCart } from '@/libs/actions/cart';
 import { cn, formatPrice } from '@/libs/utils';
 
 export async function CartSheet() {
-  const cartLineItems = await getCart();
+  // const cartLineItems = await getCart();
 
-  const itemCount = cartLineItems.reduce(
-    (total, item) => total + Number(item.quantity),
-    0,
-  );
+  // const itemCount = cartLineItems.reduce(
+  //   (total, item) => total + Number(item.quantity),
+  //   0,
+  // );
+  const itemCount = 3;
 
-  const cartTotal = cartLineItems.reduce(
-    (total, item) => total + item.quantity * Number(item.price),
-    0,
-  );
+  // const cartTotal = cartLineItems.reduce(
+  //   (total, item) => total + item.quantity * Number(item.price),
+  //   0,
+  // );
+
+  const cartTotal = 150;
 
   return (
     <Sheet>
@@ -60,7 +62,7 @@ export async function CartSheet() {
         {itemCount > 0
           ? (
               <>
-                <CartLineItems items={cartLineItems} className="flex-1" />
+                <CartLineItems className="flex-1" />
                 <div className="space-y-4 pr-6">
                   <Separator />
                   <div className="space-y-1.5 text-sm">

@@ -5,11 +5,6 @@ export type PaginateQuery<T> = {
   previous: string | null;
 };
 
-export type BaseTimeStamp = {
-  createdAt: Date;
-  updatedAt: Date;
-};
-
 export type ApiResponse<T> = {
   statusCode: number;
   message: string;

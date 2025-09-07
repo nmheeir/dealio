@@ -1,11 +1,9 @@
 'use client';
 
-import type { ProductVariant } from '@/api/product-variant/types';
+import type { ProductVariant } from '@/api/schemas/product/product-variant.schema';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { toast } from 'sonner';
-import { addToCart } from '@/libs/actions/cart';
 import { cn, formatPrice } from '@/libs/utils';
 import { Icons } from './icons';
 import { PlaceholderImage } from './placeholder-image';
@@ -74,17 +72,7 @@ export function ProductCard({
                   aria-label="Add to cart"
                   size="sm"
                   className="h-8 w-full rounded-sm"
-                  onClick={async () => {
-                    startUpdateTransition(() => {});
-                    const { error } = await addToCart({
-                      productId: product.id,
-                      quantity: 1,
-                    });
-
-                    if (error) {
-                      toast.error(error);
-                    }
-                  }}
+                  onClick={() => {}}
                   disabled={isUpdatePending}
                 >
                   {isUpdatePending && (

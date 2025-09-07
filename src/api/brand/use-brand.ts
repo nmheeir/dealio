@@ -1,7 +1,7 @@
 import type { AxiosError } from 'axios';
-import type { PaginationResponse } from '../types';
+import type { Brand } from '../schemas/brand/brand.schema';
 
-import type { Brand } from './type';
+import type { PaginationResponse } from '../types';
 import { createQuery } from 'react-query-kit';
 import apiClient from '../common/client';
 

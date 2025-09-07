@@ -1,7 +1,7 @@
 import type { AxiosError } from 'axios';
-import type { ApiResponse } from '../types';
+import type { ProductVariant } from '../schemas/product/product-variant.schema';
 
-import type { ProductVariant } from './types';
+import type { ApiResponse } from '../types';
 import { createQuery } from 'react-query-kit';
 import apiClient from '../common/client';
 

@@ -1,6 +1,6 @@
 import type { AxiosError } from 'axios';
-import type { ProductVariant } from '../product-variant/types';
 
+import type { ProductVariant } from '../schemas/product/product-variant.schema';
 import type { PaginationResponse } from '../types';
 import { createQuery } from 'react-query-kit';
 import apiClient from '../common/client';
