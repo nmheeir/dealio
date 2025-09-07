@@ -1,4 +1,4 @@
-import { BoxIcon, CheckIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, CircleIcon, CreditCardIcon, EyeIcon, FunnelIcon, Grid2x2Icon, HeartIcon, ImageIcon, LaptopIcon, LayoutDashboardIcon, LoaderCircleIcon, LogOutIcon, MaximizeIcon, MinusIcon, MoonIcon, MoveRightIcon, PlusIcon, RocketIcon, SendHorizontalIcon, SendIcon, SettingsIcon, ShoppingCartIcon, StarIcon, SunIcon, TagIcon, TrashIcon, XIcon } from 'lucide-react';
+import { BoxIcon, CheckIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronsUpDownIcon, ChevronUpIcon, CircleIcon, Columns2Icon, CreditCardIcon, EyeIcon, FunnelIcon, Grid2x2Icon, GripVerticalIcon, HeartIcon, ImageIcon, LaptopIcon, LayoutDashboardIcon, LoaderCircleIcon, LogOutIcon, MaximizeIcon, MinusIcon, MoonIcon, MoveRightIcon, PlusIcon, RocketIcon, SendHorizontalIcon, SendIcon, SettingsIcon, ShoppingCartIcon, StarIcon, SunIcon, TagIcon, TrashIcon, XIcon } from 'lucide-react';
 import React from 'react';
 
 export type IconProps = React.HtmlHTMLAttributes<SVGElement>;
@@ -96,11 +96,15 @@ export const Icons = {
   send: SendIcon,
   sendHorizontal: SendHorizontalIcon,
   chevronDown: ChevronDownIcon,
+  chevronUp: ChevronUpIcon,
   chevronLeft: ChevronLeftIcon,
   chevronRight: ChevronRightIcon,
+  chevronUpDown: ChevronsUpDownIcon,
   circle: CircleIcon,
   heart: HeartIcon,
   grid2x2: Grid2x2Icon,
   funnel: FunnelIcon,
   tag: TagIcon,
+  columns2: Columns2Icon,
+  gripVertical: GripVerticalIcon,
 };

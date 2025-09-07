@@ -32,7 +32,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       try {
         const result = await authService.login(credentials);
         console.log('[AuthProvider] login result:', result);
-        if (result.success) {
+        if (result.statusCode === 201) {
           await queryClient.invalidateQueries({ queryKey: ['profiles'] });
         }
         return result;

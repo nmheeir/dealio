@@ -8,7 +8,6 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import apiClient from '../common/client';
 import {
-  AuthResponseSchema,
   UserSchema,
 } from './type';
 
@@ -20,7 +19,7 @@ const authClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  withCredentials: false,
+  withCredentials: true,
 });
 
 export class AuthService {
@@ -32,21 +31,26 @@ export class AuthService {
       const response = await authClient.post('/auth/login', credentials);
       console.log('[authService.login] raw response:', response);
 
+      const response1 = {
+        statusCode: response.status,
+        message: response.data.message,
+      };
+
       // Validate response với Zod
       console.log('[authService.login] response.data before validation:', response.data);
-      const validatedData = AuthResponseSchema.parse(response.data.data);
-      console.log('[authService.login] validatedData:', validatedData);
+      // const validatedData = AuthResponseSchema.parse(response.data.data);
+      // console.log('[authService.login] validatedData:', validatedData);
 
-      const { access_token, refresh_token } = validatedData;
+      // const { access_token, refresh_token } = validatedData;
 
       // Lưu tokens với config bảo mật
-      this.setTokens(access_token, refresh_token);
-      console.log('[authService.login] tokens saved:', {
-        access_token: !!access_token,
-        refresh_token: !!refresh_token,
-      });
+      // this.setTokens(access_token, refresh_token);
+      // console.log('[authService.login] tokens saved:', {
+      //   access_token: !!access_token,
+      //   refresh_token: !!refresh_token,
+      // });
 
-      return { success: true };
+      return response1;
     } catch (error: any) {
       console.error('[authService.login] error object:', error);
 
@@ -57,7 +61,7 @@ export class AuthService {
 
       console.error('[authService.login] error message:', errorMessage);
 
-      return { success: false, error: errorMessage };
+      return { statusCode: error.status, message: errorMessage };
     }
   }
 
@@ -107,6 +111,7 @@ export class AuthService {
     }
   }
 
+  // TODO: fix check authenticated
   async checkAuthenticated(): Promise<User | null> {
     const token = this.getAccessToken();
     if (!token) {
@@ -162,7 +167,10 @@ export class AuthService {
   }
 
   getAccessToken(): string | undefined {
-    return Cookies.get('access_token');
+    const token = Cookies.get('access_token');
+    console.log('[authservice.getAccessToken]: ', token);
+
+    return token;
   }
 
   getRefreshToken(): string | undefined {

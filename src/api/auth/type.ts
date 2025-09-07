@@ -36,9 +36,8 @@ export type SignUpCredentials = z.infer<typeof SignUpCredentialsSchema>;
 export type AuthResponse = z.infer<typeof AuthResponseSchema>;
 
 export type LoginResult = {
-  success: boolean;
-  user?: User;
-  error?: string;
+  statusCode: number;
+  message: string;
 };
 
 export type RefreshTokenResponse = {

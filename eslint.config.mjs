@@ -29,6 +29,7 @@ export default antfu(
     // Ignored paths
     ignores: [
       'migrations/**/*',
+      'src/components/ui/chart.tsx',
     ],
   },
   // --- Accessibility Rules ---

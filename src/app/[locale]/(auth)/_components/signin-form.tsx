@@ -45,10 +45,10 @@ export function SigninForm({
   const onSubmit = async (data: LoginCredentials) => {
     const result = await login(data);
 
-    if (!result.success) {
+    if (result.statusCode !== 200) {
       setError('root', {
         type: 'manual',
-        message: result.error || 'Signin Fail',
+        message: result.message || 'Signin Fail',
       });
       return;
     }
