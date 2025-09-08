@@ -41,6 +41,8 @@ export const useProducts = createQuery<Response, Variables, AxiosError>({
 
     return apiClient
       .get(`/products/search?${params.toString()}`)
-      .then(response => response.data);
+      .then((response) => {
+        return response.data;
+      });
   },
 });

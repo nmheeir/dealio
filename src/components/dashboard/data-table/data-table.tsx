@@ -26,6 +26,12 @@ export function DataTable({
   data: ProductVariant[];
 }) {
   const [data, setData] = React.useState(() => initialData);
+
+  React.useEffect(() => {
+    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    setData(initialData);
+  }, [initialData]);
+
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility]
     = React.useState<VisibilityState>({});

@@ -2,6 +2,7 @@
 'use client';
 
 import type { ProductVariant } from '@/api/schemas/product/product-variant.schema';
+import type { PaginationResponse } from '@/api/types';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
@@ -62,8 +63,45 @@ function RowActionDelete({ item }: { item: ProductVariant }) {
   const queryClient = useQueryClient();
 
   const deleteMutation = useDeleteProductVariant({
+    onMutate: async ({ id }) => {
+      await queryClient.cancelQueries({ queryKey: ['products'] });
+
+      const previousData = queryClient.getQueryData<PaginationResponse<ProductVariant>>(['products']);
+
+      queryClient.setQueryData<PaginationResponse<ProductVariant>>(
+        ['products'],
+        (oldData) => {
+          if (!oldData) {
+            return oldData;
+          }
+
+          const newData = {
+            ...oldData,
+            data: {
+              ...oldData.data,
+              data: oldData.data.data.filter(variant => variant.id !== id),
+              total: oldData.data.total - 1,
+            },
+          };
+
+          return newData;
+        },
+      );
+
+      return { previousData };
+    },
+
+    onError: (context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(['products'], context.previousData);
+      }
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+    },
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['productVariants'] });
       setOpen(false);
     },
   });

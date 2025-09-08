@@ -10,7 +10,7 @@ type Variables = {
 type Response = ApiResponse<any>;
 
 export const useDeleteProductVariant = createMutation<Response, Variables, AxiosError>({
-  mutationKey: ['deleteProductVariant'],
+  mutationKey: ['delete-product-variant'],
   mutationFn: async variables =>
     apiClient.delete(`product-variants/${variables.id}`).then(response => response.data),
 });
