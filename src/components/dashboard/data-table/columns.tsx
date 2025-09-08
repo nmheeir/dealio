@@ -1,21 +1,12 @@
 // components/data-table/columns.tsx
 import type { ColumnDef } from '@tanstack/react-table';
 import type { ProductVariant } from '@/api/schemas/product/product-variant.schema';
-import {
-  IconDotsVertical,
-} from '@tabler/icons-react';
+
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 
 import { DragHandle } from './drag-handle';
+import { RowActions } from './row-actions';
 import { TableCellViewer } from './table-cell-viewer';
 
 export const columns: ColumnDef<ProductVariant>[] = [
@@ -106,26 +97,8 @@ export const columns: ColumnDef<ProductVariant>[] = [
   },
   {
     id: 'actions',
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+    cell: ({ row }) => (
+      <RowActions item={row.original} />
     ),
   },
 ];

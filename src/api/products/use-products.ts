@@ -11,6 +11,7 @@ type Variables = {
   brand?: string | null;
   category?: string | null;
   page?: number;
+  limit?: number;
 };
 
 export const useProducts = createQuery<Response, Variables, AxiosError>({
@@ -18,7 +19,7 @@ export const useProducts = createQuery<Response, Variables, AxiosError>({
   fetcher: (variables) => {
     const params = new URLSearchParams();
 
-    if (variables.name) {
+    if (variables?.name) {
       params.set('name', variables.name);
     }
 
@@ -31,6 +32,11 @@ export const useProducts = createQuery<Response, Variables, AxiosError>({
 
     if (variables?.page) {
       params.set('page', variables.page.toString());
+    }
+    if (variables?.limit) {
+      params.set('limit', variables.limit.toString());
+    } else {
+      params.set('limit', '1000');
     }
 
     return apiClient

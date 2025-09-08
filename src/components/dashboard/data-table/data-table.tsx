@@ -17,10 +17,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import * as React from 'react';
-import { Tabs } from '@/components/ui/tabs';
 import { columns } from './columns';
 import { OutlineTabContent } from './sortable-table';
-import { DataTableToolbar } from './table-toolbar';
 
 export function DataTable({
   data: initialData,
@@ -37,7 +35,7 @@ export function DataTable({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 10,
   });
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
@@ -71,17 +69,11 @@ export function DataTable({
   });
 
   return (
-    <Tabs
-      defaultValue="outline"
-      className="w-full flex-col justify-start gap-6"
-    >
-      <DataTableToolbar table={table} />
-      <OutlineTabContent
-        table={table}
-        data={data}
-        setData={setData}
-        dataIds={dataIds}
-      />
-    </Tabs>
+    <OutlineTabContent
+      table={table}
+      data={data}
+      setData={setData}
+      dataIds={dataIds}
+    />
   );
 }

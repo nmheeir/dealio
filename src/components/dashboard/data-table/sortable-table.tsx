@@ -30,7 +30,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { TabsContent } from '@/components/ui/tabs';
 import { cn } from '@/libs/utils';
 import { columns } from './columns';
 import { DraggableRow } from './draggable-row';
@@ -68,10 +67,7 @@ export function OutlineTabContent({
   }
 
   return (
-    <TabsContent
-      value="outline"
-      className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
-    >
+    <div className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6">
       <div className="overflow-hidden rounded-lg border">
         <DndContext
           collisionDetection={closestCenter}
@@ -173,6 +169,6 @@ export function OutlineTabContent({
         </DndContext>
       </div>
       <DataTablePagination table={table} />
-    </TabsContent>
+    </div>
   );
 }
