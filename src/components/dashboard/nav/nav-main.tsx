@@ -37,25 +37,53 @@ export function NavMain({
     <SidebarGroup>
       <SidebarGroupLabel>Product</SidebarGroupLabel>
       <SidebarMenu>
-        {items.map(item => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
-            <SidebarMenuItem>
-              <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                </SidebarMenuButton>
-              </CollapsibleTrigger>
-              <CategoryCollapsible />
-            </SidebarMenuItem>
-          </Collapsible>
-        ))}
+        <Collapsible
+          key="Category"
+          asChild
+          defaultOpen={true}
+          className="group/collapsible"
+        >
+          <SidebarMenuItem>
+            <CollapsibleTrigger asChild>
+              <SidebarMenuButton tooltip="Category">
+                {/* {item.icon && <item.icon />} */}
+                <span>Category</span>
+                <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CategoryCollapsible />
+          </SidebarMenuItem>
+        </Collapsible>
+      </SidebarMenu>
+      <SidebarGroupLabel>Edit</SidebarGroupLabel>
+      <SidebarMenu>
+        <Collapsible
+          key="Edit"
+          asChild
+          defaultOpen={true}
+          className="group/collapsible"
+        >
+          <SidebarMenuItem>
+            <CollapsibleTrigger asChild>
+              <SidebarMenuButton tooltip="Edit">
+                {/* {item.icon && <item.icon />} */}
+                <span>Edit</span>
+                <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                <SidebarMenuSubItem>
+                  <SidebarMenuSubButton asChild>
+                    <Link href="/dashboard/product/edit">
+                      <span>Edit Product</span>
+                    </Link>
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+              </SidebarMenuSub>
+            </CollapsibleContent>
+          </SidebarMenuItem>
+        </Collapsible>
       </SidebarMenu>
     </SidebarGroup>
   );

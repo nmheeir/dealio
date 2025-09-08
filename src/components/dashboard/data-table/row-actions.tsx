@@ -13,7 +13,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
+
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -48,10 +48,6 @@ export function RowActions({ item }: RowActionsProps) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-32">
-        <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleCopy}>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem onClick={handleFavorite}>Favorite</DropdownMenuItem>
-        <DropdownMenuSeparator />
         <RowActionDelete item={item} />
       </DropdownMenuContent>
     </DropdownMenu>

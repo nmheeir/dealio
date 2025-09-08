@@ -28,7 +28,7 @@ export function DataTable({
   const [data, setData] = React.useState(() => initialData);
 
   React.useEffect(() => {
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+  // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
     setData(initialData);
   }, [initialData]);
 
