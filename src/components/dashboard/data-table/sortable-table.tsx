@@ -21,6 +21,7 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import * as React from 'react';
+import { Icons } from '@/components/icons';
 import {
   TableBody,
   TableCell,
@@ -30,6 +31,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { TabsContent } from '@/components/ui/tabs';
+import { cn } from '@/libs/utils';
 import { columns } from './columns';
 import { DraggableRow } from './draggable-row';
 import { DataTablePagination } from './table-pagination';
@@ -85,12 +87,59 @@ export function OutlineTabContent({
                   {headerGroup.headers.map((header) => {
                     return (
                       <TableHead key={header.id} colSpan={header.colSpan}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                        {
+                          header.isPlaceholder
+                            ? null
+                            : header.column.getCanSort()
+                              ? (
+                                  <div
+                                    role="button"
+                                    className={cn(
+                                      header.column.getCanSort()
+                                      && 'flex h-full cursor-pointer select-none items-center gap-2',
+                                    )}
+                                    onClick={header.column.getToggleSortingHandler()}
+                                    onKeyDown={(e) => {
+                                      // Enhanced keyboard handling for sorting
+                                      if (
+                                        header.column.getCanSort()
+                                        && (e.key === 'Enter' || e.key === ' ')
+                                      ) {
+                                        e.preventDefault();
+                                        header.column.getToggleSortingHandler()?.(e);
+                                      }
+                                    }}
+                                    tabIndex={header.column.getCanSort() ? 0 : undefined}
+                                  >
+                                    {flexRender(
+                                      header.column.columnDef.header,
+                                      header.getContext(),
+                                    )}
+                                    {{
+                                      asc: (
+                                        <Icons.chevronUp
+                                          className="shrink-0 opacity-60"
+                                          size={16}
+                                          aria-hidden="true"
+                                        />
+                                      ),
+                                      desc: (
+                                        <Icons.chevronDown
+                                          className="shrink-0 opacity-60"
+                                          size={16}
+                                          aria-hidden="true"
+                                        />
+                                      ),
+                                    }[header.column.getIsSorted() as string] ?? null}
+                                  </div>
+                                )
+                              : (
+                                  flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext(),
+                                  )
+                                )
+                        }
                       </TableHead>
                     );
                   })}

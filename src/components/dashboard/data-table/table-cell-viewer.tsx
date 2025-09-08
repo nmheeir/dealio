@@ -4,8 +4,9 @@ import type { ProductVariant } from '@/api/schemas/product/product-variant.schem
 import type { ChartConfig } from '@/components/ui/chart';
 import { IconTrendingUp } from '@tabler/icons-react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
-import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
+import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
@@ -40,13 +41,13 @@ export function TableCellViewer({ item }: { item: ProductVariant }) {
   return (
     <Drawer direction={isMobile ? 'bottom' : 'right'}>
       <DrawerTrigger asChild>
-        <Button
-          variant="link"
-          className=" justify-start  px-0 text-left text-foreground"
-        >
-          {item.variant_name}
-        </Button>
-
+        <div className="flex items-center gap-2 space-x-0.5">
+          <Avatar className="size-8 rounded-sm">
+            <AvatarImage src={item.images[0]?.product_url} alt={item.variant_name ?? ''} />
+            <AvatarFallback className="size-8 rounded-sm">{item.variant_name?.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <span className="text-sm font-medium hover:underline">{item.variant_name}</span>
+        </div>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
