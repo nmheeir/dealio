@@ -5,6 +5,6 @@ export const stockSchema = z.object({
   id: z.string(),
   quantity: z.number().int().nonnegative(),
   reserved: z.number().int().nonnegative(),
-}).extend(baseTimeStampSchema);
+}).extend(baseTimeStampSchema.shape);
 
 export type Stock = z.infer<typeof stockSchema>;

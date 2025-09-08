@@ -16,13 +16,14 @@ export const productVariantSchema = z.object({
   slug: z.string(),
   sku: z.string(),
   price: z.string(),
+  cost_price: z.string().optional(),
   discount: z.string(),
   color: z.string(),
   other_attributes: z.record(z.string(), z.string()),
   images: z.array(productImageSchema),
   product: productSchema,
-  stock: stockSchema,
-}).extend(baseTimeStampSchema);
+  stock: stockSchema.optional(),
+}).extend(baseTimeStampSchema.shape);
 
 export type ProductVariant = z.infer<typeof productVariantSchema>;
 export type OtherAttributes = z.infer<typeof otherAttributesSchema>;

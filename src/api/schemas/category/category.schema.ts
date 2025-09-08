@@ -9,7 +9,7 @@ export const childrenSchema = z.object({
   slug: z.string(),
   seo_title: z.string(),
   seo_description: z.string(),
-}).extend(baseTimeStampSchema);
+}).extend(baseTimeStampSchema.shape);
 
 export type Children = z.infer<typeof childrenSchema>;
 
@@ -21,7 +21,7 @@ export const categorySchema = z.object({
   slug: z.string(),
   seo_title: z.string(),
   seo_description: z.string(),
-  children: z.array(childrenSchema),
-}).extend(baseTimeStampSchema);
+  children: z.array(childrenSchema).optional(),
+}).extend(baseTimeStampSchema.shape);
 
 export type Category = z.infer<typeof categorySchema>;

@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { brandSchema } from '../brand/brand.schema';
+import { categorySchema } from '../category/category.schema';
 import { baseTimeStampSchema } from '../common/base-timestamp.schema';
 
 export const productSchema = z.object({
@@ -10,8 +12,10 @@ export const productSchema = z.object({
   slug: z.string(),
   seo_title: z.string(),
   seo_description: z.string(),
-  category_id: z.string(),
-  brand_id: z.string(),
-}).extend(baseTimeStampSchema);
+  category_id: z.string().optional(),
+  brand_id: z.string().optional(),
+  category: categorySchema,
+  brand: brandSchema,
+}).extend(baseTimeStampSchema.shape);
 
 export type Product = z.infer<typeof productSchema>;

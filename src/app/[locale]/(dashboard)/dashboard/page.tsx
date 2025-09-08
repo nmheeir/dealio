@@ -1,5 +1,5 @@
-import { DataTable } from '@/components/dashboard/table/data-table';
-import data from './data.json';
+import { DataTable } from '@/components/dashboard/data-table/data-table';
+import { data } from './data';
 
 export default function DashboardPage() {
   return (

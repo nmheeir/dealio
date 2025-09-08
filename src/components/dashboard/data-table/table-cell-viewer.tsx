@@ -1,13 +1,12 @@
 'use client';
 
-import type z from 'zod';
-import type { schema } from './data-table';
+import type { ProductVariant } from '@/api/schemas/product/product-variant.schema';
 import type { ChartConfig } from '@/components/ui/chart';
 import { IconTrendingUp } from '@tabler/icons-react';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 import { Button } from '@/components/ui/button';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -35,7 +34,7 @@ const chartData = [
   { month: 'June', desktop: 214, mobile: 140 },
 ];
 
-export function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+export function TableCellViewer({ item }: { item: ProductVariant }) {
   const isMobile = useIsMobile();
 
   return (
@@ -43,15 +42,15 @@ export function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
       <DrawerTrigger asChild>
         <Button
           variant="link"
-          className="min-w-[320px] justify-start bg-red-200 px-0 text-left text-foreground"
+          className=" justify-start  px-0 text-left text-foreground"
         >
-          {item.header}
+          {item.variant_name}
         </Button>
 
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.header}</DrawerTitle>
+          <DrawerTitle>{item.variant_name}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
