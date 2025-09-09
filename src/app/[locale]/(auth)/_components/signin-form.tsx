@@ -47,14 +47,14 @@ export function SigninForm({
 
     if (result.statusCode !== 200) {
       toast.error(result.message || 'Đăng nhập thất bại');
-
       return;
     }
 
     setIsRedirecting(true);
     const redirectTo = searchParams.get('from') || '/';
     setTimeout(() => {
-      router.replace(redirectTo);
+      router.push(redirectTo);
+      window.location.href = redirectTo;
     }, 500);
   }
 
