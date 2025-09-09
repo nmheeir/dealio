@@ -1,16 +1,21 @@
+/* eslint-disable no-console */
 'use client';
 import type { Address } from '@/api/schemas/profile/adddress.schema';
+import { useQueryClient } from '@tanstack/react-query';
 import { MoreVerticalIcon } from 'lucide-react';
 import React from 'react';
+import { useSetDefaultAddress } from '@/api/address/use-set-default';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-
 import { Card, CardContent } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AddAddressDialog } from './add_address_dialog';
 
 export default function AddressList({ data }: { data: Address[] }) {
   const [addresses, setAddress] = React.useState(() => data);
+  const { mutateAsync: setDefault } = useSetDefaultAddress();
+  const queryClient = useQueryClient();
 
   React.useEffect(() => {
     // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
@@ -46,7 +51,20 @@ export default function AddressList({ data }: { data: Address[] }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   {!addr.is_default && (
-                    <DropdownMenuItem>Đặt làm mặc định</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={async () => {
+                        console.log('🚀 Gửi request đặt địa chỉ mặc định:', addr.id);
+                        try {
+                          await setDefault({ addressId: addr.id });
+                          console.log('✅ Đặt mặc định thành công');
+                          await queryClient.invalidateQueries({ queryKey: ['addresses'] });
+                        } catch (err) {
+                          console.error('❌ Lỗi khi đặt mặc định:', err);
+                        }
+                      }}
+                    >
+                      Đặt làm mặc định
+                    </DropdownMenuItem>
                   )}
                   <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
                   <DropdownMenuItem className="text-red-600">
