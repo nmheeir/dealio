@@ -3,6 +3,7 @@ import { GalleryVerticalEnd } from 'lucide-react';
 import { Geist, Geist_Mono } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
   subsets: ['latin'],
@@ -37,6 +38,7 @@ export default function RootLayout({
             <div className="flex flex-1 items-center justify-center">
               <div className="w-full max-w-xs">
                 {children}
+                <Toaster richColors />
               </div>
             </div>
           </div>

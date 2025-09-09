@@ -15,9 +15,10 @@ import {
   SidebarMenuItem,
 
 } from '@/components/ui/sidebar';
-import { NavMain } from './nav/nav-main';
 
+import { NavMain } from './nav/nav-main';
 import { NavSecondary } from './nav/nav-secondary';
+import { NavUser } from './nav/nav-user';
 import { getSidebarItems } from './nav/side-bar-data';
 
 export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -36,7 +37,7 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          {/* <NavUser user={data.user} /> */}
+          <NavUser />
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>

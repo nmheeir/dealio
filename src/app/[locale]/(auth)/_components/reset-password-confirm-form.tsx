@@ -1,57 +1,80 @@
 'use client';
 
-import type z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircleIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import z from 'zod';
+import { useVerifyResetPassword } from '@/api/auth/use-verify-reset-password';
 import { PasswordInput } from '@/components/password-input';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import { logger } from '@/libs/Logger';
-import { resetPasswordSchema } from '@/libs/validations/auth';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 
-type Inputs = z.infer<typeof resetPasswordSchema>;
+import { logger } from '@/libs/Logger';
+
+const resetPasswordConfirmSchema = z.object({
+  newPassword: z
+    .string()
+    .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
+    .regex(/\d/, 'Mật khẩu phải chứa số')
+    .regex(/[a-z]/i, 'Mật khẩu phải chứa chữ'),
+});
+
+type Inputs = z.infer<typeof resetPasswordConfirmSchema>;
 
 export default function ResetPasswordConfirmForm() {
   const router = useRouter();
-  const [loading, setLoading] = React.useState(false);
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email') ?? '';
+  const code = searchParams.get('code') ?? '';
+  const { mutateAsync } = useVerifyResetPassword();
 
   const form = useForm<Inputs>({
-    resolver: zodResolver(resetPasswordSchema),
+    resolver: zodResolver(resetPasswordConfirmSchema),
     defaultValues: {
-      password: '',
-      confirmPassword: '',
-      code: '',
+      newPassword: '',
     },
   });
 
-  // TODO: change code
   async function onSubmit(data: Inputs) {
-    setLoading(true);
+    try {
+      logger.info('📦 Payload gửi đi:', { email, code, ...data });
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await mutateAsync({
+        email,
+        code,
+        newPassword: data.newPassword,
+      });
 
-    if (data.code === '123456') {
-      router.push(`${window.location.origin}`);
-      toast.message('Password reset successfully');
-    } else {
-      logger.warn('Wrong code !');
+      logger.info('✅ Reset thành công:', response);
+      toast.success('Đặt lại mật khẩu thành công, vui lòng đăng nhập lại');
+
+      router.push('/signin');
+    } catch (err: any) {
+      logger.error('❌ Reset thất bại:', err);
+      toast.error(err.response?.data?.message || 'Có lỗi xảy ra, vui lòng thử lại');
     }
   }
 
   return (
     <Form {...form}>
       <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Mật khẩu mới */}
         <FormField
           control={form.control}
-          name="password"
+          name="newPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Mật khẩu mới</FormLabel>
               <FormControl>
                 <PasswordInput placeholder="*********" {...field} />
               </FormControl>
@@ -59,62 +82,16 @@ export default function ResetPasswordConfirmForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
-              <FormControl>
-                <PasswordInput placeholder="*********" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>One-Time Password</FormLabel>
-              <FormControl>
-                <InputOTP maxLength={6} {...field}>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </FormControl>
-              <FormDescription>
-                Please enter the 6-digit code sent to your email.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={() => router.back()}
-          >
-            Go back
-          </Button>
-          <Button className="w-full" disabled={loading}>
-            {loading && (
+          <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
+            {form.formState.isSubmitting && (
               <LoaderCircleIcon
                 className="mr-2 size-4 animate-spin"
                 aria-hidden="true"
               />
             )}
-            Reset password
-            <span className="sr-only">Reset password</span>
+            Xác nhận
           </Button>
         </div>
       </form>

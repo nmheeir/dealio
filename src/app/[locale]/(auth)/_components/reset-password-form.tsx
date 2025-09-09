@@ -1,12 +1,13 @@
+/* eslint-disable no-console */
 'use client';
 
 import type { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircleIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { useForgotPasswordRequest } from '@/api/auth/use-forgot-password-request';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -16,8 +17,8 @@ import { checkEmailSchema } from '@/libs/validations/auth';
 type Inputs = z.infer<typeof checkEmailSchema>;
 
 export function ResetPasswordForm() {
-  const router = useRouter();
   const [loading, setLoading] = React.useState(false);
+  const { mutateAsync } = useForgotPasswordRequest();
 
   const form = useForm<Inputs>({
     resolver: zodResolver(checkEmailSchema),
@@ -30,18 +31,31 @@ export function ResetPasswordForm() {
     setLoading(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      console.info('📨 Sending forgot password request:', data.email);
 
-      logger.info(data.email);
-      const canNavigateToConfirm = true;
-      if (canNavigateToConfirm) {
-        router.push('/signin/reset-password/confirm');
-        toast.message('Check your email', {
-          description: 'We sent you a 6-digit verification code.',
+      const response = await mutateAsync(data);
+
+      if (response?.statusCode === 201) {
+        toast.success('Đã gửi email xác nhận thành công', {
+          description: 'Vui lòng kiểm tra hộp thư để lấy mã xác nhận 6 chữ số.',
         });
+        // router.push('/signin/reset-password/confirm');
+      } else {
+        toast.error('Có lỗi xảy ra, vui lòng thử lại');
       }
-    } catch (err) {
-      logger.warn(err as string);
+    } catch (err: any) {
+      logger.error('❌ Forgot password error:', err);
+
+      // Nếu API trả về lỗi có message
+      const message
+      = err?.response?.data?.message || 'Email không hợp lệ hoặc chưa được đăng ký';
+
+      form.setError('email', {
+        type: 'server',
+        message,
+      });
+    } finally {
+      setLoading(false);
     }
   }
 

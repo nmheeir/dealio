@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Shell } from '@/components/shell';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ResetPasswordForm } from '../../../_components/reset-password-form';
 
@@ -10,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ResetPasswordPage() {
   return (
-    <Shell className="max-w-lg">
+    <div className="max-w-lg">
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Reset password</CardTitle>
@@ -22,6 +21,6 @@ export default function ResetPasswordPage() {
           <ResetPasswordForm />
         </CardContent>
       </Card>
-    </Shell>
+    </div>
   );
 }
