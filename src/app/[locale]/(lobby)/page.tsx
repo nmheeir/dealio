@@ -1,15 +1,22 @@
 import React from 'react';
-import { LobbySkeleton } from './_components/lobby-skeleton';
 
 export default function LobbyPage() {
   return (
-    <React.Suspense fallback={<LobbySkeleton />}>
-      {/* <Lobby
-        productsPromise={productsPromise}
-        categoriesPromise={categoriesPromise}
-        storesPromise={storesPromise}
-      /> */}
-      Lobby
-    </React.Suspense>
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold">Lobby</h1>
+
+      {/* Chỉ bọc từng phần cần async */}
+      {/* <React.Suspense fallback={<LobbySkeleton />}>
+        <Products />
+      </React.Suspense>
+
+      <React.Suspense fallback={<CategorySkeleton />}>
+        <Categories />
+      </React.Suspense>
+
+      <React.Suspense fallback={<StoreSkeleton />}>
+        <Stores />
+      </React.Suspense> */}
+    </div>
   );
 }

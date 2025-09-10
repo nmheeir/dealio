@@ -7,10 +7,13 @@ export const LoginCredentialsSchema = z.object({
 });
 
 export const SignUpCredentialsSchema = z.object({
-  email: z.email('Email not valid'),
-  password: z.string().min(6, 'Must 6 value or more'),
-},
-);
+  email: z.string().email('Email không hợp lệ'),
+  password: z
+    .string()
+    .min(8, 'Mật khẩu phải có ít nhất 8 ký tự')
+    .regex(/[A-Z]/i, 'Mật khẩu phải chứa ít nhất một chữ cái')
+    .regex(/\d/, 'Mật khẩu phải chứa ít nhất một chữ số'),
+});
 
 export const UserSchema = z.object({
   user_id: z.string(),

@@ -26,6 +26,17 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
       <body className="font-sans">
         <div className="grid h-svh lg:grid-cols-2">
+          {/* Ảnh sang trái */}
+          <div className="relative hidden bg-muted lg:block">
+            <Image
+              src="/images/auth-layout.webp"
+              alt="Background"
+              fill
+              className="object-cover dark:brightness-[0.2] dark:grayscale"
+            />
+          </div>
+
+          {/* Form sang phải */}
           <div className="flex flex-col gap-4 p-6 md:p-10">
             <div className="flex justify-center gap-2 md:justify-start">
               <Link href="/" className="flex items-center gap-2 font-medium">
@@ -42,16 +53,9 @@ export default function RootLayout({
               </div>
             </div>
           </div>
-          <div className="relative hidden bg-muted lg:block">
-            <Image
-              src="/images/auth-layout.webp"
-              alt="Background"
-              fill
-              className="object-cover dark:brightness-[0.2] dark:grayscale"
-            />
-          </div>
         </div>
       </body>
+
     </html>
   );
 }
