@@ -29,7 +29,9 @@ export function TableCellViewer({ item }: { item: ProductVariant }) {
             <AvatarImage src={item.images[0]?.product_url} alt={item.variant_name ?? ''} />
             <AvatarFallback className="size-8 rounded-sm">{item.variant_name?.charAt(0)}</AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium hover:underline">{item.variant_name}</span>
+          <span className="text-sm font-medium hover:underline">
+            {item.variant_name}
+          </span>
         </div>
       </DrawerTrigger>
       <DrawerContent>

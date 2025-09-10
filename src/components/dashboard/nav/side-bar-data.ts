@@ -41,14 +41,12 @@ const baseMenus: Record<string, NavItem[]> = {
 
   manager: [
     {
-      title: 'Quản lý danh mục & thương hiệu',
+      title: 'Danh mục & thương hiệu',
       url: '/manager/categories-brands',
       icon: Tag,
       items: [
-        { title: 'Danh sách danh mục', url: '/categories' },
-        { title: 'Danh sách thương hiệu', url: '/brands' },
-        { title: 'Thêm danh mục', url: '/categories/create' },
-        { title: 'Thêm thương hiệu', url: '/brands/create' },
+        { title: 'Danh mục', url: '/dashboard/categories' },
+        { title: 'Thương hiệu', url: '/dashboard/brands' },
       ],
     },
     {

@@ -1,9 +1,8 @@
 'use client';
 
 import { useProducts } from '@/api/products/use-products';
-import { columns } from './data-table/columns';
+import { DataTable } from './data-table/data-table';
 import { DataTableLoading } from './data-table/data-table-loading';
-import { DataTable } from './table/data-table';
 
 export function TableSection() {
   const { data, isLoading, error } = useProducts();
@@ -24,12 +23,6 @@ export function TableSection() {
   const products = data?.data.data ? data.data.data : [];
 
   return (
-    // <DataTable data={products} />
-    <>
-      <DataTable
-        data={products}
-        columns={columns}
-      />
-    </>
+    <DataTable data={products} />
   );
 }

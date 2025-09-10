@@ -41,7 +41,7 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={getSidebarItems('customer')} />
+        <NavMain items={getSidebarItems('manager')} />
         <NavSecondary className="mt-auto" />
       </SidebarContent>
     </Sidebar>
