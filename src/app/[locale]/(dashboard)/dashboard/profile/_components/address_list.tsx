@@ -3,7 +3,7 @@
 import type { Address } from '@/api/schemas/profile/adddress.schema';
 import { useQueryClient } from '@tanstack/react-query';
 import { MoreVerticalIcon } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSetDefaultAddress } from '@/api/address/use-set-default';
 
 import { Badge } from '@/components/ui/badge';
@@ -11,11 +11,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AddAddressDialog } from './add_address_dialog';
+import { EditAddressDialog } from './update-address-dialog';
 
 export default function AddressList({ data }: { data: Address[] }) {
   const [addresses, setAddress] = React.useState(() => data);
   const { mutateAsync: setDefault } = useSetDefaultAddress();
   const queryClient = useQueryClient();
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
   React.useEffect(() => {
     // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
@@ -66,7 +70,14 @@ export default function AddressList({ data }: { data: Address[] }) {
                       Đặt làm mặc định
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setSelectedAddress(addr);
+                      setEditOpen(true);
+                    }}
+                  >
+                    Chỉnh sửa
+                  </DropdownMenuItem>
                   <DropdownMenuItem className="text-red-600">
                     Xóa
                   </DropdownMenuItem>
@@ -80,6 +91,14 @@ export default function AddressList({ data }: { data: Address[] }) {
       <div className="flex justify-end">
         <AddAddressDialog />
       </div>
+
+      {selectedAddress && (
+        <EditAddressDialog
+          address={selectedAddress}
+          open={editOpen}
+          onOpenChangeAction={setEditOpen}
+        />
+      )}
     </>
   );
 }
