@@ -1,5 +1,6 @@
 import type { Product } from '@/api/schemas/product/product.schema';
 import {
+  Building2,
   Calendar,
   Clock,
   Edit,
@@ -7,17 +8,29 @@ import {
   FileText,
   Hash,
   Search,
+  Tag,
 } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
+import { useBrands } from '@/api/brand/use-brand';
+import { useCategories } from '@/api/category/use-categories';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { ProductInfoEdit } from './product-info-edit';
 
 type ProductInfoCardProps = {
   product: Product;
 };
 
 export default function ProductInfoCard({ product }: ProductInfoCardProps) {
+  const [openEdit, setOpenEdit] = useState(false);
+  const { data: brandsResponse } = useBrands();
+  const { data: categoriesResponse } = useCategories();
+  const brands = brandsResponse?.data.data ?? [];
+  const categories = categoriesResponse?.data.data ?? [];
+  const brand = brands.find(b => b.id === product.brand_id);
+  const category = categories.find(c => c.id === product.category_id);
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('vi-VN', {
       day: '2-digit',
@@ -61,7 +74,13 @@ export default function ProductInfoCard({ product }: ProductInfoCardProps) {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2">
-              <Button variant="ghost" className="p-2 transition-colors hover:text-gray-600">
+              <Button
+                variant="ghost"
+                className="p-2 transition-colors"
+                onClick={() => {
+                  setOpenEdit(true);
+                }}
+              >
                 <Edit className="h-4 w-4" />
               </Button>
               {/* <Button variant="ghost" className="p-2  transition-colors hover:text-gray-600">
@@ -88,7 +107,7 @@ export default function ProductInfoCard({ product }: ProductInfoCardProps) {
               </p>
             </div>
 
-            {/* Category
+            {/* Category */}
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-gray-500">
                 <Tag className="h-4 w-4" />
@@ -96,33 +115,29 @@ export default function ProductInfoCard({ product }: ProductInfoCardProps) {
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="bg-blue-50 text-blue-700">
-                  {product.category.name}
+                  {category?.name ?? 'No category'}
                 </Badge>
                 <span className="text-sm text-gray-500">
-                  (
-                  {product.category.slug}
-                  )
+                  {category?.slug ?? ''}
                 </span>
               </div>
             </div>
 
             {/* Brand */}
-            {/* <div className="space-y-2">
+            <div className="space-y-2">
               <div className="flex items-center gap-2 text-gray-500">
                 <Building2 className="h-4 w-4" />
                 <span className="text-sm font-medium">Brand:</span>
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="bg-purple-50 text-purple-700">
-                  {product.brand.name}
+                  {brand?.name}
                 </Badge>
                 <span className="text-sm text-gray-500">
-                  (
-                  {product.brand.slug}
-                  )
+                  {brand?.slug}
                 </span>
               </div>
-            </div> */}
+            </div>
           </div>
 
           {/* Row 2: Description */}
@@ -244,6 +259,15 @@ export default function ProductInfoCard({ product }: ProductInfoCardProps) {
           )}
         </CardContent>
       </Card>
+      {openEdit && (
+        <ProductInfoEdit
+          open={openEdit}
+          onOpenChangeAction={setOpenEdit}
+          brands={brandsResponse?.data.data ?? []}
+          categories={categoriesResponse?.data.data ?? []}
+          product={product}
+        />
+      )}
     </div>
   );
 }
