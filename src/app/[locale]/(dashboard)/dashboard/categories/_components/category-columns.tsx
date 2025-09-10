@@ -1,9 +1,10 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Category } from '@/api/schemas/category/category.schema';
 import { DragHandle } from '@/components/dashboard/data-table/drag-handle';
-import { Icons } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { CategoryRowActions } from './category-row-action';
+import { CategoryViewerRow } from './category-viewer-row';
 
 export const categoryColumn: ColumnDef<Category>[] = [
   {
@@ -43,7 +44,7 @@ export const categoryColumn: ColumnDef<Category>[] = [
     accessorKey: 'header',
     header: () => <div className="w-full  text-left">Category Name</div>,
     cell: ({ row }) => {
-      return <div className="">{row.original.name}</div>;
+      return <CategoryViewerRow item={row.original} />;
     },
     enableHiding: false,
   },
@@ -69,9 +70,8 @@ export const categoryColumn: ColumnDef<Category>[] = [
   },
   {
     id: 'actions',
-    cell: () => (
-      // <RowActions item={row.original} />
-      <Icons.ellipsisVertical className="size-4" />
+    cell: ({ row }) => (
+      <CategoryRowActions item={row.original} />
     ),
   },
 ];

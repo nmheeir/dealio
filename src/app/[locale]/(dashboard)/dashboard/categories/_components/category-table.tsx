@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 'use client';
 
 import type { Category } from '@/api/schemas/category/category.schema';
@@ -36,7 +37,7 @@ export function CategoryTable() {
 }
 
 // Flatten categories recursively
-function flattenCategories(categories: Category[]): Category[] {
+export function flattenCategories(categories: Category[]): Category[] {
   const result: Category[] = [];
 
   function traverse(categoryList: Category[]) {
