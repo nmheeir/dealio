@@ -1,12 +1,12 @@
 import type { ColumnDef } from '@tanstack/react-table';
-import type { Category } from '@/api/schemas/category/category.schema';
+import type { Product } from '@/api/schemas/product/product.schema';
 import { DragHandle } from '@/components/dashboard/table/drag-handle';
+import { Icons } from '@/components/icons';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { CategoryRowActions } from './category-row-action';
-import { CategoryViewerRow } from './category-viewer-row';
+import { ProductViewerRow } from './product-viewer-row';
 
-export const categoryColumn: ColumnDef<Category>[] = [
+export const productColumns: ColumnDef<Product>[] = [
   {
     id: 'drag',
     header: () => null,
@@ -42,24 +42,37 @@ export const categoryColumn: ColumnDef<Category>[] = [
   },
   {
     accessorKey: 'header',
-    header: () => <div className="w-full  text-left">Category Name</div>,
-    cell: ({ row }) => {
-      return <CategoryViewerRow item={row.original} />;
-    },
+    header: () => <div className="w-full  text-left">Product</div>,
+    cell: ({ row }) => (
+      <ProductViewerRow item={row.original} />
+    ),
     enableHiding: false,
   },
   {
-    accessorKey: 'seo_description',
-    header: () => <div className="w-full  text-center">Seo Description</div>,
+    accessorKey: 'type',
+    header: () => <div className="w-full text-center">Type</div>,
     cell: ({ row }) => (
       <div className="flex justify-center ">
-        {row.original.seo_description}
+        <Badge variant="outline" className="px-1.5 text-muted-foreground">
+          {row.original.product_type}
+        </Badge>
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'status',
+    header: () => <div className="w-full  text-center">Status</div>,
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <Badge variant="outline" className="px-1.5 text-muted-foreground">
+          {row.original.status}
+        </Badge>
       </div>
     ),
   },
   {
     accessorKey: 'slug',
-    header: () => <div className="w-full  text-center">Slug</div>,
+    header: () => <div className="w-full text-center">Slug</div>,
     cell: ({ row }) => (
       <div className="flex justify-center ">
         <Badge variant="outline" className="px-1.5 text-muted-foreground">
@@ -67,11 +80,13 @@ export const categoryColumn: ColumnDef<Category>[] = [
         </Badge>
       </div>
     ),
+    enableHiding: false,
   },
   {
     id: 'actions',
-    cell: ({ row }) => (
-      <CategoryRowActions item={row.original} />
+    cell: () => (
+      // <RowActions item={row.original} />
+      <Icons.ellipsisVertical className="size-4" />
     ),
   },
 ];

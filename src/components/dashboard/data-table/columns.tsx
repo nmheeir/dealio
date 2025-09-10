@@ -5,7 +5,7 @@ import type { ProductVariant } from '@/api/schemas/product/product-variant.schem
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { DragHandle } from './drag-handle';
+import { DragHandle } from '../table/drag-handle';
 import { RowActions } from './row-actions';
 import { TableCellViewer } from './table-cell-viewer';
 

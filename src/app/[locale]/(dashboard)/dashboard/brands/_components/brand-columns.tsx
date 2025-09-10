@@ -1,6 +1,6 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Brand } from '@/api/schemas/brand/brand.schema';
-import { DragHandle } from '@/components/dashboard/data-table/drag-handle';
+import { DragHandle } from '@/components/dashboard/table/drag-handle';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { BrandRowActions } from './brand-row-action';

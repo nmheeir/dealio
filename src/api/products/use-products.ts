@@ -15,7 +15,7 @@ type Variables = {
 };
 
 export const useProducts = createQuery<Response, Variables, AxiosError>({
-  queryKey: ['products'],
+  queryKey: ['products/search'],
   fetcher: (variables) => {
     const params = new URLSearchParams();
 
