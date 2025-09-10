@@ -55,7 +55,7 @@ const baseMenus: Record<string, NavItem[]> = {
       icon: Package,
       items: [
         { title: 'Danh sách sản phẩm', url: '/dashboard/products' },
-        { title: 'Thêm sản phẩm mới', url: '/products/create' },
+        { title: 'Thêm sản phẩm mới', url: '/dashboard/products/create' },
         { title: 'Quản lý tồn kho', url: '/products/inventory' },
         { title: 'Nhập key digital', url: '/products/digital-keys' },
       ],
