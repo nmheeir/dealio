@@ -24,3 +24,10 @@ export type PaginationData<T> = {
   page: number;
   pageCount: number;
 };
+
+export type PaginationRequest = {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  order?: 'ASC' | 'DESC';
+};

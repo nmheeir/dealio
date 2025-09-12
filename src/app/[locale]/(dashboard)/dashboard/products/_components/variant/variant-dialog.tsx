@@ -30,6 +30,8 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/libs/utils';
+import { DigitalKeyTable } from '../digital-key/digital-key-table';
 
 type ProductVariantDialogProps = {
   variant: ProductVariant;
@@ -43,6 +45,8 @@ export function ProductVariantDialog({ variant, trigger }: ProductVariantDialogP
       currency: 'VND',
     }).format(Number.parseFloat(amount));
   };
+
+  const isDigitalProduct = variant.product.product_type === 'CARD_DIGITAL_KEY';
 
   const formatDate = (dateString: string) => {
     return new Intl.DateTimeFormat('vi-VN', {
@@ -86,7 +90,7 @@ export function ProductVariantDialog({ variant, trigger }: ProductVariantDialogP
           </div>
         )}
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] max-w-4xl overflow-hidden">
+      <DialogContent className="flex h-[90vh] flex-col lg:min-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-xl">
             <div className="flex-shrink-0">
@@ -124,13 +128,19 @@ export function ProductVariantDialog({ variant, trigger }: ProductVariantDialogP
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 pr-6">
+        <ScrollArea className="flex-1 overflow-y-auto pr-6">
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="mb-6 grid w-full grid-cols-4">
+            <TabsList className={cn(
+              'mb-6 grid w-full',
+              isDigitalProduct ? 'grid-cols-5' : 'grid-cols-4',
+            )}
+            >
               <TabsTrigger value="overview">Tổng quan</TabsTrigger>
               <TabsTrigger value="product">Sản phẩm</TabsTrigger>
               <TabsTrigger value="images">Hình ảnh</TabsTrigger>
               <TabsTrigger value="attributes">Thuộc tính</TabsTrigger>
+              {isDigitalProduct
+                && <TabsTrigger value="digital-key">Digital Keys</TabsTrigger>}
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
@@ -331,15 +341,15 @@ export function ProductVariantDialog({ variant, trigger }: ProductVariantDialogP
                           <Image
                             src={image.product_url}
                             alt={`Product ${index + 1}`}
-                            width={128}
-                            height={128}
+                            width={64}
+                            height={64}
                             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                           />
                         </div>
                         {image.is_main && (
                           <Badge className="absolute -top-2 -right-2 flex items-center gap-1">
                             <Star className="h-3 w-3" />
-                            Chính
+                            Main
                           </Badge>
                         )}
                         <div className="absolute right-2 bottom-2 left-2 rounded bg-black/80 px-2 py-1 opacity-0 transition-opacity group-hover:opacity-100">
@@ -434,6 +444,13 @@ export function ProductVariantDialog({ variant, trigger }: ProductVariantDialogP
                 </Card>
               )}
             </TabsContent>
+
+            {isDigitalProduct
+              && (
+                <TabsContent value="digital-key" className="space-y-6">
+                  <DigitalKeyTable variantId={variant.id} />
+                </TabsContent>
+              )}
           </Tabs>
         </ScrollArea>
       </DialogContent>
