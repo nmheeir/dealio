@@ -2,7 +2,7 @@ import React from 'react';
 import { useProductDetail } from '@/api/products/use-detail-product';
 import { Skeleton } from '@/components/ui/skeleton';
 import ProductInfoCard from './product-info-card';
-import { VariantList } from './variant-list';
+import { VariantList } from './variant/variant-list';
 
 export default function ProductDetailSection({ slug }: { slug: string }) {
   const { data, isLoading, error } = useProductDetail({ variables: {

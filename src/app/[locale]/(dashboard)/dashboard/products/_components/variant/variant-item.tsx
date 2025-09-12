@@ -1,9 +1,8 @@
 import type { ProductVariant } from '@/api/schemas/product/product-variant.schema';
-import { EyeIcon, SquarePen } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { VariantActionButton } from './variant-action-button';
 
 type VariantItemProps = {
   variant: ProductVariant;
@@ -39,12 +38,7 @@ export function VariantItem({ variant }: VariantItemProps) {
 
         {/* Nút actions */}
         <div className="flex gap-2">
-          <Button size="icon" variant="ghost">
-            <SquarePen className="size-4" />
-          </Button>
-          <Button size="icon" variant="ghost">
-            <EyeIcon className="size-4" />
-          </Button>
+          <VariantActionButton item={variant} />
         </div>
       </CardHeader>
 
