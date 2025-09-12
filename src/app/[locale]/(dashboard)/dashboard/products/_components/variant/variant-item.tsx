@@ -10,6 +10,8 @@ type VariantItemProps = {
 
 // 📦 Responsive layout card giống hình
 export function VariantItem({ variant }: VariantItemProps) {
+  console.log('Variant', variant);
+
   return (
     <Card className="w-full space-y-0.5">
       {/* Header */}
@@ -32,7 +34,11 @@ export function VariantItem({ variant }: VariantItemProps) {
             {/* Stock status */}
             {variant.stock?.quantity === 0
               ? <Badge variant="destructive">Out of stock</Badge>
-              : <Badge variant="destructive">{variant.stock?.quantity}</Badge>}
+              : (
+                  <Badge variant="destructive">
+                    {variant.stock?.quantity}
+                  </Badge>
+                )}
           </div>
         </div>
 
