@@ -1,6 +1,8 @@
+import type { ProductImage } from '@/api/schemas/product/product-image.schema';
 import type { ProductVariant } from '@/api/schemas/product/product-variant.schema';
 import {
   Building2,
+  CheckCircle,
   DollarSign,
   FileText,
   Hash,
@@ -16,13 +18,17 @@ import {
   Warehouse,
 } from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
+import { toast } from 'sonner';
+import { useUpdateMainImage } from '@/api/product-variant/use-update-main-image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -334,39 +340,7 @@ export function ProductVariantDialog({ variant, trigger }: ProductVariantDialogP
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {variant.images.map((image, index) => (
-                      <div key={image.id} className="group relative">
-                        <div className="aspect-square overflow-hidden rounded-lg border-2 border-border">
-                          <Image
-                            src={image.product_url}
-                            alt={`Product ${index + 1}`}
-                            width={64}
-                            height={64}
-                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          />
-                        </div>
-                        {image.is_main && (
-                          <Badge className="absolute -top-2 -right-2 flex items-center gap-1">
-                            <Star className="h-3 w-3" />
-                            Main
-                          </Badge>
-                        )}
-                        <div className="absolute right-2 bottom-2 left-2 rounded bg-black/80 px-2 py-1 opacity-0 transition-opacity group-hover:opacity-100">
-                          <p className="truncate text-xs text-white">
-                            ID:
-                            {image.id}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {variant.images.length === 0 && (
-                    <div className="py-12 text-center text-muted-foreground">
-                      <ImageIcon className="mx-auto mb-4 h-12 w-12 opacity-50" />
-                      <p>Chưa có hình ảnh nào</p>
-                    </div>
-                  )}
+                  <ImagesTab images={variant.images} />
                 </CardContent>
               </Card>
             </TabsContent>
@@ -455,5 +429,102 @@ export function ProductVariantDialog({ variant, trigger }: ProductVariantDialogP
         </ScrollArea>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ImagesTab({ images, variantId }: { images: ProductImage[]; variantId: string }) {
+  const [selectedImage, setSelectedImage] = useState<ProductImage | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const { mutateAsync: updateMainImage } = useUpdateMainImage();
+
+  const handleConfirm = async () => {
+    if (!selectedImage) {
+      return;
+    }
+    try {
+      await updateMainImage({ id: variantId, file: selectedImage.id });
+      toast.success('Cập nhật ảnh chính thành công!');
+    } catch (err) {
+      console.error(err);
+      toast.error('Có lỗi xảy ra khi cập nhật ảnh chính');
+    } finally {
+      setOpenDialog(false);
+      setSelectedImage(null);
+    }
+  };
+
+  return (
+    <div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {images.map((image, index) => (
+          <div key={image.id} className="group relative">
+            <div className="aspect-square overflow-hidden rounded-lg border-2 border-border">
+              <Image
+                src={image.product_url}
+                alt={`Product ${index + 1}`}
+                width={64}
+                height={64}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+
+            {/* Icon set main */}
+            {!image.is_main
+              && (
+                <Button
+                  onClick={() => {
+                    setSelectedImage(image);
+                    setOpenDialog(true);
+                  }}
+                  className="absolute top-2 right-2 rounded-full bg-white/80 p-1 shadow hover:bg-white"
+                >
+                  <CheckCircle
+                    className={`h-5 w-5 ${
+                      image.is_main ? 'text-yellow-500' : 'text-gray-500'
+                    }`}
+                  />
+                </Button>
+              )}
+
+            {image.is_main && (
+              <Badge className="absolute -top-2 -left-2 flex items-center gap-1">
+                <Star className="h-3 w-3" />
+                Main
+              </Badge>
+            )}
+
+            <div className="absolute right-2 bottom-2 left-2 rounded bg-black/80 px-2 py-1 opacity-0 transition-opacity group-hover:opacity-100">
+              <p className="truncate text-xs text-white">
+                ID:
+                {image.id}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {images.length === 0 && (
+        <div className="py-12 text-center text-muted-foreground">
+          <ImageIcon className="mx-auto mb-4 h-12 w-12 opacity-50" />
+          <p>Chưa có hình ảnh nào</p>
+        </div>
+      )}
+
+      {/* Dialog xác nhận */}
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Đặt làm ảnh chính?</DialogTitle>
+          </DialogHeader>
+          <p>Bạn có chắc muốn đặt ảnh này làm ảnh chính cho sản phẩm?</p>
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setOpenDialog(false)}>
+              Hủy
+            </Button>
+            <Button onClick={handleConfirm}>Xác nhận</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
