@@ -1,4 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
+import type { UserRole } from '@/api/schemas/user/role';
 import { BarChart3, Package, RefreshCw, ShoppingBag, ShoppingCart, Tag, User, Users } from 'lucide-react';
 
 type NavItem = {
@@ -132,17 +133,19 @@ const baseMenus: Record<string, NavItem[]> = {
   ],
 };
 
-export function getSidebarItems(role: 'customer' | 'manager' | 'admin'): NavItem[] {
+export function getSidebarItems(role: UserRole): NavItem[] {
+  console.log('getSidebarItems', role);
+
   const customer = baseMenus.customer ?? [];
   const manager = baseMenus.manager ?? [];
   const adminExtra = baseMenus.adminExtra ?? [];
 
   switch (role) {
-    case 'customer':
+    case 'CUSTOMER':
       return customer;
-    case 'manager':
+    case 'MANAGER':
       return [...customer, ...manager];
-    case 'admin':
+    case 'ADMIN':
       return [...customer, ...manager, ...adminExtra];
     default:
       return [];

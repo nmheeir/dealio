@@ -1,14 +1,8 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import type { DigitalKey } from '@/api/schemas/digital-key/digital-key.schema';
-import { DragHandle } from '@/components/dashboard/table/drag-handle';
 import { Checkbox } from '@/components/ui/checkbox';
 
 export const digitalKeyColumns: ColumnDef<DigitalKey>[] = [
-  {
-    id: 'drag',
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
   {
     id: 'select',
     header: ({ table }) => (

@@ -1,5 +1,5 @@
 import { useGetAllDigitalKey } from '@/api/digital-key/use-all-digital-key';
-import { DataTable } from '@/components/dashboard/table/data-table';
+import { DataTable } from '@/components/dashboard/data-table/data-table';
 import { digitalKeyColumns } from './digital-key-columns';
 
 export function DigitalKeyTable({ variantId }: { variantId: string }) {
