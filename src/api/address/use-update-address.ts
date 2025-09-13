@@ -1,5 +1,5 @@
 import type { AxiosError } from 'axios';
-import type { Address, AddressInput } from '../schemas/profile/adddress.schema';
+import type { Address, AddressInput } from '../schemas/user/adddress.schema';
 
 import { createMutation } from 'react-query-kit';
 import apiClient from '../common/client';

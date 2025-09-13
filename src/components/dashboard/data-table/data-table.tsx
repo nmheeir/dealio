@@ -3,6 +3,7 @@
 import type {
   ColumnDef,
   ColumnFiltersState,
+  FilterFn,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
@@ -48,6 +49,13 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState('');
 
+  const globalFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
+    const value = row.getValue(columnId);
+    const match = String(value ?? '').toLowerCase().includes(String(filterValue).toLowerCase());
+    console.log('Global filter check:', { columnId, value, filterValue, match });
+    return match;
+  };
+
   const table = useReactTable({
     data,
     columns,
@@ -58,7 +66,7 @@ export function DataTable<TData, TValue>({
       columnFilters,
       globalFilter,
     },
-    globalFilterFn: 'includesString',
+    globalFilterFn,
     onGlobalFilterChange: setGlobalFilter,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,

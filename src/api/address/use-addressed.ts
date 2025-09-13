@@ -1,5 +1,5 @@
 import type { AxiosError } from 'axios';
-import type { Address } from '../schemas/profile/adddress.schema';
+import type { Address } from '../schemas/user/adddress.schema';
 
 import type { PaginationResponse } from '../types';
 import { createQuery } from 'react-query-kit';

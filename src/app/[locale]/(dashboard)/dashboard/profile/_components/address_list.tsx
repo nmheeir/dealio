@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 'use client';
-import type { Address } from '@/api/schemas/profile/adddress.schema';
+import type { Address } from '@/api/schemas/user/adddress.schema';
 import { useQueryClient } from '@tanstack/react-query';
 import { MoreVerticalIcon } from 'lucide-react';
 import React, { useState } from 'react';

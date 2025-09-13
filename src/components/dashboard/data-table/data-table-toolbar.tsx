@@ -18,7 +18,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
     <div className="flex items-center justify-between space-x-2">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Search all columns..."
+          placeholder="Search..."
           value={globalFilter as string}
           onChange={e => table.setGlobalFilter(e.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"

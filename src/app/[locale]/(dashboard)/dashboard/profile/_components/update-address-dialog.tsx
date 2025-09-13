@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 'use client';
 
-import type { Address, AddressInput } from '@/api/schemas/profile/adddress.schema';
+import type { Address, AddressInput } from '@/api/schemas/user/adddress.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useUpdateAddress } from '@/api/address/use-update-address';
-import { addressInputSchema } from '@/api/schemas/profile/adddress.schema';
+import { addressInputSchema } from '@/api/schemas/user/adddress.schema';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

@@ -1,5 +1,9 @@
+import UserProfileTable from './_components/user-profile-table';
+
 export default function DashboardCustomerPage() {
   return (
-    <div>Dashboard Customer Page</div>
+    <div>
+      <UserProfileTable />
+    </div>
   );
 }
