@@ -1,6 +1,6 @@
 'use client';
 
-import type { UserProfile } from '@/api/schemas/user/user-profile.schema';
+import type { Customer } from '@/api/schemas/user/customer.schema';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export default function UserProfileRowAction({ user }: { user: UserProfile }) {
+export default function UserProfileRowAction({ user }: { user: Customer }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

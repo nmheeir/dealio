@@ -1,10 +1,10 @@
 import type { ColumnDef } from '@tanstack/react-table';
-import type { UserProfile } from '@/api/schemas/user/user-profile.schema';
+import type { Customer } from '@/api/schemas/user/customer.schema';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import UserProfileRowAction from './user-profile-row-action';
 
-export const userProfileColumn: ColumnDef<UserProfile>[] = [
+export const userProfileColumn: ColumnDef<Customer>[] = [
   {
     id: 'select',
     header: ({ table }) => (

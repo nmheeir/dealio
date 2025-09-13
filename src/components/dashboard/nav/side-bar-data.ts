@@ -111,9 +111,9 @@ const baseMenus: Record<string, NavItem[]> = {
       url: '/admin/users',
       icon: Users,
       items: [
-        { title: 'Danh sách tài khoản', url: '/admin/users' },
-        { title: 'Nâng cấp quyền', url: '/admin/users/roles' },
-        { title: 'Khóa / mở tài khoản', url: '/admin/users/status' },
+        { title: 'Danh sách tài khoản', url: '/dashboard/admin/users' },
+        { title: 'Nâng cấp quyền', url: '/dashboard/admin/users/roles' },
+        { title: 'Khóa / mở tài khoản', url: '/dashboard/admin/users/status' },
       ],
     },
     {

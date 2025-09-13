@@ -1,11 +1,11 @@
 import type { AxiosError } from 'axios';
-import type { UserProfile } from '../schemas/user/user-profile.schema';
+import type { Customer } from '../schemas/user/customer.schema';
 
 import type { PaginationResponse } from '../types';
 import { createQuery } from 'react-query-kit';
 import apiClient from '../common/client';
 
-type Response = PaginationResponse<UserProfile>;
+type Response = PaginationResponse<Customer>;
 type Variables = void;
 
 export const useGetAllCustomers = createQuery<Response, Variables, AxiosError>({
