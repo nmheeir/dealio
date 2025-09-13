@@ -12,6 +12,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ActivateUserDialog } from './dialogs/activate-user-dialog';
+import { ChangeRoleDialog } from './dialogs/change-role-dialog';
+import { ResetPasswordDialog } from './dialogs/reset-password-dialog';
+import { UserDetailDialog } from './dialogs/user-detail-dialog';
 
 export function UserRowAction({ user }: { user: User }) {
   const { data } = useProfile();
@@ -23,21 +26,23 @@ export function UserRowAction({ user }: { user: User }) {
           <Icons.ellipsisVertical className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="flex flex-col justify-start">
         {currentUser?.user_id !== user.id && (
           <DropdownMenuItem asChild>
             <ActivateUserDialog user={user} />
           </DropdownMenuItem>
         )}
-        {/* <DropdownMenuItem asChild>
+        <DropdownMenuItem asChild>
           <UserDetailDialog user={user} />
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <ResetPasswordDialog user={user} />
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <UpgradeRoleDialog user={user} />
-        </DropdownMenuItem> */}
+        {currentUser?.user_id !== user.id && (
+          <DropdownMenuItem asChild>
+            <ChangeRoleDialog user={user} />
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

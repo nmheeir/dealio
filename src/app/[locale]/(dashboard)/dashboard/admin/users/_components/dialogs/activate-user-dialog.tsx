@@ -29,21 +29,25 @@ export function ActivateUserDialog({ user }: { user: User }) {
       {
         onSuccess: () => {
           toast.success(
-            user.is_active ? 'Tài khoản đã bị vô hiệu hóa' : 'Tài khoản đã được kích hoạt',
+            user.is_active
+              ? 'The account has been deactivated successfully.'
+              : 'The account has been activated successfully.',
           );
           setOpen(false);
         },
         onError: (error: any) => {
           console.error('Error toggling user:', error);
-          const errorMessage = error.response.data.message ?? 'Không thể cập nhật trạng thái tài khoản. Vui lòng thử lại.';
+          const errorMessage
+      = error?.response?.data?.message
+        ?? 'Unable to update account status. Please try again later.';
           toast.error(errorMessage);
         },
         onSettled: () => {
-        // Có thể refetch lại danh sách user
           queryClient.invalidateQueries({ queryKey: ['users/admin'] });
-          console.log('Mutation finished');
+          console.log('User status mutation finished');
         },
       },
+
     );
 
     setOpen(false);
@@ -52,7 +56,7 @@ export function ActivateUserDialog({ user }: { user: User }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="w-full justify-start">
+        <Button variant="ghost">
           {user.is_active ? 'Deactivate' : 'Activate'}
         </Button>
       </DialogTrigger>
