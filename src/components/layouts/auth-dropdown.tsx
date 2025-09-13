@@ -5,6 +5,7 @@ import type { ButtonProps } from '@/components/ui/button';
 import Link from 'next/link';
 import * as React from 'react';
 import { useAuth } from '@/api/auth/auth-context';
+import { useProfile } from '@/api/profile/use-profile';
 import { Icons } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -27,11 +28,13 @@ export function AuthDropdown({
   className,
   ...props
 }: AuthDropdownProps) {
-  const { user, loading, logout, isAuthenticated } = useAuth();
-
-  if (loading) {
+  const { loading, logout, isAuthenticated } = useAuth();
+  const { data, isLoading } = useProfile();
+  if (loading || isLoading) {
     return null;
   }
+
+  const user = data?.data;
 
   if (!isAuthenticated || !user) {
     return (
@@ -52,7 +55,7 @@ export function AuthDropdown({
         <div className={cn('flex cursor-pointer items-center gap-3 rounded p-2 hover:bg-accent', className)}>
           {/* Avatar */}
           <Avatar className="size-8 rounded-sm">
-            <AvatarImage src={user.avatar_url} alt={user.avatar_url ?? ''} />
+            <AvatarImage src={user.avatar_url ?? ''} alt={user.avatar_url ?? ''} />
             <AvatarFallback className="size-8 rounded-sm">{initials}</AvatarFallback>
           </Avatar>
 

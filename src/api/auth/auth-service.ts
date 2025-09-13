@@ -68,7 +68,7 @@ export class AuthService {
   // Logout
   async logout(): Promise<void> {
     try {
-      const response = await authClient.post('/auth/logout');
+      const response = await authClient.get('/auth/logout');
       console.info(response);
     } catch (error) {
       console.error('Logout error:', error);
@@ -113,16 +113,13 @@ export class AuthService {
 
   // TODO: fix check authenticated
   async checkAuthenticated(): Promise<User | null> {
-    const token = this.getAccessToken();
-    if (!token) {
-      return null;
-    }
-
     try {
       const response = await apiClient.get('/profiles');
       const user = UserSchema.parse(response.data.data);
       return user;
     } catch (error: any) {
+      console.log(error);
+
       if (error.response?.status === 401) {
         this.clearTokens();
       }

@@ -20,7 +20,7 @@ export const UserSchema = z.object({
   // email: z.email(),
   fullname: z.string(),
   role: z.string().optional(),
-  avatar_url: z.url().optional(),
+  avatar_url: z.url().optional().nullable(),
   createdAt: z.string().optional(),
   updatedAt: z.string().optional(),
 });
