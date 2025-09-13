@@ -13,7 +13,7 @@ const baseConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   images: {
-    domains: ['picsum.photos'],
+    domains: ['picsum.photos', 'dvdlrexmnottnuisgfpn.supabase.co'],
   },
 };
 

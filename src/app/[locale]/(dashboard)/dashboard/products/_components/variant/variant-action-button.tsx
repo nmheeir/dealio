@@ -7,11 +7,14 @@ import { ProductType } from '@/api/schemas/product/product.schema';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { VariantActionCsv } from './variant-action-csv';
+import { VariantActionImage } from './variant-action-image';
 import { VariantActionStock } from './variant-action-stock';
 import { VariantRowActionView } from './variant-action-view';
 
 export function VariantActionButton({ item }: { item: ProductVariant }) {
   const [open, setOpen] = React.useState(false);
+  const [openImageDialog, setOpenImageDialog] = React.useState(false);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -37,6 +40,9 @@ export function VariantActionButton({ item }: { item: ProductVariant }) {
             Add Stock
           </DropdownMenuItem>
         )}
+        <DropdownMenuItem onClick={() => setOpenImageDialog(true)}>
+          Add Image
+        </DropdownMenuItem>
       </DropdownMenuContent>
 
       <VariantActionStock
@@ -44,6 +50,12 @@ export function VariantActionButton({ item }: { item: ProductVariant }) {
         open={open}
         onOpenChange={setOpen}
         currentStock={item.stock?.quantity ?? 0}
+      />
+
+      <VariantActionImage
+        variant={item}
+        open={openImageDialog}
+        onOpenChange={setOpenImageDialog}
       />
     </DropdownMenu>
   );

@@ -10,8 +10,6 @@ type VariantItemProps = {
 
 // 📦 Responsive layout card giống hình
 export function VariantItem({ variant }: VariantItemProps) {
-  console.log('Variant', variant);
-
   return (
     <Card className="w-full space-y-0.5">
       {/* Header */}
