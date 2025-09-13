@@ -1,17 +1,11 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Category } from '@/api/schemas/category/category.schema';
-import { DragHandle } from '@/components/dashboard/table/drag-handle';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { CategoryRowActions } from './category-row-action';
 import { CategoryViewerRow } from './category-viewer-row';
 
 export const categoryColumn: ColumnDef<Category>[] = [
-  {
-    id: 'drag',
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
   {
     id: 'select',
     header: ({ table }) => (
@@ -41,11 +35,9 @@ export const categoryColumn: ColumnDef<Category>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'header',
-    header: () => <div className="w-full  text-left">Category Name</div>,
-    cell: ({ row }) => {
-      return <CategoryViewerRow item={row.original} />;
-    },
+    accessorKey: 'name',
+    header: () => <div className="w-full text-left">Category Name</div>,
+    cell: ({ row }) => <CategoryViewerRow item={row.original} />,
     enableHiding: false,
   },
   {

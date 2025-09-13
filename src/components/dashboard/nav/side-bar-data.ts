@@ -76,7 +76,7 @@ const baseMenus: Record<string, NavItem[]> = {
       url: '/manager/customers',
       icon: Users,
       items: [
-        { title: 'Danh sách khách hàng', url: '/manager/customers' },
+        { title: 'Danh sách khách hàng', url: '/dashboard/customers' },
         { title: 'Khách hàng hoạt động', url: '/manager/customers?status=active' },
         { title: 'Lịch sử đơn hàng', url: '/manager/customers/orders' },
       ],

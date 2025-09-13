@@ -1,17 +1,11 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import type { Brand } from '@/api/schemas/brand/brand.schema';
-import { DragHandle } from '@/components/dashboard/table/drag-handle';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { BrandRowActions } from './brand-row-action';
 import { BrandViewerRow } from './brand-viewer-row';
 
 export const brandColumns: ColumnDef<Brand>[] = [
-  {
-    id: 'drag',
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
   {
     id: 'select',
     header: ({ table }) => (

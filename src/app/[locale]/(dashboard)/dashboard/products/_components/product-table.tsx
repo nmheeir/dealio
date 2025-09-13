@@ -1,8 +1,8 @@
 'use client';
 
 import { useGetAllProducts } from '@/api/products/use-all-product';
+import { DataTable } from '@/components/dashboard/data-table/data-table';
 import { DataTableLoading } from '@/components/dashboard/data-table/data-table-loading';
-import { DataTable } from '@/components/dashboard/table/data-table';
 import { productColumns } from './product-columns';
 
 export function ProductTable() {
@@ -24,7 +24,8 @@ export function ProductTable() {
   const products = data?.data.data ? data.data.data : [];
 
   return (
-
-    <DataTable data={products} columns={productColumns} />
+    <div className="mt-8 px-8">
+      <DataTable data={products} columns={productColumns} />
+    </div>
   );
 }

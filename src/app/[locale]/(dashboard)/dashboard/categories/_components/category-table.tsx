@@ -4,8 +4,8 @@
 import type { Category } from '@/api/schemas/category/category.schema';
 import React from 'react';
 import { useCategories } from '@/api/category/use-categories';
+import { DataTable } from '@/components/dashboard/data-table/data-table';
 import { DataTableLoading } from '@/components/dashboard/data-table/data-table-loading';
-import { DataTable } from '@/components/dashboard/table/data-table';
 import { categoryColumn } from './category-columns';
 
 export function CategoryTable() {
@@ -27,7 +27,7 @@ export function CategoryTable() {
   const categories = flattenCategories(data?.data.data ? data.data.data : []);
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 px-8">
       <DataTable
         data={categories}
         columns={categoryColumn}

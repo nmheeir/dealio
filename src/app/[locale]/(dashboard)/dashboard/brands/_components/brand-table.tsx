@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useBrands } from '@/api/brand/use-brand';
+import { DataTable } from '@/components/dashboard/data-table/data-table';
 import { DataTableLoading } from '@/components/dashboard/data-table/data-table-loading';
-import { DataTable } from '@/components/dashboard/table/data-table';
 import { brandColumns } from './brand-columns';
 
 export function BrandTable() {
@@ -25,7 +25,7 @@ export function BrandTable() {
   const brands = data?.data.data ? data.data.data : [];
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 px-8">
       <DataTable
         data={brands}
         columns={brandColumns}
