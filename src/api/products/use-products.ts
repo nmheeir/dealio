@@ -15,7 +15,7 @@ type Variables = {
 };
 
 export const useProducts = createQuery<Response, Variables, AxiosError>({
-  queryKey: ['products/search'],
+  queryKey: ['/product-variants/for-users-and-guests/search'],
   fetcher: (variables) => {
     const params = new URLSearchParams();
 
@@ -40,7 +40,7 @@ export const useProducts = createQuery<Response, Variables, AxiosError>({
     }
 
     return apiClient
-      .get(`/products/search?${params.toString()}`)
+      .get(`/product-variants/for-users-and-guests/search?${params.toString()}`)
       .then((response) => {
         return response.data;
       });

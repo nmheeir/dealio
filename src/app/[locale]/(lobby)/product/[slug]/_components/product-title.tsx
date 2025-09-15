@@ -8,7 +8,7 @@ type ProductTitleProps = {
   discount?: number; // giảm giá theo giá trị số
 };
 
-export default function ProductTitle({ title, currency = '$', price, discount = 10, className }: ProductTitleProps) {
+export default function ProductTitle({ title, currency = '$', price, discount, className }: ProductTitleProps) {
   if (!price) {
     return null;
   }

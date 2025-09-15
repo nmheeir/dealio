@@ -9,10 +9,10 @@ type Variables = { slug: string };
 type Response = ApiResponse<ProductVariant>;
 
 export const useProductVariant = createQuery<Response, Variables, AxiosError>({
-  queryKey: ['product-variants'],
+  queryKey: ['product-variants/for-users-and-guests/slug/'],
   fetcher: (variables) => {
     return apiClient
-      .get(`product-variants/${variables.slug}`)
+      .get(`product-variants/for-users-and-guests/slug/${variables.slug}`)
       .then(response => response.data);
   },
 });

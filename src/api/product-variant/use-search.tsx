@@ -13,7 +13,7 @@ type Variables = {
 type Response = ApiResponse<SearchProductResponse>;
 
 export const useSearchProductVariant = createQuery<Response, Variables, AxiosError>({
-  queryKey: ['product-variants/search'],
+  queryKey: ['product-variants/for-users-and-guests/search'],
   fetcher: (variables) => {
     const params = new URLSearchParams();
 
@@ -22,7 +22,7 @@ export const useSearchProductVariant = createQuery<Response, Variables, AxiosErr
     }
 
     return apiClient
-      .get(`product-variants/search?${params}`)
+      .get(`product-variants/for-users-and-guests/search?${params}`)
       .then(response => response.data);
   },
 });

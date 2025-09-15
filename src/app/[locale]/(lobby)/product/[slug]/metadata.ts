@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { getProduct } from '@/api/seo/get-product';
 
 type ProductProps = {
@@ -12,12 +11,12 @@ export async function generateMetadata({ params }: ProductProps): Promise<Metada
 
   const product = await getProduct(slug);
 
-  if (!product) {
-    notFound();
-  }
+  // if (!product) {
+  //   notFound();
+  // }
 
   return {
-    title: product?.variant_name || 'Default title',
+    title: product?.name || 'Default title',
     description: product?.description || 'Default description',
   };
 }

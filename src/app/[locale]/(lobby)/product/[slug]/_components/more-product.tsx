@@ -14,7 +14,7 @@ export default function MoreProductSection({ variantId }: MoreProductSectionProp
   const { data, isLoading, error } = useSimilarProductVariants(
     {
       variables:
-       { id: variantId },
+       { variantId },
     },
   );
 

@@ -95,7 +95,12 @@ function ProductSearchResponse({
   const { data, isLoading, error } = useSearchProductVariant({
     variables: { query },
     enabled: !!query && query.trim().length > 0,
-    placeholderData: prev => prev,
+    placeholderData: (prev) => {
+      if (!query || query.trim().length === 0) {
+        return prev;
+      }
+      return undefined;
+    },
   });
 
   if (!query || query.trim().length === 0) {
@@ -148,11 +153,11 @@ function ProductSearchResponse({
               value={product.name}
             >
               <a
-                href={`/product/${product.id}`}
+                href={`/product/${product.slug}`}
                 onClick={(e) => {
                   e.preventDefault();
                   onSelectAction?.();
-                  router.push(`/product/${product.id}`);
+                  router.push(`/product/${product.slug}`);
                 }}
                 className="flex h-full w-full items-center"
               >
@@ -197,11 +202,11 @@ function ProductSearchResponse({
           {searchResponse.variants.map(variant => (
             <CommandItem asChild key={variant.id} value={variant.variant_name}>
               <a
-                href={`/product/${variant.id}`}
+                href={`/product/${variant.slug}`}
                 onClick={(e) => {
                   e.preventDefault();
                   onSelectAction?.();
-                  router.push(`/product/${variant.id}`);
+                  router.push(`/product/${variant.slug}`);
                 }}
                 className="flex h-9 items-center"
               >

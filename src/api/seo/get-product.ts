@@ -7,7 +7,7 @@ export const getProduct = unstable_cache(
     console.log(`[getProduct] Start fetching product with slug: ${slug}`);
 
     try {
-      const response = await apiClient.get(`/product-variants/${slug}`);
+      const response = await apiClient.get(`/products/for-users-and-guests/variants/slug/${slug}`);
       console.log(`[getProduct] Fetch successful for slug: ${slug}`, response.data);
       return response.data.data;
     } catch (err) {
