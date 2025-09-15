@@ -7,6 +7,8 @@ import { notFound } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 
 import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { useAddVariantToCart } from '@/api/cart/use-add-variant';
 import { useFindVariantsByProductSlug } from '@/api/product-variant/use-find-variant-by-product-slug';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icons } from '@/components/icons';
@@ -38,6 +40,7 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
     history: 'push',
   });
   const [quantity, setQuantity] = useState(1);
+  const { mutateAsync: addToCart } = useAddVariantToCart();
 
   // Initialize selected variant based on slug
   useEffect(() => {
@@ -74,9 +77,36 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
     setQuantity(prev => Math.min(maxStock, prev + 1));
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     console.log(`Add ${quantity} sản phẩm ${variant?.variant_name} vào giỏ hàng`);
     // TODO: gọi API hoặc context cart ở đây
+    if (!variant) {
+      toast.error('Please select one variant');
+      return;
+    }
+    if (quantity <= 0) {
+      toast.error('Số lượng phải lớn hơn 0.');
+      return;
+    }
+
+    addToCart(
+      {
+        productVariantId: variant.id,
+        quantity,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(`Đã thêm ${quantity} sản phẩm "${variant.variant_name}" vào giỏ hàng`);
+          console.log('API response:', data);
+        },
+        onError: (error) => {
+          const message
+            = (error.response?.data as any)?.message || 'Không thể thêm sản phẩm vào giỏ hàng';
+          toast.error(message);
+          console.error('API error:', error);
+        },
+      },
+    );
   };
 
   if (!variant) {
