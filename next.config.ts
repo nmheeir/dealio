@@ -13,8 +13,18 @@ const baseConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   images: {
-    domains: ['picsum.photos', 'dvdlrexmnottnuisgfpn.supabase.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+      {
+        protocol: 'https',
+        hostname: 'dvdlrexmnottnuisgfpn.supabase.co',
+      },
+    ],
   },
+
 };
 
 // Initialize the Next-Intl plugin

@@ -20,6 +20,8 @@ export const productSchema = z.object({
   seo_description: z.string(),
   category_id: z.string().optional(),
   brand_id: z.string().optional(),
+  image: z.url().nullable(),
+  price: z.number().nullable(),
   category: categorySchema,
   brand: brandSchema,
 }).extend(baseTimeStampSchema.shape);

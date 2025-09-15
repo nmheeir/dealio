@@ -1,4 +1,4 @@
-import type { Product } from '@/api/schemas/product/product.schema';
+import type { Product } from '@/types/product'; // Giả định schema được định nghĩa trong types/product
 import Image from 'next/image';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +9,8 @@ type ProductCardProps = {
   product: Product;
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function TestProductCard({ product }: ProductCardProps) {
+  // Hàm cắt ngắn description
   const truncateDescription = (text: string, maxLength: number = 100) => {
     if (text.length <= maxLength) {
       return text;

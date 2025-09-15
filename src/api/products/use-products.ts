@@ -1,27 +1,24 @@
 import type { AxiosError } from 'axios';
 
-import type { ProductVariant } from '../schemas/product/product-variant.schema';
+import type { Product } from '../schemas/product/product.schema';
 import type { PaginationResponse } from '../types';
 import { createQuery } from 'react-query-kit';
 import apiClient from '../common/client';
 
-type Response = PaginationResponse<ProductVariant>;
+type Response = PaginationResponse<Product>;
 type Variables = {
-  name?: string | null;
   brand?: string | null;
   category?: string | null;
   page?: number;
   limit?: number;
+  sortBy?: string;
+  order?: string;
 };
 
 export const useProducts = createQuery<Response, Variables, AxiosError>({
-  queryKey: ['/product-variants/for-users-and-guests/search'],
+  queryKey: ['/products/for-users-and-guests/filter?'],
   fetcher: (variables) => {
     const params = new URLSearchParams();
-
-    if (variables?.name) {
-      params.set('name', variables.name);
-    }
 
     if (variables?.brand) {
       params.set('brandSlug', variables.brand);
@@ -33,6 +30,15 @@ export const useProducts = createQuery<Response, Variables, AxiosError>({
     if (variables?.page) {
       params.set('page', variables.page.toString());
     }
+
+    if (variables?.sortBy) {
+      params.set('sortBy', variables.sortBy);
+    }
+
+    if (variables?.order) {
+      params.set('order', variables.order);
+    }
+
     if (variables?.limit) {
       params.set('limit', variables.limit.toString());
     } else {
@@ -40,7 +46,7 @@ export const useProducts = createQuery<Response, Variables, AxiosError>({
     }
 
     return apiClient
-      .get(`/product-variants/for-users-and-guests/search?${params.toString()}`)
+      .get(`/products/for-users-and-guests/filter?${params.toString()}`)
       .then((response) => {
         return response.data;
       });

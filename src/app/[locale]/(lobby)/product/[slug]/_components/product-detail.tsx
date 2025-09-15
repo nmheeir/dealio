@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 'use client';
 
 import type { ProductVariant } from '@/api/schemas/product/product-variant.schema';
@@ -20,6 +21,13 @@ type ProductDetailProps = {
   slug: string;
 };
 
+function getAvailableStock(variant: ProductVariant): number {
+  if (!variant.stock) {
+    return 0;
+  }
+  return Math.max(0, variant.stock.quantity - variant.stock.reserved);
+}
+
 export default function ProductDetailSection({ slug }: ProductDetailProps) {
   const { data, isLoading, error } = useFindVariantsByProductSlug({ variables: { slug } });
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
@@ -29,6 +37,7 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
     shallow: true,
     history: 'push',
   });
+  const [quantity, setQuantity] = useState(1);
 
   // Initialize selected variant based on slug
   useEffect(() => {
@@ -50,18 +59,25 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
   const productVariants = data.data;
   const variant = selectedVariant || productVariants[0];
 
+  const maxStock = variant ? getAvailableStock(variant) : 0;
+
   const handleVariantChange = (variant: ProductVariant) => {
     setSelectedVariant(variant);
     setVariantChoose(variant.slug);
-    // router.push(`/product/${variant.slug}`);
   };
 
-  function getAvailableStock(variant: ProductVariant): number {
-    if (!variant.stock) {
-      return 0;
-    }
-    return Math.max(0, variant.stock.quantity - variant.stock.reserved);
-  }
+  const handleDecrease = () => {
+    setQuantity(prev => Math.max(1, prev - 1));
+  };
+
+  const handleIncrease = () => {
+    setQuantity(prev => Math.min(maxStock, prev + 1));
+  };
+
+  const handleAddToCart = () => {
+    console.log(`Add ${quantity} sản phẩm ${variant?.variant_name} vào giỏ hàng`);
+    // TODO: gọi API hoặc context cart ở đây
+  };
 
   if (!variant) {
     return <span>No data</span>;
@@ -124,22 +140,39 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
                 variant="ghost"
                 size="icon"
                 className="h-10 w-10 rounded-l-lg"
-                onClick={() => {}}
+                onClick={handleDecrease}
                 disabled={(getAvailableStock(variant) ?? 0) <= 1}
                 aria-label="Giảm số lượng"
               >
                 <Icons.minus className="h-4 w-4" />
               </Button>
-              <div className="flex h-10 w-12 items-center justify-center border-x">
-                <span className="text-sm font-medium" aria-live="polite">
-                  {getAvailableStock(variant) ?? 0}
-                </span>
+              <div className="flex h-10 w-20 items-center justify-center rounded-lg border">
+                <input
+                  type="number"
+                  min={1}
+                  max={maxStock}
+                  value={quantity}
+                  onChange={(e) => {
+                    let val = Number(e.target.value);
+                    if (Number.isNaN(val) || val < 1) {
+                      val = 1;
+                    }
+                    if (val > maxStock) {
+                      val = maxStock;
+                    }
+                    setQuantity(val);
+                  }}
+                  className="w-full [appearance:textfield] text-center text-sm font-medium
+                            focus:outline-none
+                            [&::-webkit-inner-spin-button]:appearance-none
+                            [&::-webkit-outer-spin-button]:appearance-none"
+                />
               </div>
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-10 w-10 rounded-r-lg"
-                onClick={() => {}}
+                onClick={handleIncrease}
                 disabled={(getAvailableStock(variant) ?? 0) === 0}
                 aria-label="Tăng số lượng"
               >
@@ -150,9 +183,7 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
               className="rounded-full bg-green-500 px-6 py-3 font-medium text-white hover:bg-green-600"
               aria-label={`Thêm ${(getAvailableStock(variant) ?? 0)} sản phẩm vào giỏ hàng`}
               disabled={(getAvailableStock(variant) ?? 0) === 0}
-              onClick={() => {
-                console.log('Add to cart');
-              }}
+              onClick={handleAddToCart}
             >
               <Icons.shoppingCart className="mr-2 h-4 w-4" />
               Thêm vào giỏ hàng

@@ -4,9 +4,9 @@ import { parseAsInteger, useQueryState } from 'nuqs';
 import React from 'react';
 import { useProducts } from '@/api/products/use-products';
 import { AlertCard } from '@/components/alert-card';
-import { ProductCard } from '@/components/product-card';
 import SearchPagination from '@/components/search/search-pagination';
 import PLPLoading from './plp-loading';
+import { TestProductCard } from './test';
 
 type ProductListingPageProps = {
   query?: string | null;
@@ -18,7 +18,6 @@ export default function ProductListingPage({ query }: ProductListingPageProps) {
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
 
   const { data, isLoading, error } = useProducts({ variables: {
-    name: query,
     brand,
     category,
     page,
@@ -35,9 +34,9 @@ export default function ProductListingPage({ query }: ProductListingPageProps) {
   }
 
   const paginationProductVariants = data.data;
-  const productVariants = paginationProductVariants.data;
+  const products = paginationProductVariants.data;
 
-  if (productVariants.length === 0) {
+  if (products.length === 0) {
     return (
       <div className="flex grow flex-col lg:col-span-3">
         <div className="col-span-4 flex min-h-[300px] items-center justify-center">
@@ -49,10 +48,10 @@ export default function ProductListingPage({ query }: ProductListingPageProps) {
 
   return (
     <div className="flex grow flex-col lg:col-span-3">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {/* Your content Product Display */}
-        {productVariants.map(variant => (
-          <ProductCard key={variant.id} product={variant} />
+        {products.map(product => (
+          <TestProductCard key={product.id} product={product} />
         ))}
       </div>
       {/* Paging placeholder */}
