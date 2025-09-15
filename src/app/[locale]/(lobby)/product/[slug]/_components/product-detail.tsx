@@ -3,9 +3,10 @@
 
 import type { ProductVariant } from '@/api/schemas/product/product-variant.schema';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { notFound } from 'next/navigation';
-import { useQueryState } from 'nuqs';
 
+import { useQueryState } from 'nuqs';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useAddVariantToCart } from '@/api/cart/use-add-variant';
@@ -41,6 +42,7 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
   });
   const [quantity, setQuantity] = useState(1);
   const { mutateAsync: addToCart } = useAddVariantToCart();
+  const queryClient = useQueryClient();
 
   // Initialize selected variant based on slug
   useEffect(() => {
@@ -98,6 +100,7 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
         onSuccess: (data) => {
           toast.success(`Đã thêm ${quantity} sản phẩm "${variant.variant_name}" vào giỏ hàng`);
           console.log('API response:', data);
+          queryClient.invalidateQueries({ queryKey: ['carts'] });
         },
         onError: (error) => {
           const message

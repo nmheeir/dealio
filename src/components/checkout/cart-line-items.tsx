@@ -1,97 +1,173 @@
-/* eslint-disable unused-imports/no-unused-vars */
+/* eslint-disable no-console */
+'use client';
+
+import type { CartItem } from '@/api/schemas/cart/cart.schema';
 import { Slot } from '@radix-ui/react-slot';
+import { useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-import { UpdateCart } from '@/components/checkout/update-cart';
-import { Icons } from '@/components/icons';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { useDeleteCartItem } from '@/api/cart/use-delete-cart-item';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { formatPrice } from '@/libs/utils';
+import { cn } from '@/libs/utils'; // Hàm cn từ shadcn/ui để merge className
+import { Icons } from '../icons';
 
 type CartLineItemsProps = {
-  // items: ProductVariant[];
+  items: CartItem[];
   isScrollable?: boolean;
   isEditable?: boolean;
   variant?: 'default' | 'minimal';
 } & React.HTMLAttributes<HTMLDivElement>;
 
 export function CartLineItems({
-  isScrollable = true,
-  isEditable = true,
-  variant = 'default',
+  items,
+  isScrollable = false,
   className,
   ...props
 }: CartLineItemsProps) {
-  const Comp = isScrollable ? ScrollArea : Slot;
+  const Comp = (isScrollable ? ScrollArea : Slot) as React.ElementType;
+  const { mutateAsync: deleteCartItem } = useDeleteCartItem();
+  const queryClient = useQueryClient();
+
+  async function handleDelete(id: string) {
+    await deleteCartItem(
+      { productVariantId: id },
+      {
+        onSuccess: (data) => {
+          console.log('API response:', data);
+          queryClient.invalidateQueries({ queryKey: ['carts'] });
+        },
+        onError: (error) => {
+          const message
+            = (error.response?.data as any)?.message || 'Cannot delete this item';
+          toast.error(message);
+          console.error('API error:', error);
+        },
+      },
+    );
+  }
 
   return (
-    <ScrollArea className="h-full">
-      <div className="flex w-full flex-col gap-5 pr-6">
-        {/* Item 1 */}
-        <div className="space-y-3">
-          <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
-            <div className="flex items-center space-x-4">
-              <div className="relative aspect-square size-16 min-w-fit overflow-hidden rounded">
-                <Image
-                  src="/images/product-placeholder.webp"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  fill
-                  className="absolute object-cover"
-                  loading="lazy"
-                  alt="Sample product"
-                />
-              </div>
-              <div className="flex flex-col space-y-1 self-start">
-                <span className="line-clamp-1 text-sm font-medium">
-                  Sample Product 1
-                </span>
-                <span className="line-clamp-1 text-xs text-muted-foreground">
-                  {formatPrice(120000)}
-                  {' '}
-                  x 2 =
-                  {formatPrice(240000)}
-                </span>
-                <span className="line-clamp-1 text-xs text-muted-foreground capitalize">
-                  electronics / phone
-                </span>
-              </div>
-            </div>
-            <UpdateCart />
-          </div>
-          <Separator />
-        </div>
+    <Comp className={cn('h-full', isScrollable && 'max-h-[500px]', className)} {...props}>
+      <div className="flex w-full flex-col space-y-4 px-4">
+        {items.map(item => (
+          <CartItemUi
+            key={item.id}
+            item={item}
+            onDeleteAction={(id) => {
+              handleDelete(id);
+            }}
+          />
+        ))}
+      </div>
+    </Comp>
+  );
+}
 
-        {/* Item 2 */}
-        <div className="space-y-3">
-          <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
-            <div className="flex items-center space-x-4">
-              <div className="relative aspect-square size-16 min-w-fit overflow-hidden rounded">
-                <div className="flex h-full items-center justify-center bg-secondary">
-                  <Icons.placeholder
-                    className="size-4 text-muted-foreground"
-                    aria-hidden="true"
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col space-y-1 self-start">
-                <span className="line-clamp-1 text-sm font-medium">
-                  Sample Product 2
-                </span>
-                <span className="line-clamp-1 text-xs text-muted-foreground">
-                  {formatPrice(99000)}
-                  {' '}
-                  x 1 =
-                  {formatPrice(99000)}
-                </span>
-                <span className="line-clamp-1 text-xs text-muted-foreground capitalize">
-                  fashion / shoes
-                </span>
-              </div>
-            </div>
-            <UpdateCart />
-          </div>
-          <Separator />
+type CartItemUiProps = {
+  item: CartItem;
+  onDeleteAction: (id: string) => void;
+};
+
+export function CartItemUi({ item, onDeleteAction }: CartItemUiProps) {
+  const [quantity, setQuantity] = useState(item.quantity);
+
+  const maxStock = 100;
+
+  const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+  const handleIncrease = () => setQuantity(prev => (prev < maxStock ? prev + 1 : maxStock));
+
+  const formatPrice = (price: string) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(price));
+
+  return (
+    <Card className="grid grid-cols-[auto_1fr_auto] items-start gap-4 p-4">
+      {/* Cột 1: Ảnh */}
+      <div className="relative h-24 w-24 overflow-hidden rounded-md">
+        <Image
+          src={item.imageUrl}
+          alt={item.name}
+          className="h-full w-full object-cover"
+          width={96}
+          height={96}
+        />
+      </div>
+
+      {/* Cột 2: Tên + trạng thái + giá */}
+      <div className="flex flex-col gap-2">
+        <CardTitle className="text-lg">{item.name}</CardTitle>
+        <Badge variant={item.productStatus === 'ACTIVE' ? 'default' : 'secondary'}>
+          {item.productStatus}
+        </Badge>
+        <div className="text-sm text-muted-foreground">
+          Price:
+          {' '}
+          {formatPrice(item.price)}
         </div>
       </div>
-    </ScrollArea>
+
+      {/* Cột 3: Delete + Quantity */}
+      <div className="flex h-full flex-col items-end justify-between">
+        {/* Nút xoá (trên cùng) */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => onDeleteAction(item.product_variant_id)}
+          aria-label="Xoá sản phẩm"
+        >
+          <Icons.trash className="h-5 w-5 text-red-500" />
+        </Button>
+
+        {/* Quantity selector (dưới cùng) */}
+        <div className="flex items-center justify-between rounded-lg border bg-background">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-5 w-5"
+            onClick={handleDecrease}
+            disabled={quantity <= 1}
+            aria-label="Giảm số lượng"
+          >
+            <Icons.minus className="h-4 w-4" />
+          </Button>
+          <div className="flex h-5 w-10 items-center justify-center border-x">
+            <input
+              type="number"
+              min={1}
+              max={maxStock}
+              value={quantity}
+              onChange={(e) => {
+                let val = Number(e.target.value);
+                if (Number.isNaN(val) || val < 1) {
+                  val = 1;
+                }
+                if (val > maxStock) {
+                  val = maxStock;
+                }
+                setQuantity(val);
+              }}
+              className="w-full [appearance:textfield] text-center text-sm font-medium
+                   focus:outline-none
+                   [&::-webkit-inner-spin-button]:appearance-none
+                   [&::-webkit-outer-spin-button]:appearance-none"
+            />
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-5 w-5 rounded-r-none"
+            onClick={handleIncrease}
+            disabled={quantity >= maxStock}
+            aria-label="Tăng số lượng"
+          >
+            <Icons.plus className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </Card>
+
   );
 }
