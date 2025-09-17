@@ -25,7 +25,7 @@ const baseMenus: Record<string, NavItem[]> = {
       url: '/shop',
       icon: ShoppingBag,
       items: [
-        { title: 'Giỏ hàng của tôi', url: '/cart' },
+        { title: 'Đơn hàng của tôi', url: '/dashboard/orders' },
       ],
     },
     {
