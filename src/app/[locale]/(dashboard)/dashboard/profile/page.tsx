@@ -7,7 +7,6 @@ export default function ProfilePage() {
       <ProfileCard />
 
       <AddressSection />
-
     </div>
   );
 }
