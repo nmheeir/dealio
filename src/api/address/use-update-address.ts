@@ -1,12 +1,12 @@
 import type { AxiosError } from 'axios';
-import type { Address, AddressInput } from '../schemas/user/adddress.schema';
+import type { Address } from '../schemas/user/adddress.schema';
 
 import { createMutation } from 'react-query-kit';
 import apiClient from '../common/client';
 
 type Variables = {
   id: string;
-  updateData: AddressInput;
+  updateData: any;
 };
 type Response = Address;
 

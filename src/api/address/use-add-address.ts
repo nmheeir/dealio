@@ -1,11 +1,11 @@
 import type { AxiosError } from 'axios';
-import type { Address, AddressInput } from '../schemas/user/adddress.schema';
+import type { Address } from '../schemas/user/adddress.schema';
 
 import type { ApiResponse } from '../types';
 import { createMutation } from 'react-query-kit';
 import apiClient from '../common/client';
 
-type Variables = AddressInput;
+type Variables = any;
 type Response = ApiResponse<Address>;
 
 export const useAddAddress = createMutation<Response, Variables, AxiosError>({

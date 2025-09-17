@@ -8,8 +8,8 @@ export const addressInputSchema = z.object({
     .regex(/^\d+$/, 'Số điện thoại chỉ chứa chữ số')
     .min(9, 'Số điện thoại phải có ít nhất 9 số'),
   to_address: z.string().min(5, 'Địa chỉ quá ngắn'),
-  to_ward_code: z.string().min(1, 'Mã phường/xã bắt buộc'),
-  to_district_id: z.string().min(1, 'Mã quận/huyện bắt buộc'),
+  to_ward_code: z.number().min(1, 'Mã phường/xã bắt buộc'),
+  to_district_id: z.number().min(1, 'Mã quận/huyện bắt buộc'),
   to_province_name: z.string().min(2, 'Tên tỉnh/thành phố quá ngắn'),
 });
 

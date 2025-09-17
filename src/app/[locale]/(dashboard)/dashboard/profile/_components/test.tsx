@@ -1,12 +1,14 @@
+/* eslint-disable no-console */
 'use client';
 
+import type { Address } from '@/api/schemas/user/adddress.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { useAddAddress } from '@/api/address/use-add-address';
+import { useUpdateAddress } from '@/api/address/use-update-address';
 import { useGetDistrictByProvinceId } from '@/api/ghn/use-get-district';
 import { useGetAllProvinces } from '@/api/ghn/use-get-provinces';
 import { useGetWardsByDistrictId } from '@/api/ghn/use-get-wards';
@@ -18,7 +20,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Drawer,
@@ -27,12 +28,18 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { data } from "../../data";
+
+type EditAddressDialogProps = {
+  address: Address;
+  open: boolean;
+  onOpenChangeAction: (open: boolean) => void;
+};
 
 // Schema cho form, sử dụng to_province_id để quản lý dropdown
 const adjustedAddressInputSchema = z.object({
@@ -47,10 +54,9 @@ const adjustedAddressInputSchema = z.object({
   to_ward_code: z.number().min(1, 'Vui lòng chọn phường/xã'),
 });
 
-export function AddAddressDialog() {
-  const [open, setOpen] = useState(false);
+export function TestEditAddressDialog({ address, open, onOpenChangeAction }: EditAddressDialogProps) {
   const isMobile = useIsMobile();
-  const { mutateAsync: addAddress } = useAddAddress();
+  const { mutateAsync: updateAddress } = useUpdateAddress();
   const queryClient = useQueryClient();
 
   const {
@@ -92,6 +98,25 @@ export function AddAddressDialog() {
     enabled: !!districtId,
   });
   const wards = wardsData?.data ?? [];
+
+  // Memoize province tìm được để tránh re-render không cần thiết
+  const selectedProvince = useMemo(() => {
+    return provinces.find(p => p.ProvinceName === address.to_province_name);
+  }, [provinces, address.to_province_name]);
+
+  // Set giá trị ban đầu từ address prop
+  useEffect(() => {
+    if (address && selectedProvince && open) {
+      reset({
+        to_name: address.to_name,
+        to_phone: address.to_phone,
+        to_address: address.to_address,
+        to_province_id: selectedProvince.ProvinceID,
+        to_district_id: address.to_district_id,
+        to_ward_code: address.to_ward_code,
+      });
+    }
+  }, [address, selectedProvince, open, reset]);
 
   // Reset district và ward khi province thay đổi
   useEffect(() => {
@@ -140,55 +165,31 @@ export function AddAddressDialog() {
         to_name: data.to_name,
         to_phone: data.to_phone,
         to_address: data.to_address,
-        to_ward_code: String(data.to_ward_code),
+        to_ward_code: String(data.to_ward_code), // ép sang string
         to_district_id: data.to_district_id,
         to_province_name: province.ProvinceName,
       };
 
-      console.log('🚀 Gửi request thêm địa chỉ:', payload);
-      await addAddress(payload);
+      console.log('🚀 Gửi request update địa chỉ:', payload);
+      await updateAddress({ id: address.id, updateData: payload });
 
-      toast.success('Thêm địa chỉ thành công.');
+      toast.success('Cập nhật địa chỉ thành công.');
       await queryClient.invalidateQueries({ queryKey: ['addresses'] });
-      setOpen(false);
-      reset();
+      onOpenChangeAction(false);
     } catch (err) {
-      console.error('❌ Lỗi khi thêm địa chỉ:', err);
-      toast.error('Không thể thêm địa chỉ. Vui lòng thử lại.');
+      console.error('❌ Lỗi khi cập nhật địa chỉ:', err);
+      toast.error('Không thể cập nhật địa chỉ. Vui lòng thử lại.');
     }
   };
 
   const FormUI = (
-    <form
-      onSubmit={handleSubmit(onSubmit, (errors) => {
-        console.log('❌ Validation errors:', errors);
-      })}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <FormField
-          id="to_name"
-          label="Họ tên"
-          placeholder="Jane Smith"
-          register={register}
-          error={errors.to_name?.message}
-        />
-        <FormField
-          id="to_phone"
-          label="Số điện thoại"
-          placeholder="9876543210"
-          register={register}
-          error={errors.to_phone?.message}
-        />
+        <FormField id="to_name" label="Họ tên" placeholder="Jane Smith" register={register} error={errors.to_name?.message} />
+        <FormField id="to_phone" label="Số điện thoại" placeholder="9876543210" register={register} error={errors.to_phone?.message} />
       </div>
 
-      <FormField
-        id="to_address"
-        label="Địa chỉ"
-        placeholder="123 Pine St"
-        register={register}
-        error={errors.to_address?.message}
-      />
+      <FormField id="to_address" label="Địa chỉ" placeholder="123 Pine St" register={register} error={errors.to_address?.message} />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="space-y-2">
@@ -262,24 +263,21 @@ export function AddAddressDialog() {
       </div>
 
       <div className="flex justify-end gap-2">
-        <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+        <Button type="button" variant="outline" onClick={() => onOpenChangeAction(false)}>
           Hủy
         </Button>
-        <Button type="submit">Lưu</Button>
+        <Button type="submit">Cập nhật</Button>
       </div>
     </form>
   );
 
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={setOpen}>
-        <DrawerTrigger asChild>
-          <Button>Thêm địa chỉ mới</Button>
-        </DrawerTrigger>
+      <Drawer open={open} onOpenChange={onOpenChangeAction}>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle>Thêm địa chỉ mới</DrawerTitle>
-            <DrawerDescription>Nhập thông tin chi tiết cho địa chỉ giao hàng.</DrawerDescription>
+            <DrawerTitle>Cập nhật địa chỉ</DrawerTitle>
+            <DrawerDescription>Chỉnh sửa thông tin địa chỉ giao hàng.</DrawerDescription>
           </DrawerHeader>
           <div className="p-4">{FormUI}</div>
           <DrawerFooter />
@@ -289,14 +287,11 @@ export function AddAddressDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>Thêm địa chỉ mới</Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChangeAction}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Thêm địa chỉ mới</DialogTitle>
-          <DialogDescription>Nhập thông tin chi tiết cho địa chỉ giao hàng.</DialogDescription>
+          <DialogTitle>Cập nhật địa chỉ</DialogTitle>
+          <DialogDescription>Chỉnh sửa thông tin địa chỉ giao hàng.</DialogDescription>
         </DialogHeader>
         {FormUI}
         <DialogFooter />
@@ -311,13 +306,19 @@ type FormFieldProps = {
   placeholder?: string;
   register: any;
   error?: string;
+  type?: string;
 };
 
-function FormField({ id, label, placeholder, register, error }: FormFieldProps) {
+function FormField({ id, label, placeholder, register, error, type = 'text' }: FormFieldProps) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
-      <Input id={id} placeholder={placeholder} {...register(id)} />
+      <Input
+        id={id}
+        placeholder={placeholder}
+        type={type}
+        {...register(id, type === 'number' ? { valueAsNumber: true } : {})}
+      />
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );

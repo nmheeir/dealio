@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AddAddressDialog } from './add_address_dialog';
-import { EditAddressDialog } from './update-address-dialog';
+import { TestEditAddressDialog } from './test';
 
 export default function AddressList({ data }: { data: Address[] }) {
   const [addresses, setAddress] = React.useState(() => data);
@@ -93,7 +93,7 @@ export default function AddressList({ data }: { data: Address[] }) {
       </div>
 
       {selectedAddress && (
-        <EditAddressDialog
+        <TestEditAddressDialog
           address={selectedAddress}
           open={editOpen}
           onOpenChangeAction={setEditOpen}
