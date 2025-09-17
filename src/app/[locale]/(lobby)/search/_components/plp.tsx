@@ -4,9 +4,9 @@ import { parseAsInteger, useQueryState } from 'nuqs';
 import React from 'react';
 import { useProducts } from '@/api/products/use-products';
 import { AlertCard } from '@/components/alert-card';
+import { ProductCard } from '@/components/product-card';
 import SearchPagination from '@/components/search/search-pagination';
 import PLPLoading from './plp-loading';
-import { TestProductCard } from './test';
 
 type ProductListingPageProps = {
   query?: string | null;
@@ -51,7 +51,7 @@ export default function ProductListingPage({ query }: ProductListingPageProps) {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {/* Your content Product Display */}
         {products.map(product => (
-          <TestProductCard key={product.id} product={product} />
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
       {/* Paging placeholder */}

@@ -15,7 +15,7 @@ export default async function ProductPage(props: ProductPageProps) {
     <div className="relative mx-auto pt-4 xl:px-0">
       <ProductDetailSection slug={slug} />
       {/* More product */}
-      <MoreProductSection variantId={slug} />
+      <MoreProductSection slug={slug} />
     </div>
   );
 }

@@ -10,6 +10,7 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
+  // Hàm cắt ngắn description
   const truncateDescription = (text: string, maxLength: number = 100) => {
     if (text.length <= maxLength) {
       return text;

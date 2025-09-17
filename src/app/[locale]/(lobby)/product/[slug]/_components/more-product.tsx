@@ -1,22 +1,18 @@
 'use client';
 
+import { useQueryState } from 'nuqs';
 import { useSimilarProductVariants } from '@/api/product-variant/use-similar';
-import { ProductCard } from '@/components/product-card';
+import { ProductVariantCard } from '@/components/product-variant-card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/libs/utils';
 import MoreProductLoading from '../loading/more-product-loading';
 
-type MoreProductSectionProps = {
-  variantId: string;
-};
-
-export default function MoreProductSection({ variantId }: MoreProductSectionProps) {
-  const { data, isLoading, error } = useSimilarProductVariants(
-    {
-      variables:
-       { variantId },
-    },
-  );
+export default function MoreProductSection() {
+  const [slug, _setSlug] = useQueryState('variant');
+  const { data, isLoading, error } = useSimilarProductVariants({
+    variables: { slug: slug ?? '' },
+    enabled: !!slug,
+  });
 
   if (isLoading) {
     return <MoreProductLoading />;
@@ -42,7 +38,7 @@ export default function MoreProductSection({ variantId }: MoreProductSectionProp
       <ScrollArea orientation="horizontal" className="pb-3.5">
         <div className={cn('flex gap-4 px-4', 'px-4 lg:px-8')}>
           {similarProductVariants.map(p => (
-            <ProductCard key={p.id} product={p} className="min-w-[260px]" />
+            <ProductVariantCard key={p.id} variant={p} />
           ))}
         </div>
       </ScrollArea>
