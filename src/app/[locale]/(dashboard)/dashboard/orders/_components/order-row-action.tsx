@@ -2,7 +2,7 @@
 'use client';
 
 import type { Order } from '@/api/schemas/order/order.schema';
-import { CreditCard, Gamepad2, MapPin, MoreHorizontal, XCircle } from 'lucide-react';
+import { CreditCard, Gamepad2, MapPin, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { CancelOrder } from './actions/cancel-order';
 import { ViewOrderDetail } from './actions/view-order-detail';
 
 // === Action Items ===
@@ -27,24 +28,6 @@ function ResendPaymentLink({ item }: { item: Order }) {
     >
       <CreditCard className="mr-2 h-4 w-4" />
       Lấy lại link thanh toán
-    </DropdownMenuItem>
-  );
-}
-
-// UC02-092: Hủy đơn hàng
-function CancelOrder({ item }: { item: Order }) {
-  const cancellableStatuses = ['PENDING_CONFIRMATION', 'PENDING_PAYMENT', 'CONFIRMED'];
-  if (!cancellableStatuses.includes(item.status)) {
-    return null;
-  }
-
-  return (
-    <DropdownMenuItem
-      onClick={() => console.log('Hủy đơn hàng', item.id)}
-      className="cursor-pointer"
-    >
-      <XCircle className="mr-2 h-4 w-4" />
-      Hủy đơn hàng
     </DropdownMenuItem>
   );
 }
