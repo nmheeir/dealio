@@ -2,7 +2,7 @@
 'use client';
 
 import type { Order } from '@/api/schemas/order/order.schema';
-import { CreditCard, Gamepad2, MoreHorizontal } from 'lucide-react';
+import { Gamepad2, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,27 +11,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CancelOrder } from './actions/cancel-order';
+import { ResendPaymentLink } from './actions/resend-payment-link';
 import { UpdateAddress } from './actions/update-order-address';
 import { ViewOrderDetail } from './actions/view-order-detail';
-
-// === Action Items ===
-
-// UC02-091: Lấy lại link thanh toán
-function ResendPaymentLink({ item }: { item: Order }) {
-  if (item.status !== 'PENDING_PAYMENT') {
-    return null;
-  }
-
-  return (
-    <DropdownMenuItem
-      onClick={() => console.log('Lấy lại link thanh toán cho', item.id)}
-      className="cursor-pointer"
-    >
-      <CreditCard className="mr-2 h-4 w-4" />
-      Lấy lại link thanh toán
-    </DropdownMenuItem>
-  );
-}
 
 // UC02-093: Xem mã game
 function ViewGameCode({ item }: { item: Order }) {
