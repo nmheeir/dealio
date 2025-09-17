@@ -10,7 +10,7 @@ type Variables = {
 };
 type Response = ApiResponse<any>;
 
-export const useChangeOrderAddress = createMutation<Response, Variables, AxiosError>({
+export const useOrderChangeAddress = createMutation<Response, Variables, AxiosError>({
   mutationFn: async variables =>
     apiClient({
       url: `orders/change-address/${variables.orderId}`,

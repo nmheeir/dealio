@@ -66,7 +66,7 @@ export const orderColumns: ColumnDef<Order>[] = [
     accessorKey: 'order_code',
     header: () => <div className="text-center">Mã đơn</div>,
     cell: ({ row }) => (
-      <div className="text-center font-medium">{row.original.order_code}</div>
+      <div className="text-center font-medium">{row.original.order_code ?? 'None'}</div>
     ),
   },
   // Status

@@ -2,7 +2,7 @@
 'use client';
 
 import type { Order } from '@/api/schemas/order/order.schema';
-import { CreditCard, Gamepad2, MapPin, MoreHorizontal } from 'lucide-react';
+import { CreditCard, Gamepad2, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CancelOrder } from './actions/cancel-order';
+import { UpdateAddress } from './actions/update-order-address';
 import { ViewOrderDetail } from './actions/view-order-detail';
 
 // === Action Items ===
@@ -45,23 +46,6 @@ function ViewGameCode({ item }: { item: Order }) {
     >
       <Gamepad2 className="mr-2 h-4 w-4" />
       Xem mã game
-    </DropdownMenuItem>
-  );
-}
-
-// UC02-094: Đổi thông tin địa chỉ
-function UpdateAddress({ item }: { item: Order }) {
-  if (!(item.order_type === 'PHYSICAL' && !['CANCELED', 'COMPLETED'].includes(item.status))) {
-    return null;
-  }
-
-  return (
-    <DropdownMenuItem
-      onClick={() => console.log('Đổi địa chỉ giao hàng cho', item.id)}
-      className="cursor-pointer"
-    >
-      <MapPin className="mr-2 h-4 w-4" />
-      Đổi địa chỉ giao hàng
     </DropdownMenuItem>
   );
 }
