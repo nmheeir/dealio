@@ -1,7 +1,7 @@
 'use client';
 
 import type { Order } from '@/api/schemas/order/order.schema';
-import { AlertCircle, CircleCheck, CircleX, Package, ShoppingCart, Truck } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CircleCheck, Package, RotateCcw, ShoppingCart, Truck, XCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useGetOrderDetail } from '@/api/order/use-order-detail';
 import { Button } from '@/components/ui/button';
@@ -80,55 +80,7 @@ export function ViewOrderDetail({ item }: { item: Order }) {
       )}
 
       {/* Stepper */}
-      <div className="relative">
-        {/* Thanh ngang */}
-        <div className="absolute top-4 right-0 left-0 z-0 h-1 bg-gray-200">
-          <div
-            className={`h-1 ${
-              order.cancelled_at ? 'bg-red-500' : 'bg-green-500'
-            } transition-all duration-500`}
-            style={{
-              width: order.cancelled_at
-                ? '100%'
-                : `${(currentStep / steps.length) * 100}%`,
-            }}
-          />
-        </div>
-
-        {/* Step icons */}
-        <div className="relative z-10 flex items-center justify-between">
-          {steps.map((step, index) => (
-            <div
-              key={step.status}
-              className="flex flex-col items-center text-center"
-            >
-              <div
-                className={`rounded-full p-2 ${
-                  currentStep > index + 1
-                  || (order.cancelled_at && step.status === 'completed')
-                    ? 'bg-green-100 text-green-600'
-                    : order.cancelled_at
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-gray-100 text-gray-600'
-                }`}
-              >
-                {order.cancelled_at && step.status === 'completed'
-                  ? (
-                      <CircleX className="h-5 w-5" />
-                    )
-                  : (
-                      step.icon
-                    )}
-              </div>
-              <span className="mt-2 text-xs">
-                {order.cancelled_at && step.status === 'completed'
-                  ? 'Đã hủy'
-                  : step.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <OrderStepper order={item} />
 
       {/* Layout chính */}
       <div className={isMobile ? 'space-y-6' : 'grid grid-cols-3 gap-6'}>
@@ -442,5 +394,116 @@ function OrderDetailError({
         )}
       </CardContent>
     </Card>
+  );
+}
+
+const STATUS_ICONS = {
+  CANCELED: <XCircle className="h-5 w-5 text-red-500" />,
+  FAILED: <AlertTriangle className="h-5 w-5 text-yellow-500" />,
+  RETURNED: <RotateCcw className="h-5 w-5 text-orange-500" />,
+};
+
+function getStepsByFlow(order: Order) {
+  if (order.order_type === 'DIGITAL') {
+    return [
+      {
+        statuses: ['PENDING_PAYMENT'],
+        label: 'Thanh toán',
+        icon: <ShoppingCart className="h-5 w-5" />,
+      },
+      {
+        statuses: ['COMPLETED'],
+        label: 'Hoàn thành',
+        icon: <Package className="h-5 w-5" />,
+      },
+    ];
+  }
+
+  // PHYSICAL (COD hoặc Online Physical)
+  return [
+    {
+      statuses: ['PENDING_CONFIRMATION', 'PENDING_PAYMENT'],
+      label: 'Đặt hàng',
+      icon: <ShoppingCart className="h-5 w-5" />,
+    },
+    {
+      statuses: ['PAID', 'CONFIRMED'],
+      label: 'Xác nhận',
+      icon: <CircleCheck className="h-5 w-5" />,
+    },
+    {
+      statuses: ['SHIPPED', 'DELIVERED'],
+      label: 'Đang giao',
+      icon: <Truck className="h-5 w-5" />,
+    },
+    {
+      statuses: ['COMPLETED'],
+      label: 'Hoàn thành',
+      icon: <Package className="h-5 w-5" />,
+    },
+  ];
+}
+
+function OrderStepper({ order }: { order: Order }) {
+  const steps = getStepsByFlow(order);
+
+  // Check trạng thái đặc biệt
+  if (['CANCELED', 'FAILED', 'RETURNED'].includes(order.status)) {
+    return (
+      <div className="flex items-center space-x-4">
+        {STATUS_ICONS[order.status as keyof typeof STATUS_ICONS]}
+        <span className="font-semibold text-red-600">
+          {order.status === 'CANCELED' && 'Đơn hàng đã hủy'}
+          {order.status === 'FAILED' && 'Thanh toán thất bại'}
+          {order.status === 'RETURNED' && 'Đơn hàng bị trả lại'}
+        </span>
+      </div>
+    );
+  }
+
+  // Xác định step hiện tại
+  const currentStep
+    = steps.findIndex(step => step.statuses.includes(order.status)) + 1;
+
+  return (
+    <div className="relative">
+      {/* Thanh tiến trình */}
+      <div className="absolute top-4 right-0 left-0 z-0 h-1 bg-gray-200">
+        <div
+          className="h-1 bg-green-500 transition-all duration-500"
+          style={{ width: `${(currentStep / steps.length) * 100}%` }}
+        />
+      </div>
+
+      {/* Các step */}
+      <div className="relative z-10 flex justify-between">
+        {steps.map((step, index) => {
+          const isActive = index < currentStep;
+          return (
+            <div
+              key={step.label}
+              className="flex flex-col items-center text-center"
+            >
+              <div
+                className={`rounded-full p-2 ${
+                  isActive
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-200 text-gray-500'
+                }`}
+              >
+                {step.icon}
+              </div>
+              <span
+                className={`mt-2 text-sm ${
+                  isActive ? 'font-semibold text-green-600' : 'text-gray-500'
+                }`}
+              >
+                {step.label}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
