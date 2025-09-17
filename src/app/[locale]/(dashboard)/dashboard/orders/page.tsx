@@ -1,5 +1,7 @@
+import { OrderTable } from './_components/order-table';
+
 export default function DashboardOrderPage() {
   return (
-    <div>Dashboard Order Page</div>
+    <OrderTable />
   );
 }

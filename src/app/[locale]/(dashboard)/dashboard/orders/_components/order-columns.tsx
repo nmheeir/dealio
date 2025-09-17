@@ -94,20 +94,6 @@ export const orderColumns: ColumnDef<Order>[] = [
       <div className="text-center">{row.original.order_type}</div>
     ),
   },
-  // Customer name + phone
-  {
-    id: 'customer',
-    header: () => <div className="text-left">Người nhận</div>,
-    cell: ({ row }) => {
-      const addr = row.original.orderAddress;
-      return (
-        <div className="text-left">
-          <div className="font-medium">{addr.to_name}</div>
-          <div className="text-sm text-muted-foreground">{addr.to_phone}</div>
-        </div>
-      );
-    },
-  },
   // Subtotal, discount, shipping, total
   {
     id: 'amounts',
@@ -134,24 +120,29 @@ export const orderColumns: ColumnDef<Order>[] = [
   },
   // Dates
   {
-    id: 'dates',
-    header: () => <div className="text-center">Thời gian</div>,
+    id: 'createdAt',
+    header: () => <div className="text-center">Ngày đặt</div>,
     cell: ({ row }) => (
       <div className="text-center text-sm">
-        <div>
-          Đặt:
-          {formatDate(row.original.createdAt)}
-        </div>
-        {row.original.expired_at && (
-          <div className="text-muted-foreground">
-            Hết hạn:
-            {' '}
-            {formatDate(row.original.expired_at)}
-          </div>
-        )}
+        {formatDate(row.original.createdAt)}
       </div>
     ),
   },
+  {
+    id: 'expiredAt',
+    header: () => <div className="text-center">Hết hạn</div>,
+    cell: ({ row }) =>
+      row.original.expired_at
+        ? (
+            <div className="text-center text-sm text-muted-foreground">
+              {formatDate(row.original.expired_at)}
+            </div>
+          )
+        : (
+            <div className="text-center text-sm text-muted-foreground">—</div>
+          ),
+  },
+
   // Actions
   {
     id: 'actions',

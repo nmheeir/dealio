@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ViewOrderDetail } from './actions/view-order-detail';
 
 // === Action Items ===
 
@@ -92,6 +93,7 @@ export default function OrderRowAction({ item }: { item: Order }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        <ViewOrderDetail item={item} />
         <ResendPaymentLink item={item} />
         <CancelOrder item={item} />
         <ViewGameCode item={item} />

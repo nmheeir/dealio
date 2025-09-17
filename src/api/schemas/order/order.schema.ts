@@ -18,8 +18,8 @@ export const orderSchema = z.object({
   expired_at: z.string(),
   cancelled_at: z.iso.datetime().nullable(),
   completed_at: z.iso.datetime().nullable(),
-  orderAddress: orderAddressSchema,
-  orderItems: z.array(orderItemSchema),
+  orderAddress: orderAddressSchema.optional(),
+  orderItems: z.array(orderItemSchema).optional(),
 });
 
 export type Order = z.infer<typeof orderSchema>;

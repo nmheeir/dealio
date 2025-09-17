@@ -14,7 +14,7 @@ export const useGetOrderDetail = createQuery<Response, Variables, AxiosError>({
   queryKey: ['order'],
   fetcher: (variables) => {
     return apiClient
-      .get(`order/${variables.orderId}`)
+      .get(`orders/${variables.orderId}`)
       .then(response => response.data);
   },
 });
