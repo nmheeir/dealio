@@ -3,87 +3,110 @@
 'use client';
 
 import type { CartItem } from '@/api/schemas/cart/cart.schema';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+import { AlertCircle } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
-import { toast } from 'sonner';
 import { useAddresses } from '@/api/address/use-addressed';
-import apiClient from '@/api/common/client';
+import { useCartCheckoutDigital } from '@/api/cart/use-cart-checkout-digital';
+import { useCartCheckoutPhysical } from '@/api/cart/use-cart-checkout-physical';
+import { useGetCarts } from '@/api/cart/use-get-cart';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/libs/utils';
 import { CartItemsTable } from '../_components/cart-item-table';
 import { CartItemsCards } from '../_components/cart-items-cards';
 import { CartSummary } from '../_components/cart-summary';
 
-type Address = {
-  id: string;
-  name: string;
-  phone: string;
-  address: string;
-  city: string;
-};
-
 export default function CheckoutPaymentPage() {
   const [type] = useQueryState('type');
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'ONLINE' | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'MOMO_WALLET' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const isDigital = type === 'digital';
 
   // Fetch cart items
-  const { data, isLoading, error } = useGetCarts({ cartType: isDigital ? 'DIGITAL' : 'PHYSICAL' });
-
-  // Fetch addresses (for physical cart)
-  const { data: addresses, isLoading: addressesLoading } = useAddresses();
-  const addresses1 = addresses?.data.data ?? [];
-
-  // Mutation to create order
-  const createOrderMutation = useMutation({
-    mutationFn: (payload: { cartType: 'DIGITAL' | 'PHYSICAL'; addressId?: string; paymentMethod?: 'COD' | 'ONLINE' }) => {
-      // TODO: Implement API call to create order
-      // Example: return apiClient.post('/orders', payload).then(res => res.data);
-      return Promise.resolve({ paymentUrl: 'https://payment-gateway.com' }); // Placeholder
-    },
-    onSuccess: (data) => {
-      if (isDigital || paymentMethod === 'ONLINE') {
-        window.location.href = data.paymentUrl; // Redirect to payment gateway
-      } else {
-        toast.success('Đơn hàng của bạn đã được tạo');
-        queryClient.invalidateQueries({ queryKey: ['carts'] });
-      }
-    },
-    onError: (error: any) => {
-      toast.error(error.message);
-      setIsSubmitting(false);
+  const { data, isLoading, error } = useGetCarts({
+    variables: {
+      cartType: isDigital ? 'DIGITAL' : 'PHYSICAL',
     },
   });
 
+  // Fetch addresses (for physical cart)
+  const { data: addresses, isLoading: addressesLoading, error: addressesError } = useAddresses();
+  const addresses1 = addresses?.data.data ?? [];
+
+  // Mutations
+  const digitalCheckout = useCartCheckoutDigital();
+  const physicalCheckout = useCartCheckoutPhysical();
+
   const handleCheckout = () => {
+    setConfirmDialogOpen(true); // Mở dialog xác nhận
+  };
+
+  const confirmCheckout = () => {
+    setErrorMessage(null);
+    setIsSubmitting(true);
+
     if (isDigital) {
-      setIsSubmitting(true);
-      createOrderMutation.mutate({ cartType: 'DIGITAL' });
-    } else if (paymentMethod && (!paymentMethod === 'COD' || selectedAddress)) {
-      setIsSubmitting(true);
-      createOrderMutation.mutate({ cartType: 'PHYSICAL', addressId: selectedAddress, paymentMethod });
-    } else {
-      toast({
-        title: 'Lỗi',
-        description: paymentMethod ? 'Vui lòng chọn địa chỉ giao hàng.' : 'Vui lòng chọn phương thức thanh toán.',
-        variant: 'destructive',
+      digitalCheckout.mutate(undefined, {
+        onSuccess: (response) => {
+          if (response.statusCode === 200) {
+            setSuccessDialogOpen(true);
+            queryClient.invalidateQueries({ queryKey: ['carts'] });
+          } else {
+            setErrorMessage(response.message || 'Không thể tạo đơn hàng.');
+          }
+        },
+        onError: (error: any) => {
+          setErrorMessage(error.response?.data?.message || 'Không thể tạo đơn hàng.');
+        },
+        onSettled: () => {
+          setIsSubmitting(false);
+          setConfirmDialogOpen(false);
+        },
       });
+    } else if (paymentMethod && (paymentMethod === 'MOMO_WALLET' || selectedAddress)) {
+      physicalCheckout.mutate(
+        { addressId: selectedAddress!, paymentMethod },
+        {
+          onSuccess: (response) => {
+            if (response.statusCode === 200) {
+              setSuccessDialogOpen(true);
+              queryClient.invalidateQueries({ queryKey: ['carts'] });
+            } else {
+              setErrorMessage(response.message || 'Không thể tạo đơn hàng.');
+            }
+          },
+          onError: (error: any) => {
+            setErrorMessage(error.response?.data?.message || 'Không thể tạo đơn hàng.');
+          },
+          onSettled: () => {
+            setIsSubmitting(false);
+            setConfirmDialogOpen(false);
+          },
+        },
+      );
+    } else {
+      setErrorMessage(
+        paymentMethod ? 'Vui lòng chọn địa chỉ giao hàng.' : 'Vui lòng chọn phương thức thanh toán.',
+      );
+      setIsSubmitting(false);
+      setConfirmDialogOpen(false);
     }
   };
 
   const handleRetryPayment = () => {
     // TODO: Implement navigation to UC02-092 to retrieve payment link
-    toast({
-      title: 'Lấy lại link thanh toán',
-      description: 'Chuyển hướng đến trang lấy lại link thanh toán.',
-    });
+    setErrorMessage('Chuyển hướng đến trang lấy lại link thanh toán.');
   };
 
   if (isLoading) {
@@ -92,27 +115,39 @@ export default function CheckoutPaymentPage() {
 
   if (error || !data) {
     return (
-      <div className="p-4 text-center text-red-500">
-        {error?.message || 'Không thể tải giỏ hàng'}
-        <Button variant="link" onClick={handleRetryPayment} className="mt-2">
-          Thử lại
-        </Button>
-      </div>
+      <Card className="border-red-200 bg-red-50">
+        <CardHeader className="flex flex-row items-center space-x-2">
+          <AlertCircle className="h-5 w-5 text-red-600" />
+          <CardTitle className="text-red-600">Lỗi tải dữ liệu</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-red-600">{error?.message || 'Không thể tải giỏ hàng'}</p>
+          <Button variant="link" onClick={handleRetryPayment}>
+            Thử lại
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
   const items: CartItem[] = data.data.data;
 
-  // Check for unavailable items
-  const hasUnavailableItems = items.some(item => item.productStatus !== 'ACTIVE' || item.outOfStock);
-  if (hasUnavailableItems) {
+  if (items.some(item => item.productStatus !== 'ACTIVE')) {
     return (
-      <div className="p-4 text-center text-red-500">
-        Một số sản phẩm không còn khả dụng. Vui lòng cập nhật giỏ hàng.
-        <Button variant="link" onClick={() => window.location.href = '/cart'}>
-          Quay lại giỏ hàng
-        </Button>
-      </div>
+      <Card className="border-red-200 bg-red-50">
+        <CardHeader className="flex flex-row items-center space-x-2">
+          <AlertCircle className="h-5 w-5 text-red-600" />
+          <CardTitle className="text-red-600">Sản phẩm không khả dụng</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-red-600">
+            Một số sản phẩm không còn khả dụng. Vui lòng cập nhật giỏ hàng.
+          </p>
+          <Button variant="link" onClick={() => window.location.href = '/cart'}>
+            Quay lại giỏ hàng
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -123,6 +158,17 @@ export default function CheckoutPaymentPage() {
         {' '}
         {isDigital ? 'Digital' : 'Vật lý'}
       </h1>
+      {errorMessage && (
+        <Card className="mb-6 border-red-200 bg-red-50">
+          <CardHeader className="flex flex-row items-center space-x-2">
+            <AlertCircle className="h-5 w-5 text-red-600" />
+            <CardTitle className="text-red-600">Lỗi</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-red-600">{errorMessage}</p>
+          </CardContent>
+        </Card>
+      )}
       <div className="grid gap-6">
         {/* Cart Items */}
         <div className="hidden md:block">
@@ -150,45 +196,76 @@ export default function CheckoutPaymentPage() {
             <h2 className="text-lg font-medium">Địa chỉ giao hàng</h2>
             {addressesLoading
               ? (
-                  <Skeleton className="h-10 w-full" />
-                )
-              : (
                   <div className="grid grid-cols-2 gap-4">
-                    {addresses1?.map(address => (
-                      <div
-                        key={address.id}
-                        className={cn(
-                          'flex flex-col justify-between rounded-md border p-4 cursor-pointer',
-                          selectedAddress === address.id
-                            ? 'border-primary bg-primary/10'
-                            : 'border-border',
-                        )}
-                        onClick={() => setSelectedAddress(address.id)}
-                      >
-                        <div className="flex-1">
-                          <p className="font-medium">{address.to_name}</p>
-                          <p className="text-sm text-muted-foreground">{address.to_phone}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {address.to_address}
-                            ,
-                            {address.to_province_name}
-                          </p>
-                        </div>
-                        <div className="mt-3 flex justify-end">
-                          <Button
-                            variant={selectedAddress === address.id ? 'default' : 'outline'}
-                            size="sm"
-                            onClick={() => setSelectedAddress(address.id)}
-                          >
-                            {selectedAddress === address.id ? 'Đã chọn' : 'Chọn'}
-                          </Button>
-                        </div>
-                      </div>
+                    {Array.from({ length: 2 }).map((_, i) => (
+                      <Skeleton key={i} className="h-24 w-full" />
                     ))}
                   </div>
-                )}
+                )
+              : addressesError
+                ? (
+                    <Card className="border-red-200 bg-red-50">
+                      <CardHeader className="flex flex-row items-center space-x-2">
+                        <AlertCircle className="h-5 w-5 text-red-600" />
+                        <CardTitle className="text-red-600">Lỗi tải địa chỉ</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-red-600">
+                          {addressesError.message || 'Không thể tải danh sách địa chỉ.'}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  )
+                : addresses1.length === 0
+                  ? (
+                      <Card className="border-yellow-200 bg-yellow-50">
+                        <CardHeader className="flex flex-row items-center space-x-2">
+                          <AlertCircle className="h-5 w-5 text-yellow-600" />
+                          <CardTitle className="text-yellow-600">Chưa có địa chỉ</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-yellow-600">
+                            Vui lòng thêm địa chỉ giao hàng trong Tài khoản.
+                          </p>
+                        </CardContent>
+                      </Card>
+                    )
+                  : (
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        {addresses1.map(address => (
+                          <div
+                            key={address.id}
+                            className={cn(
+                              'flex flex-col justify-between rounded-md border p-4 cursor-pointer',
+                              selectedAddress === address.id
+                                ? 'border-primary bg-primary/10'
+                                : 'border-border',
+                            )}
+                            onClick={() => setSelectedAddress(address.id)}
+                          >
+                            <div className="flex-1">
+                              <p className="font-medium">{address.to_name}</p>
+                              <p className="text-sm text-muted-foreground">{address.to_phone}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {address.to_address}
+                                ,
+                                {address.to_province_name}
+                              </p>
+                            </div>
+                            <div className="mt-3 flex justify-end">
+                              <Button
+                                variant={selectedAddress === address.id ? 'default' : 'outline'}
+                                size="sm"
+                                onClick={() => setSelectedAddress(address.id)}
+                              >
+                                {selectedAddress === address.id ? 'Đã chọn' : 'Chọn'}
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
           </div>
-
         )}
 
         {/* Payment Method (Physical Only) */}
@@ -203,9 +280,9 @@ export default function CheckoutPaymentPage() {
                   description: 'Trả tiền mặt trực tiếp cho nhân viên giao hàng',
                 },
                 {
-                  id: 'ONLINE',
-                  label: 'Thanh toán trực tuyến',
-                  description: 'Hỗ trợ thẻ, ví điện tử, chuyển khoản',
+                  id: 'MOMO_WALLET',
+                  label: 'Thanh toán qua MoMo',
+                  description: 'Hỗ trợ thanh toán bằng ví MoMo',
                 },
               ].map(method => (
                 <div
@@ -216,7 +293,7 @@ export default function CheckoutPaymentPage() {
                       ? 'border-primary bg-primary/5'
                       : 'border-border bg-background',
                   )}
-                  onClick={() => setPaymentMethod(method.id as 'COD' | 'ONLINE')}
+                  onClick={() => setPaymentMethod(method.id as 'COD' | 'MOMO_WALLET')}
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{method.label}</span>
@@ -229,7 +306,6 @@ export default function CheckoutPaymentPage() {
               ))}
             </div>
           </div>
-
         )}
 
         {/* Summary */}
@@ -268,18 +344,51 @@ export default function CheckoutPaymentPage() {
                       'Xác nhận COD'
                     )
                   : (
-                      'Thanh toán ngay'
+                      'Thanh toán qua MoMo'
                     )}
           </Button>
         </div>
+
+        {/* Confirm Dialog */}
+        <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Xác nhận thanh toán</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-muted-foreground">
+              Bạn có chắc chắn muốn
+              {' '}
+              {isDigital ? 'thanh toán ngay' : 'xác nhận đơn hàng'}
+              ?
+            </p>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setConfirmDialogOpen(false)}>
+                Hủy
+              </Button>
+              <Button onClick={confirmCheckout} disabled={isSubmitting}>
+                Xác nhận
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Success Dialog */}
+        <Dialog open={successDialogOpen} onOpenChange={setSuccessDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Đơn hàng đã được tạo thành công</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-muted-foreground">
+              Cảm ơn bạn đã đặt hàng. Bạn có thể quay về trang chủ để tiếp tục mua sắm.
+            </p>
+            <DialogFooter>
+              <Button onClick={() => window.location.href = '/'}>
+                Về trang chủ
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
-}
-
-function useGetCarts({ cartType }: { cartType: 'DIGITAL' | 'PHYSICAL' }) {
-  return useQuery({
-    queryKey: ['carts', cartType],
-    queryFn: () => apiClient.get(`/carts?cartType=${cartType}`).then(res => res.data),
-  });
 }

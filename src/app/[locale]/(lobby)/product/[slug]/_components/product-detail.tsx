@@ -94,8 +94,8 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
             { orderId },
             {
               onSuccess: (payRes) => {
-                if (payRes?.data?.paymentUrl) {
-                  window.open(payRes.data.paymentUrl, '_blank');
+                if (payRes?.data?.payUrl) {
+                  window.open(payRes.data.payUrl, '_blank');
                   toast.success('Chuyển đến cổng thanh toán...');
                 } else {
                   toast.error('Không lấy được link thanh toán.');
@@ -148,12 +148,13 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
       paymentMethod: selectedPaymentMethod === 'COD' ? 'COD' : 'MOMO_WALLET',
     };
     await physicalBuyNow(payload, {
-      onSuccess: (res) => {
+      onSuccess: async (res) => {
         if (res?.statusCode === 201 && res?.data?.id) {
           const orderId = res.data.id;
 
           if (selectedPaymentMethod === 'MOMO_WALLET') {
           // Gọi thêm API để lấy link thanh toán
+            await new Promise(resolve => setTimeout(resolve, 300));
             paymentGetLink(
               { orderId },
               {
