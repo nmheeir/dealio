@@ -4,6 +4,9 @@ import { z } from 'zod';
 export const ProductStatusEnum = z.enum(['ACTIVE', 'INACTIVE', 'DISCONTINUED']);
 export type ProductStatus = z.infer<typeof ProductStatusEnum>;
 
+export const CartTypeEnum = z.enum(['DIGITAL', 'PHYSICAL']);
+export type CarType = z.infer<typeof ProductStatusEnum>;
+
 // Schema cho item trong giỏ hàng
 export const cartItemSchema = z.object({
   createdAt: z.iso.datetime(), // ISO 8601
@@ -16,6 +19,7 @@ export const cartItemSchema = z.object({
   price: z.string(),
   discount: z.string(),
   productStatus: ProductStatusEnum,
+  cartType: CartTypeEnum,
 });
 
 export type CartItem = z.infer<typeof cartItemSchema>;

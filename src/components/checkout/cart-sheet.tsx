@@ -17,11 +17,23 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn, formatPrice } from '@/libs/utils';
 import { Card, CardContent } from '../ui/card';
 
 export function CartSheet() {
-  const { data, isLoading, error } = useGetCarts();
+  const isMobile = useIsMobile();
+
+  const digital = useGetCarts({ variables: {
+    cartType: 'DIGITAL',
+  } });
+  const physical = useGetCarts({ variables: {
+    cartType: 'PHYSICAL',
+  } });
+
+  const isLoading = digital.isLoading || physical.isLoading;
+  const error = digital.error || physical.error;
 
   if (isLoading) {
     return (
@@ -32,7 +44,7 @@ export function CartSheet() {
     );
   }
 
-  if (error || !data) {
+  if (error || (!digital.data && !physical.data)) {
     return (
       <div className="flex items-center justify-center p-4 text-red-500">
         {error?.message || 'Failed to load cart'}
@@ -40,12 +52,16 @@ export function CartSheet() {
     );
   }
 
-  const carts: CartItem[] = data.data.data;
-  const itemCount = carts.reduce((total, item) => total + item.quantity, 0);
-  const cartTotal = carts.reduce(
-    (total, item) => total + Number(item.price) * item.quantity,
-    0,
-  );
+  const digitalCarts: CartItem[] = digital.data?.data.data ?? [];
+  const physicalCarts: CartItem[] = physical.data?.data.data ?? [];
+
+  const itemCount
+    = digitalCarts.reduce((total, item) => total + item.quantity, 0)
+      + physicalCarts.reduce((total, item) => total + item.quantity, 0);
+
+  const cartTotal
+    = digitalCarts.reduce((total, item) => total + Number(item.price) * item.quantity, 0)
+      + physicalCarts.reduce((total, item) => total + Number(item.price) * item.quantity, 0);
 
   return (
     <Sheet>
@@ -74,46 +90,75 @@ export function CartSheet() {
             {' '}
             {itemCount > 0 ? `(${itemCount})` : ''}
           </SheetTitle>
-          <Separator className="my-2" />
+          <Separator className="" />
         </SheetHeader>
         {itemCount > 0
           ? (
               <>
-                <CartLineItems
-                  items={carts}
-                  isScrollable
-                  isEditable
-                  variant="default"
-                  className="flex-1"
-                />
-                <div className="space-y-4">
-                  <Separator />
-                  <Card className="rounded-xl border-none bg-background p-4 shadow-none">
-                    <CardContent className="space-y-3 text-sm">
-                      {/* Shipping */}
-                      <div className="flex justify-between text-muted-foreground">
-                        <span>Shipping</span>
-                        <span>Free</span>
-                      </div>
+                <Tabs defaultValue="digital" className="flex flex-1 flex-col">
+                  <TabsList className="grid w-full grid-cols-2 px-4">
+                    <TabsTrigger value="digital">Digital</TabsTrigger>
+                    <TabsTrigger value="physical">Physical</TabsTrigger>
+                  </TabsList>
+                  <TabsContent
+                    value="digital"
+                    className={cn(
+                      'flex-1 overflow-auto',
+                      !isMobile && 'max-h-[400px]',
+                    )}
 
-                      {/* Taxes */}
-                      <div className="flex justify-between text-muted-foreground">
-                        <span>Taxes</span>
-                        <span>Calculated at checkout</span>
-                      </div>
+                  >
+                    <CartLineItems
+                      items={digitalCarts}
+                      isScrollable
+                      isEditable
+                      variant="default"
+                      className="h-full"
+                    />
+                  </TabsContent>
+                  <TabsContent
+                    value="physical"
+                    className={cn(
+                      'flex-1 overflow-auto',
+                      !isMobile && 'max-h-[400px]',
+                    )}
 
-                      {/* Divider */}
-                      <Separator />
-
-                      {/* Total */}
-                      <div className="flex justify-between text-base font-semibold">
-                        <span>Total</span>
-                        <span>{formatPrice(cartTotal.toFixed(2))}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-
+                  >
+                    <CartLineItems
+                      items={physicalCarts}
+                      isScrollable
+                      isEditable
+                      variant="default"
+                      className="h-full"
+                    />
+                  </TabsContent>
+                </Tabs>
+                <div className="bg-blue-200">
                   <SheetFooter>
+                    <Card className="rounded-xl border-none bg-background shadow-none">
+                      <CardContent className="space-y-3 text-sm">
+                        {/* Shipping */}
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Shipping</span>
+                          <span>Free</span>
+                        </div>
+
+                        {/* Taxes */}
+                        <div className="flex justify-between text-muted-foreground">
+                          <span>Taxes</span>
+                          <span>Calculated at checkout</span>
+                        </div>
+
+                        {/* Divider */}
+                        <Separator />
+
+                        {/* Total */}
+                        <div className="flex justify-between text-base font-semibold">
+                          <span>Total</span>
+                          <span>{formatPrice(cartTotal.toFixed(2))}</span>
+                        </div>
+                      </CardContent>
+                    </Card>
                     <SheetTrigger asChild>
                       <Link
                         aria-label="Continue to checkout"

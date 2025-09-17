@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use client';
 
 import type { CartItem } from '@/api/schemas/cart/cart.schema';
@@ -32,13 +31,13 @@ export function CartLineItems({
   const { mutateAsync: deleteCartItem } = useDeleteCartItem();
   const queryClient = useQueryClient();
 
-  async function handleDelete(id: string) {
+  async function handleDelete(id: string, variant_name: string) {
     await deleteCartItem(
       { productVariantId: id },
       {
-        onSuccess: (data) => {
-          console.log('API response:', data);
+        onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['carts'] });
+          toast.success(`Delete ${variant_name}`);
         },
         onError: (error) => {
           const message
@@ -52,13 +51,13 @@ export function CartLineItems({
 
   return (
     <Comp className={cn('h-full', isScrollable && 'max-h-[500px]', className)} {...props}>
-      <div className="flex w-full flex-col space-y-4 px-4">
+      <div className="flex w-full flex-col space-y-4">
         {items.map(item => (
           <CartItemUi
             key={item.id}
             item={item}
             onDeleteAction={(id) => {
-              handleDelete(id);
+              handleDelete(id, item.name);
             }}
           />
         ))}
@@ -75,7 +74,7 @@ type CartItemUiProps = {
 export function CartItemUi({ item, onDeleteAction }: CartItemUiProps) {
   const [quantity, setQuantity] = useState(item.quantity);
 
-  const maxStock = 100;
+  const maxStock = item.quantity;
 
   const handleDecrease = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
   const handleIncrease = () => setQuantity(prev => (prev < maxStock ? prev + 1 : maxStock));
@@ -84,7 +83,7 @@ export function CartItemUi({ item, onDeleteAction }: CartItemUiProps) {
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(price));
 
   return (
-    <Card className="grid grid-cols-[auto_1fr_auto] items-start gap-4 p-4">
+    <Card className="mx-4 grid grid-cols-[auto_1fr_auto] items-start gap-4 p-4">
       {/* Cột 1: Ảnh */}
       <div className="relative h-24 w-24 overflow-hidden rounded-md">
         <Image
@@ -122,50 +121,53 @@ export function CartItemUi({ item, onDeleteAction }: CartItemUiProps) {
         </Button>
 
         {/* Quantity selector (dưới cùng) */}
-        <div className="flex items-center justify-between rounded-lg border bg-background">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-5 w-5"
-            onClick={handleDecrease}
-            disabled={quantity <= 1}
-            aria-label="Giảm số lượng"
-          >
-            <Icons.minus className="h-4 w-4" />
-          </Button>
-          <div className="flex h-5 w-10 items-center justify-center border-x">
-            <input
-              type="number"
-              min={1}
-              max={maxStock}
-              value={quantity}
-              onChange={(e) => {
-                let val = Number(e.target.value);
-                if (Number.isNaN(val) || val < 1) {
-                  val = 1;
-                }
-                if (val > maxStock) {
-                  val = maxStock;
-                }
-                setQuantity(val);
-              }}
-              className="w-full [appearance:textfield] text-center text-sm font-medium
+        { item.cartType === 'PHYSICAL'
+          && (
+            <div className="flex items-center justify-between rounded-lg border bg-background">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-5 w-5"
+                onClick={handleDecrease}
+                disabled={quantity <= 1}
+                aria-label="Giảm số lượng"
+              >
+                <Icons.minus className="h-4 w-4" />
+              </Button>
+              <div className="flex h-5 w-10 items-center justify-center border-x">
+                <input
+                  type="number"
+                  min={1}
+                  max={maxStock}
+                  value={quantity}
+                  onChange={(e) => {
+                    let val = Number(e.target.value);
+                    if (Number.isNaN(val) || val < 1) {
+                      val = 1;
+                    }
+                    if (val > maxStock) {
+                      val = maxStock;
+                    }
+                    setQuantity(val);
+                  }}
+                  className="w-full [appearance:textfield] text-center text-sm font-medium
                    focus:outline-none
                    [&::-webkit-inner-spin-button]:appearance-none
                    [&::-webkit-outer-spin-button]:appearance-none"
-            />
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-5 w-5 rounded-r-none"
-            onClick={handleIncrease}
-            disabled={quantity >= maxStock}
-            aria-label="Tăng số lượng"
-          >
-            <Icons.plus className="h-4 w-4" />
-          </Button>
-        </div>
+                />
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-5 w-5 rounded-r-none"
+                onClick={handleIncrease}
+                disabled={quantity >= maxStock}
+                aria-label="Tăng số lượng"
+              >
+                <Icons.plus className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
       </div>
     </Card>
 

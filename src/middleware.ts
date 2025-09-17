@@ -29,7 +29,7 @@ export default async function middleware(request: NextRequest) {
   const token = request.cookies.get('access_token')?.value;
   const { pathname } = request.nextUrl;
 
-  const protectedRoutes = ['/dashboard', '/profile', '/admin'];
+  const protectedRoutes = ['/dashboard', '/profile', '/admin', '/checkout'];
   const authRoutes = ['/signin', '/signup'];
 
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
