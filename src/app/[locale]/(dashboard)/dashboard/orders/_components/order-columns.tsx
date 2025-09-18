@@ -3,35 +3,7 @@ import type { Order } from '@/api/schemas/order/order.schema';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import OrderRowAction from './order-row-action';
-
-function formatCurrency(value: string | number): string {
-  const num = typeof value === 'string' ? Number.parseFloat(value) : value;
-  return num.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-}
-
-function formatDate(value: string): string {
-  const date = new Date(value);
-  return date.toLocaleString('vi-VN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-const orderStatusColor: Record<string, string> = {
-  PENDING_CONFIRMATION: 'bg-yellow-100 text-yellow-800',
-  PENDING_PAYMENT: 'bg-orange-100 text-orange-800',
-  PAID: 'bg-blue-100 text-blue-800',
-  CONFIRMED: 'bg-indigo-100 text-indigo-800',
-  SHIPPED: 'bg-purple-100 text-purple-800',
-  DELIVERED: 'bg-teal-100 text-teal-800',
-  COMPLETED: 'bg-green-100 text-green-800',
-  CANCELED: 'bg-red-100 text-red-800',
-  FAILED: 'bg-red-200 text-red-900',
-  RETURNED: 'bg-gray-200 text-gray-800',
-};
+import { formatCurrency, formatDate, orderStatusColor, paymentMethodColor } from './utils';
 
 export const orderColumns: ColumnDef<Order>[] = [
   // Checkbox select
@@ -93,6 +65,22 @@ export const orderColumns: ColumnDef<Order>[] = [
     cell: ({ row }) => (
       <div className="text-center">{row.original.order_type}</div>
     ),
+  },
+  {
+    accessorKey: 'payment_method',
+    header: () => <div className="text-center">Thanh toán</div>,
+    cell: ({ row }) => {
+      const paymentMethod = row.original.payment_method;
+      return (
+        <div className="flex justify-center">
+          <Badge
+            className={`${paymentMethodColor[paymentMethod]} rounded-full px-2 py-0.5`}
+          >
+            {paymentMethod}
+          </Badge>
+        </div>
+      );
+    },
   },
   // Subtotal, discount, shipping, total
   {

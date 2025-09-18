@@ -66,10 +66,7 @@ const baseMenus: Record<string, NavItem[]> = {
       url: '/orders',
       icon: ShoppingCart,
       items: [
-        { title: 'Danh sách đơn hàng', url: '/orders' },
-        { title: 'Đơn chờ xác nhận', url: '/orders?status=pending_confirmation' },
-        { title: 'Đơn chờ thanh toán', url: '/orders?status=pending_payment' },
-        { title: 'Đơn đã hoàn thành', url: '/orders?status=completed' },
+        { title: 'Danh sách đơn hàng', url: 'dashboard/orders/manage' },
       ],
     },
     {
