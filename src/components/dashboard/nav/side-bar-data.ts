@@ -40,7 +40,8 @@ const baseMenus: Record<string, NavItem[]> = {
     },
   ],
 
-  manager: [
+  // Các menu manager chung (ngoại trừ "Quản lý khách hàng")
+  managerCommon: [
     {
       title: 'Danh mục & thương hiệu',
       url: '/manager/categories-brands',
@@ -70,16 +71,6 @@ const baseMenus: Record<string, NavItem[]> = {
       ],
     },
     {
-      title: 'Quản lý khách hàng',
-      url: '/manager/customers',
-      icon: Users,
-      items: [
-        { title: 'Danh sách khách hàng', url: '/dashboard/customers' },
-        { title: 'Khách hàng hoạt động', url: '/manager/customers?status=active' },
-        { title: 'Lịch sử đơn hàng', url: '/manager/customers/orders' },
-      ],
-    },
-    {
       title: 'Báo cáo doanh số',
       url: '/manager/sales',
       icon: BarChart3,
@@ -103,6 +94,21 @@ const baseMenus: Record<string, NavItem[]> = {
     },
   ],
 
+  // Menu chỉ dành cho MANAGER
+  managerCustomer: [
+    {
+      title: 'Quản lý khách hàng',
+      url: '/manager/customers',
+      icon: Users,
+      items: [
+        { title: 'Danh sách khách hàng', url: '/dashboard/customers' },
+        { title: 'Khách hàng hoạt động', url: '/manager/customers?status=active' },
+        { title: 'Lịch sử đơn hàng', url: '/manager/customers/orders' },
+      ],
+    },
+  ],
+
+  // Menu dành riêng cho ADMIN
   adminExtra: [
     {
       title: 'Quản lý tài khoản',
@@ -131,19 +137,18 @@ const baseMenus: Record<string, NavItem[]> = {
 };
 
 export function getSidebarItems(role: UserRole): NavItem[] {
-  console.log('getSidebarItems', role);
-
   const customer = baseMenus.customer ?? [];
-  const manager = baseMenus.manager ?? [];
+  const managerCommon = baseMenus.managerCommon ?? [];
+  const managerCustomer = baseMenus.managerCustomer ?? [];
   const adminExtra = baseMenus.adminExtra ?? [];
 
   switch (role) {
     case 'CUSTOMER':
       return customer;
     case 'MANAGER':
-      return [...customer, ...manager];
+      return [...customer, ...managerCommon, ...managerCustomer];
     case 'ADMIN':
-      return [...customer, ...manager, ...adminExtra];
+      return [...customer, ...managerCommon, ...adminExtra]; // KHÔNG có managerCustomer
     default:
       return [];
   }

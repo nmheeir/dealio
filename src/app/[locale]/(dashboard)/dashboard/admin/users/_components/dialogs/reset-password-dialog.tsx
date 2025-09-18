@@ -3,6 +3,7 @@
 import type { User } from '@/api/schemas/user/user.schema';
 import { useState } from 'react';
 import { toast } from 'sonner'; // hoặc shadcn/ui toaster
+import { useAdminSendNewPassword } from '@/api/users/admin/use-admin-send-new-password';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -17,13 +18,32 @@ import {
 export function ResetPasswordDialog({ user }: { user: User }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { mutateAsync: sendNewPassword } = useAdminSendNewPassword();
 
   const handleReset = async () => {
     try {
       setLoading(true);
-      // await resetPassword(user.id); // gọi API backend
-      toast.success(`Đã cấp lại mật khẩu cho ${user.profile?.fullname ?? user.id}`);
-      setOpen(false);
+      await sendNewPassword(
+        {
+          userId: user.id,
+        },
+        {
+          onSuccess: () => {
+            toast.success(`Đã cấp lại mật khẩu cho ${user.profile?.fullname ?? user.id}`);
+            setOpen(false);
+          },
+          onError: (err: any) => {
+            console.error('Lỗi khi cấp lại mật khẩu:', err);
+
+            const apiMessage
+        = err.response?.data?.message
+          || err.message
+          || 'Có lỗi xảy ra khi cấp lại mật khẩu.';
+
+            toast.error(apiMessage);
+          },
+        },
+      );
     } catch (error) {
       console.error('Reset password error:', error);
       toast.error('Không thể cấp lại mật khẩu. Vui lòng thử lại.');

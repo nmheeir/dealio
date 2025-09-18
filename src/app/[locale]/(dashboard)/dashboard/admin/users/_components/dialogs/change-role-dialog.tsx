@@ -42,6 +42,7 @@ export function ChangeRoleDialog({ user }: { user: User }) {
           onSuccess: () => {
             setIsPending(false);
             toast.success(`User role has been updated to ${role}.`);
+            queryClient.invalidateQueries({ queryKey: ['users/admin'] });
             setOpen(false);
           },
           onError: (error: any) => {
