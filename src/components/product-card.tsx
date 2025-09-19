@@ -1,6 +1,7 @@
 import type { Product } from '@/api/schemas/product/product.schema';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ProductType } from '@/api/schemas/product/product.schema';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -45,7 +46,12 @@ export function ProductCard({ product }: ProductCardProps) {
           {truncateDescription(product.description)}
         </p>
         <div className="mt-2">
-          <Badge variant="secondary">{product.product_type}</Badge>
+          <Badge
+            variant={getProductTypeStyle(product.product_type).variant}
+            className={getProductTypeStyle(product.product_type).className}
+          >
+            {product.product_type}
+          </Badge>
         </div>
         <p className="mt-2 text-lg font-bold text-gray-900">
           {product.price ? `$${product.price.toFixed(2)}` : 'Price not available'}
@@ -60,4 +66,15 @@ export function ProductCard({ product }: ProductCardProps) {
       </CardFooter>
     </Card>
   );
+}
+// Map màu cho từng loại product
+const productTypeStyles: Record<ProductType, { variant?: 'default' | 'secondary' | 'destructive' | 'outline'; className?: string }> = {
+  [ProductType.CARD_PHYSICAL]: { variant: 'secondary', className: 'bg-blue-100 text-blue-800' },
+  [ProductType.CARD_DIGITAL_KEY]: { variant: 'secondary', className: 'bg-green-100 text-green-800' },
+  [ProductType.DEVICE]: { variant: 'secondary', className: 'bg-purple-100 text-purple-800' },
+};
+
+// Hàm tiện dụng
+function getProductTypeStyle(type: ProductType) {
+  return productTypeStyles[type] || { variant: 'secondary' };
 }
