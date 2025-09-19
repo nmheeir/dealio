@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 'use client';
 
-import { useCategories } from '@/api/category/use-categories';
+import { useCategoryNotChild } from '@/api/category/use-category-not-child';
 import { cn } from '@/libs/utils';
 import { AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Badge } from '../ui/badge';
@@ -31,7 +31,7 @@ export default function CategoryFacet({ id, className, onCheckedChangeAction, is
 }
 
 function CategoryFacetContent({ onCheckedChangeAction, isCheckedAction }: Omit<CategoryFacetProps, 'id'>) {
-  const { data, isLoading, error } = useCategories();
+  const { data, isLoading, error } = useCategoryNotChild();
 
   if (isLoading) {
     return (

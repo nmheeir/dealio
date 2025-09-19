@@ -1,5 +1,3 @@
-import type { Category, Subcategory } from '@/db/schema';
-
 import { generateId } from '@/libs/id';
 
 export type ProductConfig = typeof productConfig;
@@ -163,12 +161,7 @@ export const productConfig = {
         },
       ],
     },
-  ] satisfies ({
-    subcategories: Omit<
-      Subcategory,
-      'slug' | 'categoryId' | 'createdAt' | 'updatedAt'
-    >[];
-  } & Pick<Category, 'id' | 'name' | 'description' | 'image'>)[],
+  ],
 };
 
 export const productCategories = productConfig.categories.map(category => ({

@@ -23,26 +23,7 @@ export const siteConfig = {
   mainNav: [
     {
       title: 'Lobby',
-      items: [
-        {
-          title: 'Products',
-          href: '/products',
-          description: 'All the products we have to offer.',
-          items: [],
-        },
-        {
-          title: 'Build a Board',
-          href: '/build-a-board',
-          description: 'Build your own custom skateboard.',
-          items: [],
-        },
-        {
-          title: 'Blog',
-          href: '/blog',
-          description: 'Read our latest blog posts.',
-          items: [],
-        },
-      ],
+      href: '/',
     },
     ...productConfig.categories.map(category => ({
       title: category.name,
