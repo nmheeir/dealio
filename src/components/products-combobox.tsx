@@ -16,6 +16,7 @@ export function ProductsCombobox() {
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState('');
   const debouncedQuery = useDebounce(query, 500);
+  const router = useRouter();
 
   React.useEffect(() => {
     if (debouncedQuery.length <= 0) {
@@ -70,6 +71,13 @@ export function ProductsCombobox() {
           placeholder="Search products..."
           value={query}
           onValueChange={setQuery}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && query.trim().length > 0) {
+              e.preventDefault();
+              setOpen(false);
+              router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+            }
+          }}
         />
         {/* Search Response Data */}
         <ProductSearchResponse
