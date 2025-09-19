@@ -40,7 +40,7 @@ export default async function middleware(request: NextRequest) {
   console.log('[MIDDLEWARE] pathname:', pathname, 'token:', token ? 'yes' : 'no');
 
   // Định nghĩa route công khai
-  const publicRoutes = ['/signin', '/signup', '/api', '/_next', '/static', '/monitoring'];
+  const publicRoutes = ['/signin', '/signup', '/api', '/_next', '/static', '/monitoring', '/search', '/product'];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
   console.log('[MIDDLEWARE] isPublicRoute:', isPublicRoute);
 

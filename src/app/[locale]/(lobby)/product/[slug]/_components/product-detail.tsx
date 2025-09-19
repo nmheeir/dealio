@@ -154,7 +154,7 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
 
           if (selectedPaymentMethod === 'MOMO_WALLET') {
           // Gọi thêm API để lấy link thanh toán
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 500));
             paymentGetLink(
               { orderId },
               {

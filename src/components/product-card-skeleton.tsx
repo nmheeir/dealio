@@ -1,32 +1,29 @@
-import { PlaceholderImage } from '@/components/placeholder-image';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/libs/utils';
 
-type ProductCardSkeletonProps = {} & React.ComponentPropsWithoutRef<typeof Card>;
-
-export function ProductCardSkeleton({
-  className,
-  ...props
-}: ProductCardSkeletonProps) {
+export function ProductCardSkeleton() {
   return (
-    <Card
-      className={cn('overflow-hidden rounded-lg', className)}
-      {...props}
-    >
-      <CardHeader className="border-b p-0">
-        <AspectRatio ratio={4 / 3}>
-          <PlaceholderImage className="rounded-none" isSkeleton asChild />
-        </AspectRatio>
+    <Card className="mx-auto flex h-full w-full max-w-sm flex-col py-0 pb-6">
+      <CardHeader className="p-0">
+        <Skeleton className="h-48 w-full rounded-t-lg" />
       </CardHeader>
-      <CardContent className="space-y-2.5 p-4">
-        <Skeleton className="h-4 w-1/2" />
-        <Skeleton className="h-4 w-1/6" />
+      <CardContent className="flex flex-grow flex-col px-4">
+        <Skeleton className="mt-2 h-5 w-3/4" />
+        {' '}
+        {/* title */}
+        <Skeleton className="mt-2 h-4 w-full" />
+        <Skeleton className="mt-2 h-4 w-5/6" />
+        <Skeleton className="mt-4 h-6 w-24" />
+        {' '}
+        {/* badge */}
+        <Skeleton className="mt-4 h-6 w-20" />
+        {' '}
+        {/* price */}
       </CardContent>
-      <CardFooter className="space-x-2 p-4 pt-1">
-        <Skeleton className="h-8 w-full" />
-        <Skeleton className="size-8 shrink-0" />
+      <CardFooter className="pt-0">
+        <Skeleton className="h-10 w-full rounded-md" />
+        {' '}
+        {/* button */}
       </CardFooter>
     </Card>
   );

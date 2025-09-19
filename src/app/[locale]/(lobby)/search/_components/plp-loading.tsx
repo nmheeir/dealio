@@ -5,7 +5,7 @@ import SearchPaginationLoading from '@/components/search/search-pagination-loadi
 export default function PLPLoading() {
   return (
     <div className="flex grow flex-col lg:col-span-3">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {/* Your content Product Display */}
         {Array.from({ length: 8 }).map((_, i) => (
           <ProductCardSkeleton key={i} />

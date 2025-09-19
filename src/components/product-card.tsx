@@ -39,7 +39,7 @@ export function ProductCard({ product }: ProductCardProps) {
               )}
         </div>
       </CardHeader>
-      <CardContent className="flex flex-grow flex-col p-4">
+      <CardContent className="flex flex-grow flex-col px-4">
         <CardTitle className="line-clamp-2 text-lg font-semibold">{product.name}</CardTitle>
         <p className="mt-2 line-clamp-3 min-h-[60px] text-sm text-gray-600">
           {truncateDescription(product.description)}
@@ -51,7 +51,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.price ? `$${product.price.toFixed(2)}` : 'Price not available'}
         </p>
       </CardContent>
-      <CardFooter className="p-4 pt-0">
+      <CardFooter className="pt-0">
         <Link href={`/product/${product.slug}`} className="w-full">
           <Button variant="outline" className="w-full">
             View Details
