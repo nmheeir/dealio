@@ -2,34 +2,43 @@
 
 import { useQueryState } from 'nuqs';
 import React from 'react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/libs/utils';
 import FacetsMobile from '../filters/facets-mobile';
 import { Icons } from '../icons';
 import { Button } from '../ui/button';
 
 const sortOptions = [
-  { name: 'Most Popular', slug: 'popular', href: '#', current: true },
-  { name: 'Best Rating', slug: 'rating', href: '#', current: false },
-  { name: 'Newest', slug: 'newest', href: '#', current: false },
-  { name: 'Price: Low to High', slug: 'price-asc', href: '#', current: false },
-  { name: 'Price: High to Low', slug: 'price-desc', href: '#', current: false },
+  { name: 'Newest', slug: 'desc', sortBy: 'createAt', order: 'DESC' },
+  { name: 'Oldest', slug: 'asc', sortBy: 'createAt', order: 'ASC' },
 ];
 
 export default function SearchToolbar() {
-  const [_sort, setSort] = useQueryState('sort', {
+  const [orderBy, setOrderBy] = useQueryState('orderBy', {
     defaultValue: '',
     clearOnDefault: true,
   });
 
+  const selectedOption
+    = sortOptions.find(option => option.slug === orderBy) || null;
+
   return (
     <div className="flex items-center">
       <DropdownMenu>
-        <DropdownMenuTrigger asChild className="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+        <DropdownMenuTrigger
+          asChild
+          className="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+        >
           <div>
             <Button variant="outline">
-              Sort
-              <Icons.chevronDown />
+              {selectedOption ? selectedOption.name : 'Sort'}
+              <Icons.chevronDown className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </DropdownMenuTrigger>
@@ -42,12 +51,14 @@ export default function SearchToolbar() {
           <DropdownMenuGroup className="py-1">
             {sortOptions.map(option => (
               <DropdownMenuItem
-                key={option.name}
+                key={option.slug}
                 className={cn(
-                  option.current ? 'font-medium text-gray-900' : 'text-gray-500',
+                  orderBy === option.slug
+                    ? 'font-medium text-gray-900'
+                    : 'text-gray-500',
                   'block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden',
                 )}
-                onClick={() => setSort(option.slug)}
+                onClick={() => setOrderBy(option.slug)}
               >
                 {option.name}
               </DropdownMenuItem>
@@ -56,8 +67,10 @@ export default function SearchToolbar() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
-        {/* TODO: Trigger content display type */}
+      <button
+        type="button"
+        className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+      >
         <span className="sr-only">View grid</span>
         <Icons.grid2x2 aria-hidden="true" className="size-5" />
       </button>

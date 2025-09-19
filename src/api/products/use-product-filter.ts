@@ -9,6 +9,7 @@ type Variables = {
   request?: PaginationRequest;
   categorySlug?: string;
   brandSlug?: string;
+  orderBy?: string;
 };
 type Response = PaginationResponse<Product>;
 
@@ -21,6 +22,9 @@ export const useProductFilter = createQuery<Response, Variables, AxiosError>({
     }
     if (variables?.brandSlug) {
       searchParams.set('brandSlug', String(variables.brandSlug));
+    }
+    if (variables?.orderBy) {
+      searchParams.set('orderBy', String(variables.orderBy));
     }
     if (variables.request?.limit) {
       searchParams.set('limit', String(variables.request.limit));

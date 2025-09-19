@@ -2,7 +2,7 @@
 
 import { parseAsInteger, useQueryState } from 'nuqs';
 import React from 'react';
-import { useProducts } from '@/api/products/use-products';
+import { useProductFilter } from '@/api/products/use-product-filter';
 import { AlertCard } from '@/components/alert-card';
 import { ErrorCard } from '@/components/error-card';
 import { ProductCard } from '@/components/product-card';
@@ -14,15 +14,29 @@ type ProductListingPageProps = {
 };
 
 export default function ProductListingPage({ query }: ProductListingPageProps) {
-  const [brand] = useQueryState('brand');
-  const [category] = useQueryState('category');
+  const [brandSlug] = useQueryState('brand', {
+    defaultValue: '',
+  });
+  const [categorySlug] = useQueryState('category', {
+    defaultValue: '',
+  });
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
+  const [orderBy] = useQueryState('orderBy', {
+    defaultValue: '',
+    clearOnDefault: true,
+  });
+  const order = orderBy === 'asc' ? 'ASC' : orderBy === 'desc' ? 'DESC' : 'ASC';
 
-  const { data, isLoading, error } = useProducts({ variables: {
-    brand,
-    category,
-    page,
-  } });
+  const { data, isLoading, error } = useProductFilter(
+    { variables: {
+      brandSlug,
+      categorySlug,
+      request: {
+        order,
+        limit: 8,
+      },
+    } },
+  );
 
   if (isLoading) {
     return <PLPLoading />;
