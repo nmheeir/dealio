@@ -8,11 +8,13 @@ import { useQueryState } from 'nuqs';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useAddresses } from '@/api/address/use-addressed';
+import { useAuth } from '@/api/auth/auth-context';
 import { useAddVariantToCart } from '@/api/cart/use-add-variant';
 import { useDigitalBuyNow } from '@/api/order/digital/use-digital-buy-now';
 import { useBuyNowPhysical } from '@/api/order/physical/use-physical-buy-now';
 import { usePaymentGetLinkByOrderId } from '@/api/payment/use-payment-get-link';
 import { useFindVariantsByProductSlug } from '@/api/product-variant/use-find-variant-by-product-slug';
+import { AuthRequiredDialog } from '@/components/auth-required-dialog';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icons } from '@/components/icons';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -194,7 +196,7 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
   if (isDigital) {
     return (
       <DigitalBuyNowDialog
-        onConfirm={handleDigitalBuyNow}
+        onConfirmAction={handleDigitalBuyNow}
         disabled={!productActive || !inStock || isSubmitting}
       />
     );
@@ -310,8 +312,6 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
     history: 'push',
   });
   const [quantity, setQuantity] = useState(1);
-  const { mutateAsync: addToCart } = useAddVariantToCart();
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (data?.data) {
@@ -351,38 +351,6 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
 
   const handleIncrease = () => {
     setQuantity(prev => Math.min(maxStock, prev + 1));
-  };
-
-  const handleAddToCart = async () => {
-    console.log(`Add ${quantity} sản phẩm ${variant.variant_name} vào giỏ hàng`);
-    if (!variant) {
-      toast.error('Please select one variant');
-      return;
-    }
-    if (quantity <= 0) {
-      toast.error('Số lượng phải lớn hơn 0.');
-      return;
-    }
-
-    addToCart(
-      {
-        productVariantId: variant.id,
-        quantity,
-      },
-      {
-        onSuccess: (data) => {
-          toast.success(`Đã thêm ${quantity} sản phẩm "${variant.variant_name}" vào giỏ hàng`);
-          console.log('API response:', data);
-          queryClient.invalidateQueries({ queryKey: ['carts'] });
-        },
-        onError: (error) => {
-          const message
-            = (error.response?.data as any)?.message || 'Không thể thêm sản phẩm vào giỏ hàng';
-          toast.error(message);
-          console.error('API error:', error);
-        },
-      },
-    );
   };
 
   return (
@@ -491,15 +459,7 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
                 )}
 
             <div className="flex gap-2">
-              <Button
-                className="rounded-full bg-green-500 px-6 py-3 font-medium text-white hover:bg-green-600"
-                aria-label={`Thêm ${maxStock} sản phẩm vào giỏ hàng`}
-                disabled={maxStock === 0}
-                onClick={handleAddToCart}
-              >
-                <Icons.shoppingCart className="mr-2 h-4 w-4" />
-                Thêm vào giỏ hàng
-              </Button>
+              <AddToCartButton variant={variant} quantity={quantity} />
               <BuyNowButton variant={variant} quantity={quantity} />
             </div>
           </div>
@@ -534,12 +494,14 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
 }
 
 type DigitalBuyNowDialogProps = {
-  onConfirm: () => Promise<void>;
+  onConfirmAction: () => Promise<void> | void;
   disabled?: boolean;
 };
 
-function DigitalBuyNowDialog({ onConfirm, disabled }: DigitalBuyNowDialogProps) {
+export function DigitalBuyNowDialog({ onConfirmAction: onConfirm, disabled }: DigitalBuyNowDialogProps) {
   const [loading, setLoading] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   async function handleConfirm() {
     try {
@@ -550,31 +512,110 @@ function DigitalBuyNowDialog({ onConfirm, disabled }: DigitalBuyNowDialogProps) 
     }
   }
 
+  function handleClick() {
+    if (!isAuthenticated) {
+      setShowAuthDialog(true);
+    }
+  }
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button
-          className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          disabled={disabled || loading}
-        >
-          {loading ? 'Đang xử lý...' : 'Mua ngay'}
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Xác nhận mua ngay</AlertDialogTitle>
-          <AlertDialogDescription>
-            Bạn có chắc chắn muốn mua sản phẩm digital này không?
-            Sau khi xác nhận, đơn hàng sẽ được tạo và chuyển đến cổng thanh toán.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Hủy</AlertDialogCancel>
-          <AlertDialogAction onClick={handleConfirm}>
-            Xác nhận
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            onClick={handleClick}
+            className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            disabled={disabled || loading}
+          >
+            {loading ? 'Đang xử lý...' : 'Mua ngay'}
+          </Button>
+        </AlertDialogTrigger>
+
+        {/* Dialog xác nhận mua ngay */}
+        {isAuthenticated && (
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Xác nhận mua ngay</AlertDialogTitle>
+              <AlertDialogDescription>
+                Bạn có chắc chắn muốn mua sản phẩm digital này không?
+                Sau khi xác nhận, đơn hàng sẽ được tạo và chuyển đến cổng thanh toán.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Hủy</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirm}>
+                Xác nhận
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        )}
+      </AlertDialog>
+
+      {/* Dialog yêu cầu đăng nhập */}
+      <AuthRequiredDialog
+        open={showAuthDialog}
+        onOpenChange={setShowAuthDialog}
+        fromPath={window.location.pathname + window.location.search}
+        title="Bạn chưa đăng nhập"
+        description="Bạn cần đăng nhập để mua sản phẩm. Bạn có muốn chuyển đến trang đăng nhập ngay bây giờ không?"
+      />
+    </>
+  );
+}
+
+function AddToCartButton({ variant, quantity }: { variant: ProductVariant; quantity: number }) {
+  const { isAuthenticated } = useAuth();
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const { mutateAsync: addToCart } = useAddVariantToCart();
+  const queryClient = useQueryClient();
+
+  const handleAddToCart = async () => {
+    if (!variant) {
+      toast.error('Please select one variant');
+      return;
+    }
+    if (quantity <= 0) {
+      toast.error('Số lượng phải lớn hơn 0.');
+      return;
+    }
+
+    if (!isAuthenticated) {
+      setShowAuthDialog(true);
+      return;
+    }
+
+    addToCart(
+      { productVariantId: variant.id, quantity },
+      {
+        onSuccess: (data) => {
+          toast.success(`Đã thêm ${quantity} sản phẩm "${variant.variant_name}" vào giỏ hàng`);
+          queryClient.invalidateQueries({ queryKey: ['carts'] });
+        },
+        onError: (error) => {
+          const message
+            = (error.response?.data as any)?.message || 'Không thể thêm sản phẩm vào giỏ hàng';
+          toast.error(message);
+        },
+      },
+    );
+  };
+
+  return (
+    <>
+      <Button
+        className="rounded-full bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+        onClick={handleAddToCart}
+      >
+        Thêm vào giỏ hàng
+      </Button>
+
+      <AuthRequiredDialog
+        open={showAuthDialog}
+        onOpenChange={setShowAuthDialog}
+        fromPath={window.location.pathname + window.location.search}
+        title="Bạn chưa đăng nhập"
+        description="Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng. Bạn có muốn chuyển đến trang đăng nhập ngay bây giờ không?"
+      />
+    </>
   );
 }

@@ -25,23 +25,27 @@ const aj = arcjet.withRule(
 );
 
 export default async function middleware(request: NextRequest) {
-// Kiểm tra bot với Arcjet
-  // if (process.env.ARCJET_KEY) {
-  //   const decision = await aj.protect(request);
-  //   if (decision.isDenied()) {
-  //     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  //   }
-  // }
-
   const token = request.cookies.get('access_token')?.value;
   const { pathname } = request.nextUrl;
 
-  // 📝 Log cơ bản
   console.log('[MIDDLEWARE] pathname:', pathname, 'token:', token ? 'yes' : 'no');
 
-  // Định nghĩa route công khai
-  const publicRoutes = ['/signin', '/signup', '/api', '/_next', '/static', '/monitoring', '/search', '/product', '/'];
-  const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
+  // Public routes
+  const publicExactRoutes = ['/', '/monitoring'];
+  const publicPrefixRoutes = [
+    '/signin',
+    '/signup',
+    '/api',
+    '/_next',
+    '/static',
+    '/search',
+    '/product',
+  ];
+
+  const isPublicRoute
+    = publicExactRoutes.includes(pathname)
+      || publicPrefixRoutes.some(route => pathname.startsWith(route));
+
   console.log('[MIDDLEWARE] isPublicRoute:', isPublicRoute);
 
   // 🛑 Nếu không có token và không phải route công khai → redirect signin
