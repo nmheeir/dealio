@@ -137,6 +137,8 @@ const baseMenus: Record<string, NavItem[]> = {
 };
 
 export function getSidebarItems(role: UserRole): NavItem[] {
+  console.log('getSidebarItems', role);
+
   const customer = baseMenus.customer ?? [];
   const managerCommon = baseMenus.managerCommon ?? [];
   const managerCustomer = baseMenus.managerCustomer ?? [];

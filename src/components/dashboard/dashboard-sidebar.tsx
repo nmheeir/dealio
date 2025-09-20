@@ -33,8 +33,10 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
     console.log(error.message);
     return null;
   }
+  console.log('Dashboard sidebar data: ', data);
 
-  const role = data?.data ?? 'CUSTOMER';
+  const role = data?.role;
+  console.log('Dashboard Sidebar', role);
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -55,7 +57,7 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={getSidebarItems(role.role)} />
+        <NavMain items={getSidebarItems(role)} />
         <NavSecondary className="mt-auto" />
       </SidebarContent>
     </Sidebar>

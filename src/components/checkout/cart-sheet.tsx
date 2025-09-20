@@ -27,12 +27,14 @@ export function CartSheet() {
   const { isAuthenticated } = useAuth();
   const isMobile = useIsMobile();
 
+  console.log('Cart sheet', isAuthenticated);
+
   const digital = useGetCarts(
     {
       variables: {
         cartType: 'DIGITAL',
       },
-      enabled: isAuthenticated,
+      enabled: !!isAuthenticated,
     },
   );
   const physical = useGetCarts(
@@ -40,7 +42,7 @@ export function CartSheet() {
       variables: {
         cartType: 'PHYSICAL',
       },
-      enabled: isAuthenticated,
+      enabled: !!isAuthenticated,
     },
   );
 

@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: ProductProps): Promise<Metada
   // }
 
   return {
-    title: product?.name || 'Default title',
-    description: product?.description || 'Default description',
+    title: product?.name || 'Buy product',
+    description: product?.description || 'Buy product',
   };
 }

@@ -17,7 +17,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['auth/role'],
+    queryKey: ['checkAuthenticated'],
     queryFn: () => authService.checkAuthenticated(),
     staleTime: 1000 * 60 * 5,
     retry: false,

@@ -7,11 +7,9 @@ import { cn } from '@/libs/utils';
 export function HomeNavItem() {
   return (
     <NavigationMenuItem>
-      <Link href="/" passHref>
-        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), 'h-auto')}>
-          Home
-        </NavigationMenuLink>
-      </Link>
+      <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), 'h-auto')}>
+        <Link href="/">Home</Link>
+      </NavigationMenuLink>
     </NavigationMenuItem>
   );
 }
