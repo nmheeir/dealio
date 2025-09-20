@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { refundRequestSchema } from '../refund/refund-request.schema';
 import { orderAddressSchema } from './order-address.schema';
 import { orderItemSchema } from './order-item.schema';
 import { orderStatusSchema } from './order-status.schema';
@@ -22,6 +23,7 @@ export const orderSchema = z.object({
   completed_at: z.iso.datetime().nullable(),
   orderAddress: orderAddressSchema.optional(),
   orderItems: z.array(orderItemSchema).optional(),
+  refundRequest: refundRequestSchema.nullable(),
 });
 
 export type Order = z.infer<typeof orderSchema>;

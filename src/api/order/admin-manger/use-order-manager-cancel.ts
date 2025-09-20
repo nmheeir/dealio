@@ -1,19 +1,18 @@
 import type { AxiosError } from 'axios';
-import type { Order } from '@/api/schemas/order/order.schema';
-
 import type { ApiResponse } from '@/api/types';
+
 import { createMutation } from 'react-query-kit';
 import apiClient from '@/api/common/client';
 
 type Variables = {
   orderId: string;
 };
-type Response = ApiResponse<Order>;
+type Response = ApiResponse<any>;
 
-export const useOrderConfirm = createMutation<Response, Variables, AxiosError>({
+export const useOrderAdminManagerCancel = createMutation<Response, Variables, AxiosError>({
   mutationFn: async variables =>
     apiClient({
-      url: `orders/admin-manager/confrim-order/${variables.orderId}`,
-      method: 'GET',
+      url: `orders/admin-manager/cancel/${variables.orderId}`,
+      method: 'PUT',
     }).then(response => response.data),
 });

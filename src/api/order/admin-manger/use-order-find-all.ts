@@ -11,6 +11,6 @@ type Variables = void;
 export const useOrderFindAll = createQuery<Response, Variables, AxiosError>({
   queryKey: ['orders/admin-manager/find-all'],
   fetcher: () => {
-    return apiClient.get(`orders/admin-manager/find-all`).then(response => response.data);
+    return apiClient.get(`orders/admin-manager/find-all?limit=1000`).then(response => response.data);
   },
 });

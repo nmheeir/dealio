@@ -21,26 +21,16 @@ const baseMenus: Record<string, NavItem[]> = {
       ],
     },
     {
-      title: 'Mua sắm',
+      title: 'Đơn hàng',
       url: '/shop',
       icon: ShoppingBag,
       items: [
         { title: 'Đơn hàng của tôi', url: '/dashboard/orders' },
-      ],
-    },
-    {
-      title: 'Đơn hàng',
-      url: '/orders',
-      icon: ShoppingCart,
-      items: [
-        { title: 'Quản lý đơn hàng', url: '/dashboard/orders' },
-        { title: 'Thanh toán đơn hàng', url: '/dashboard/orders/checkout' },
-        { title: 'Yêu cầu hoàn tiền', url: '/dashboard/refunds' },
+        { title: 'Yêu cầu hoàn tiền', url: '/dashboard/orders/refund' },
       ],
     },
   ],
 
-  // Các menu manager chung (ngoại trừ "Quản lý khách hàng")
   managerCommon: [
     {
       title: 'Danh mục & thương hiệu',
@@ -58,8 +48,6 @@ const baseMenus: Record<string, NavItem[]> = {
       items: [
         { title: 'Danh sách sản phẩm', url: '/dashboard/products' },
         { title: 'Thêm sản phẩm mới', url: '/dashboard/products/create' },
-        { title: 'Quản lý tồn kho', url: '/products/inventory' },
-        { title: 'Nhập key digital', url: '/products/digital-keys' },
       ],
     },
     {
@@ -67,7 +55,7 @@ const baseMenus: Record<string, NavItem[]> = {
       url: '/orders',
       icon: ShoppingCart,
       items: [
-        { title: 'Danh sách đơn hàng', url: 'dashboard/orders/manage' },
+        { title: 'Danh sách đơn hàng', url: '/dashboard/manager/orders' },
       ],
     },
     {
@@ -87,9 +75,6 @@ const baseMenus: Record<string, NavItem[]> = {
       icon: RefreshCw,
       items: [
         { title: 'Yêu cầu hoàn tiền', url: '/manager/refunds' },
-        { title: 'Chờ xử lý', url: '/manager/refunds?status=pending' },
-        { title: 'Đã phê duyệt', url: '/manager/refunds?status=approved' },
-        { title: 'Đã từ chối', url: '/manager/refunds?status=rejected' },
       ],
     },
   ],

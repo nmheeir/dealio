@@ -12,6 +12,7 @@ import { useAddresses } from '@/api/address/use-addressed';
 import { useCartCheckoutDigital } from '@/api/cart/use-cart-checkout-digital';
 import { useCartCheckoutPhysical } from '@/api/cart/use-cart-checkout-physical';
 import { useGetCarts } from '@/api/cart/use-get-cart';
+import { usePaymentGetLinkByOrderId } from '@/api/payment/use-payment-get-link';
 import { AlertCard } from '@/components/alert-card';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,7 @@ export default function CheckoutPaymentPage() {
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const queryClient = useQueryClient();
+  const { mutateAsync: paymentGetLink } = usePaymentGetLinkByOrderId();
 
   const isDigital = type === 'digital';
 
@@ -47,25 +49,45 @@ export default function CheckoutPaymentPage() {
   const addresses1 = addresses?.data.data ?? [];
 
   // Mutations
-  const digitalCheckout = useCartCheckoutDigital();
+  const { mutateAsync: digitalCheckout } = useCartCheckoutDigital();
   const physicalCheckout = useCartCheckoutPhysical();
 
   const handleCheckout = () => {
     setConfirmDialogOpen(true); // Mở dialog xác nhận
   };
 
-  const confirmCheckout = () => {
+  const confirmCheckout = async () => {
     setErrorMessage(null);
     setIsSubmitting(true);
 
     if (isDigital) {
-      digitalCheckout.mutate(undefined, {
-        onSuccess: (response) => {
-          if (response.statusCode === 200) {
-            setSuccessDialogOpen(true);
-            queryClient.invalidateQueries({ queryKey: ['carts'] });
+      await digitalCheckout(undefined, {
+        onSuccess: async (res) => {
+          if (res?.statusCode === 201 && res?.data?.id) {
+            const orderId = res.data.id;
+            await new Promise(resolve => setTimeout(resolve, 500));
+            paymentGetLink(
+              { orderId },
+              {
+                onSuccess: (payRes) => {
+                  if (payRes?.data?.payUrl) {
+                    window.open(payRes.data.payUrl, '_blank');
+                    toast.success('Chuyển đến cổng thanh toán...');
+                  } else {
+                    toast.error('Không lấy được link thanh toán.');
+                  }
+                  queryClient.invalidateQueries({ queryKey: ['orders'] });
+                },
+                onError: (err: any) => {
+                  const msg = (err.response?.data as any)?.message || 'Lấy link thanh toán thất bại.';
+                  toast.error(msg);
+                },
+                onSettled: () => setIsSubmitting(false),
+              },
+            );
           } else {
-            setErrorMessage(response.message || 'Không thể tạo đơn hàng.');
+            toast.error(res?.message || 'Không thể tạo đơn cho sản phẩm digital.');
+            setIsSubmitting(false);
           }
         },
         onError: (error: any) => {

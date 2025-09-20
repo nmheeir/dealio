@@ -2,10 +2,10 @@ import type { ColumnDef } from '@tanstack/react-table';
 import type { Order } from '@/api/schemas/order/order.schema';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import OrderRowAction from './order-row-action';
-import { formatCurrency, formatDate, orderStatusColor, paymentMethodColor } from './utils';
+import { formatCurrency, formatDate, orderStatusColor, paymentMethodColor } from '../../../orders/_components/utils';
+import ManagerOrderRowAction from './manage-order-row-actions';
 
-export const orderColumns: ColumnDef<Order>[] = [
+export const managerOrderColumns: ColumnDef<Order>[] = [
   // Checkbox select
   {
     id: 'select',
@@ -38,7 +38,7 @@ export const orderColumns: ColumnDef<Order>[] = [
     accessorKey: 'order_code',
     header: () => <div className="text-center">Mã đơn</div>,
     cell: ({ row }) => (
-      <div className="text-center font-medium">{row.original.order_code ?? '-'}</div>
+      <div className="text-center font-medium">{row.original.order_code ?? 'None'}</div>
     ),
   },
   // Status
@@ -134,6 +134,6 @@ export const orderColumns: ColumnDef<Order>[] = [
   // Actions
   {
     id: 'actions',
-    cell: ({ row }) => <OrderRowAction item={row.original} />,
+    cell: ({ row }) => <ManagerOrderRowAction item={row.original} />,
   },
 ];
