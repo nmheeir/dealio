@@ -177,8 +177,15 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
                   }
                 },
                 onError: (err) => {
-                  const msg = (err.response?.data as any)?.message || 'Lấy link thanh toán thất bại.';
-                  toast.error(msg);
+                  const status = err.response?.status;
+                  const msg = (err.response?.data as any)?.message
+                    || 'Lấy link thanh toán thất bại.';
+
+                  if (status === 400) {
+                    toast.success('Đơn hàng đã được tạo, vui lòng lấy lại link mua tại dashboard');
+                  } else {
+                    toast.error(msg);
+                  }
                 },
               },
             );

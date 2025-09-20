@@ -35,7 +35,10 @@ export function ManagerConfirmOrder({ item }: { item: Order }) {
 
       if (response.statusCode === 200) {
         toast.success('Đơn hàng đã được xác nhận thành công');
-        queryClient.invalidateQueries({ queryKey: ['orders/admin-manager/find-all'] });
+        queryClient.invalidateQueries({ queryKey: [
+          'orders/admin-manager/find-all',
+          'orders',
+        ] });
       } else {
         // Ưu tiên lấy message từ API
         toast.error(response.message || 'Có lỗi xảy ra, vui lòng thử lại');

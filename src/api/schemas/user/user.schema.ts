@@ -7,6 +7,7 @@ export const userSchema = z.object({
   id: z.uuid(),
   role: roleEnumSchema,
   is_active: z.boolean(),
+  email: z.email(),
   profile: profileSchema.optional(),
 }).extend(baseTimeStampSchema.shape);
 

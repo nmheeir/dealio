@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { refundRequestSchema } from '../refund/refund-request.schema';
+import { refundSchema } from '../refund/refund.schema';
 import { orderAddressSchema } from './order-address.schema';
 import { orderItemSchema } from './order-item.schema';
 import { orderStatusSchema } from './order-status.schema';
-import { OrderTypeSchema as orderTypeSchema } from './order-type.schema';
+import { orderTypeSchema } from './order-type.schema';
 import { paymentMethodSchema } from './payment-method.schema';
 
 export const orderSchema = z.object({
@@ -23,7 +23,7 @@ export const orderSchema = z.object({
   completed_at: z.iso.datetime().nullable(),
   orderAddress: orderAddressSchema.optional(),
   orderItems: z.array(orderItemSchema).optional(),
-  refundRequest: refundRequestSchema.nullable(),
+  refundRequest: refundSchema.nullable(),
 });
 
 export type Order = z.infer<typeof orderSchema>;

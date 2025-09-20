@@ -1,5 +1,5 @@
 import { z } from 'zod';
 
-export const OrderTypeSchema = z.enum(['PHYSICAL', 'DIGITAL']);
+export const orderTypeSchema = z.enum(['PHYSICAL', 'DIGITAL']);
 
-export type OrderType = z.infer<typeof OrderTypeSchema>;
+export type OrderType = z.infer<typeof orderTypeSchema>;

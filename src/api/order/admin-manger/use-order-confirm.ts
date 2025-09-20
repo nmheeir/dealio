@@ -13,7 +13,7 @@ type Response = ApiResponse<Order>;
 export const useOrderConfirm = createMutation<Response, Variables, AxiosError>({
   mutationFn: async variables =>
     apiClient({
-      url: `orders/admin-manager/confrim-order/${variables.orderId}`,
-      method: 'GET',
+      url: `orders/admin-manager/confirm-order/${variables.orderId}`,
+      method: 'PATCH',
     }).then(response => response.data),
 });

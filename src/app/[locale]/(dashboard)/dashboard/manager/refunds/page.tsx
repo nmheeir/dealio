@@ -1,5 +1,9 @@
+import { ManagerRefundTable } from './_components/manager-refund-table';
+
 export default function DashboardManagerRefundPage() {
   return (
-    <div></div>
+    <div className="m-8">
+      <ManagerRefundTable />
+    </div>
   );
 }

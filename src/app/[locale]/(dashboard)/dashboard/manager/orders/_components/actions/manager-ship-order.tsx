@@ -35,7 +35,7 @@ export function ManagerShipOrder({ item }: { item: Order }) {
       if (response.statusCode === 200) {
         toast.success('Đơn hàng đã được gửi cho đơn vị vận chuyển');
         queryClient.invalidateQueries({
-          queryKey: ['orders/admin-manager/find-all'],
+          queryKey: ['orders/admin-manager/find-all', 'orders'],
         });
         setOpen(false); // đóng dialog khi thành công
       } else if (response.statusCode === 400) {

@@ -1,18 +1,21 @@
 import type { AxiosError } from 'axios';
-import type { ApiResponse } from '@/api/types';
 
+import type { ApiResponse } from '../types';
 import { createMutation } from 'react-query-kit';
 import apiClient from '@/api/common/client';
 
 type Variables = {
-  orderId: string;
+  refund_request_id: string;
+  status: 'REJECTED' | 'APPROVED';
+  review_notes: string;
 };
 type Response = ApiResponse<any>;
 
-export const useOrderShip = createMutation<Response, Variables, AxiosError>({
+export const useRefundRequestReview = createMutation<Response, Variables, AxiosError>({
   mutationFn: async variables =>
     apiClient({
-      url: `orders/admin-manager/ship-order/${variables.orderId}`,
+      url: 'refunds/admin-manager/reviewed',
       method: 'PATCH',
+      data: variables,
     }).then(response => response.data),
 });

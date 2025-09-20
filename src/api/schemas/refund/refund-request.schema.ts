@@ -1,5 +1,7 @@
 import z from 'zod';
 import { baseTimeStampSchema } from '../common/base-timestamp.schema';
+import { orderSchema } from '../order/order.schema';
+import { userSchema } from '../user/user.schema';
 
 export const refundRequestSchema = z.object({
   id: z.uuid(),
@@ -8,6 +10,8 @@ export const refundRequestSchema = z.object({
   reviewNotes: z.string().nullable(),
   reviewedAt: z.iso.datetime().nullable(),
   finalizedAt: z.iso.datetime().nullable(),
-}).extend(baseTimeStampSchema);
+  order: orderSchema.optional(),
+  user: userSchema.optional(),
+}).extend(baseTimeStampSchema.shape);
 
 export type RefundRequest = z.infer<typeof refundRequestSchema>;

@@ -74,7 +74,7 @@ const baseMenus: Record<string, NavItem[]> = {
       url: '/manager/refunds',
       icon: RefreshCw,
       items: [
-        { title: 'Yêu cầu hoàn tiền', url: '/manager/refunds' },
+        { title: 'Yêu cầu hoàn tiền', url: '/dashboard/manager/refunds' },
       ],
     },
   ],
