@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use client';
 
 import type { ProductVariant } from '@/api/schemas/product/product-variant.schema';
@@ -47,11 +46,11 @@ function getAvailableStock(variant: ProductVariant): number {
   return Math.max(0, variant.stock.quantity - variant.stock.reserved);
 }
 
-// Cập nhật BuyNowButton để nhận quantity prop
 function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity: number }) {
   const productType = variant.product?.product_type;
   const isDigital = productType === 'CARD_DIGITAL_KEY';
-  console.log(productType);
+
+  const { isAuthenticated } = useAuth();
 
   const { data: addressesResponse, isLoading: isAddrLoading } = useAddresses();
   const { mutateAsync: digitalBuyNow } = useDigitalBuyNow();
@@ -64,11 +63,13 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'COD' | 'MOMO_WALLET'>('COD');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   const productActive = variant.product?.status === 'ACTIVE';
   const inStock = getAvailableStock(variant) > 0;
   const addresses = addressesResponse?.data.data ?? [];
 
+  // 🚀 Digital flow
   async function handleDigitalBuyNow() {
     if (!productActive) {
       toast.error('Sản phẩm hiện không hoạt động.');
@@ -83,7 +84,7 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
 
     const payload = {
       productVariantId: variant.id,
-      quantity: 1, // Digital luôn chỉ 1
+      quantity: 1,
       paymentMethod: 'MOMO_PAYMENT',
     };
 
@@ -91,7 +92,6 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
       onSuccess: async (res) => {
         if (res?.statusCode === 201 && res?.data?.id) {
           const orderId = res.data.id;
-          // Sau khi tạo order thành công → gọi API lấy link thanh toán
           await new Promise(resolve => setTimeout(resolve, 500));
           paymentGetLink(
             { orderId },
@@ -118,7 +118,6 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
         }
       },
       onError: (err: any) => {
-        console.error('Digital buy now error', err);
         const msg = (err.response?.data as any)?.message || 'Đặt mua thất bại.';
         toast.error(msg);
         setIsSubmitting(false);
@@ -126,6 +125,7 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
     });
   }
 
+  // 🚀 Physical flow
   async function handlePhysicalFlowStart() {
     if (!productActive) {
       toast.error('Sản phẩm hiện không hoạt động.');
@@ -135,6 +135,12 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
       toast.error('Sản phẩm đã hết hàng.');
       return;
     }
+
+    if (!isAuthenticated) {
+      setShowAuthDialog(true);
+      return;
+    }
+
     setOpenMethodDialog(true);
   }
 
@@ -144,19 +150,20 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
       return;
     }
     setIsSubmitting(true);
+
     const payload: any = {
       productVariantId: variant.id,
       quantity,
       addressId: selectedAddressId,
       paymentMethod: selectedPaymentMethod === 'COD' ? 'COD' : 'MOMO_WALLET',
     };
+
     await physicalBuyNow(payload, {
       onSuccess: async (res) => {
         if (res?.statusCode === 201 && res?.data?.id) {
           const orderId = res.data.id;
 
           if (selectedPaymentMethod === 'MOMO_WALLET') {
-          // Gọi thêm API để lấy link thanh toán
             await new Promise(resolve => setTimeout(resolve, 500));
             paymentGetLink(
               { orderId },
@@ -190,18 +197,36 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
         const msg = (err.response?.data as any)?.message || 'Đặt mua thất bại.';
         toast.error(msg);
       },
+      onSettled: () => setIsSubmitting(false),
     });
   }
 
   if (isDigital) {
     return (
-      <DigitalBuyNowDialog
-        onConfirmAction={handleDigitalBuyNow}
-        disabled={!productActive || !inStock || isSubmitting}
-      />
+      <>
+        <DigitalBuyNowDialog
+          onConfirmAction={() => {
+            if (!isAuthenticated) {
+              setShowAuthDialog(true);
+              return;
+            }
+            return handleDigitalBuyNow();
+          }}
+          disabled={!productActive || !inStock || isSubmitting}
+        />
+
+        <AuthRequiredDialog
+          open={showAuthDialog}
+          onOpenChange={setShowAuthDialog}
+          fromPath={window.location.pathname + window.location.search}
+          title="Bạn chưa đăng nhập"
+          description="Bạn cần đăng nhập để mua sản phẩm này. Bạn có muốn chuyển đến trang đăng nhập ngay bây giờ không?"
+        />
+      </>
     );
   }
 
+  // 🚀 Physical product UI
   return (
     <>
       <Button
@@ -213,13 +238,17 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
         Mua ngay
       </Button>
 
+      {/* Dialog chọn phương thức thanh toán */}
       <Dialog open={openMethodDialog} onOpenChange={setOpenMethodDialog}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Chọn phương thức thanh toán</DialogTitle>
           </DialogHeader>
           <div className="mt-2">
-            <RadioGroup value={selectedPaymentMethod} onValueChange={v => setSelectedPaymentMethod(v as any)}>
+            <RadioGroup
+              value={selectedPaymentMethod}
+              onValueChange={v => setSelectedPaymentMethod(v as any)}
+            >
               <div className="flex flex-col gap-2">
                 <Label className="flex items-center gap-2">
                   <RadioGroupItem value="COD" id="cod" />
@@ -237,17 +266,12 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
           </p>
           <div className="mt-4 flex justify-end space-x-2">
             <Button variant="outline" onClick={() => setOpenMethodDialog(false)}>Hủy</Button>
-            <Button
-              onClick={() => {
-                setOpenAddressDialog(true);
-              }}
-            >
-              Chọn địa chỉ
-            </Button>
+            <Button onClick={() => setOpenAddressDialog(true)}>Chọn địa chỉ</Button>
           </div>
         </DialogContent>
       </Dialog>
 
+      {/* Dialog chọn địa chỉ */}
       <Dialog open={openAddressDialog} onOpenChange={setOpenAddressDialog}>
         <DialogContent>
           <DialogHeader>
@@ -260,7 +284,10 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
             : addresses && addresses.length > 0
               ? (
                   <div className="space-y-3">
-                    <RadioGroup value={selectedAddressId || ''} onValueChange={setSelectedAddressId}>
+                    <RadioGroup
+                      value={selectedAddressId || ''}
+                      onValueChange={setSelectedAddressId}
+                    >
                       {addresses.map(addr => (
                         <div key={addr.id} className="flex items-start gap-2">
                           <RadioGroupItem value={addr.id} id={addr.id} />
@@ -298,6 +325,15 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Dialog yêu cầu đăng nhập */}
+      <AuthRequiredDialog
+        open={showAuthDialog}
+        onOpenChange={setShowAuthDialog}
+        fromPath={window.location.pathname + window.location.search}
+        title="Bạn chưa đăng nhập"
+        description="Bạn cần đăng nhập để mua sản phẩm này. Bạn có muốn chuyển đến trang đăng nhập ngay bây giờ không?"
+      />
     </>
   );
 }
