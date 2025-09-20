@@ -7,10 +7,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AlertCircle } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { useAddresses } from '@/api/address/use-addressed';
 import { useCartCheckoutDigital } from '@/api/cart/use-cart-checkout-digital';
 import { useCartCheckoutPhysical } from '@/api/cart/use-cart-checkout-physical';
 import { useGetCarts } from '@/api/cart/use-get-cart';
+import { AlertCard } from '@/components/alert-card';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -79,10 +81,12 @@ export default function CheckoutPaymentPage() {
         { addressId: selectedAddress!, paymentMethod },
         {
           onSuccess: (response) => {
-            if (response.statusCode === 200) {
+            if (response.statusCode === 201) {
               setSuccessDialogOpen(true);
+              toast.success('Tạo đơn hàng thành công');
               queryClient.invalidateQueries({ queryKey: ['carts'] });
             } else {
+              toast.error(response.message || 'Không thể tạo đơn hàng.');
               setErrorMessage(response.message || 'Không thể tạo đơn hàng.');
             }
           },
@@ -131,6 +135,25 @@ export default function CheckoutPaymentPage() {
   }
 
   const items: CartItem[] = data.data.data;
+
+  // Kiểm tra nếu giỏ hàng trống
+  if (items.length === 0) {
+    return (
+      <div className="container mx-auto py-6">
+        <h1 className="mb-4 text-2xl font-semibold">
+          Thanh toán
+          {' '}
+          {isDigital ? 'Digital' : 'Vật lý'}
+        </h1>
+        <AlertCard
+          className="border-yellow-200 bg-yellow-50"
+          title="Giỏ hàng trống"
+          description="Giỏ hàng của bạn hiện không có sản phẩm. Vui lòng thêm sản phẩm để tiếp tục."
+          icon="shoppingCart"
+        />
+      </div>
+    );
+  }
 
   if (items.some(item => item.productStatus !== 'ACTIVE')) {
     return (

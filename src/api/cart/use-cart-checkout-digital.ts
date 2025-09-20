@@ -11,5 +11,6 @@ export const useCartCheckoutDigital = createMutation<Response, Variables, AxiosE
   mutationFn: async () =>
     apiClient({
       url: 'carts/checkout-digital',
+      method: 'POST',
     }).then(response => response.data),
 });

@@ -16,7 +16,7 @@ export function CartSummary({
   activeTab: 'digital' | 'physical';
   digitalItems: CartItem[];
   physicalItems: CartItem[];
-  isPayment: boolean;
+  isPayment?: boolean;
 }) {
   const router = useRouter();
   const isDigital = activeTab === 'digital';
@@ -32,9 +32,7 @@ export function CartSummary({
 
   if (count === 0) {
     return (
-      <div className="mx-6 my-6 flex justify-end">
-        <div className="text-sm text-muted-foreground">This cart is empty</div>
-      </div>
+      null
     );
   }
 

@@ -1,6 +1,7 @@
 'use client';
 
 import type { CartItem } from '@/api/schemas/cart/cart.schema';
+import { AlertCard } from '@/components/alert-card';
 import { cn } from '@/libs/utils';
 import { CartItemRow } from './cart-item-row';
 
@@ -19,8 +20,21 @@ export function CartItemsTable({
   isDigital: boolean;
   getAvailableStock?: (item: CartItem) => number;
   className?: string;
-  isPayment: boolean;
+  isPayment?: boolean;
 }) {
+  if (items.length === 0) {
+    return (
+      <div className={cn('flex w-full items-center justify-center py-10', className)}>
+        <AlertCard
+          icon="shoppingCart"
+          title="Your cart is empty"
+          className="border-none"
+          description="Continue to shopping"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={cn('w-full overflow-x-auto', className)}>
       <table className="min-w-full table-fixed divide-y divide-border text-sm">

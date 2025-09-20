@@ -1,6 +1,6 @@
 'use client';
 
-import CartTable from './_components/test';
+import CartTable from './_components/cart-table';
 
 export default function CheckoutPage() {
   return (

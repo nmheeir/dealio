@@ -14,7 +14,7 @@ export function CartItemsCards({
   onRemove: (itemId: string) => void;
   isDigital: boolean;
   getAvailableStock?: (item: CartItem) => number;
-  isPayment: boolean;
+  isPayment?: boolean;
 }) {
   return (
     <div className="space-y-4">

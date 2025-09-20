@@ -51,17 +51,27 @@ export function CartLineItems({
 
   return (
     <Comp className={cn('h-full', isScrollable && 'max-h-[500px]', className)} {...props}>
-      <div className="flex w-full flex-col space-y-4">
-        {items.map(item => (
-          <CartItemUi
-            key={item.id}
-            item={item}
-            onDeleteAction={(id) => {
-              handleDelete(id, item.name);
-            }}
-          />
-        ))}
-      </div>
+      {items.length === 0
+        ? (
+            <div className="flex h-full w-full items-center justify-center py-10">
+              <p className="text-sm text-gray-500">
+                Your cart is empty.
+              </p>
+            </div>
+          )
+        : (
+            <div className="flex w-full flex-col space-y-4">
+              {items.map(item => (
+                <CartItemUi
+                  key={item.id}
+                  item={item}
+                  onDeleteAction={(id) => {
+                    handleDelete(id, item.name);
+                  }}
+                />
+              ))}
+            </div>
+          )}
     </Comp>
   );
 }

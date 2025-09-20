@@ -133,7 +133,7 @@ export function CartSheet() {
                     />
                   </TabsContent>
                 </Tabs>
-                <div className="bg-blue-200">
+                <div className="">
                   <SheetFooter>
                     <Card className="rounded-xl border-none bg-background shadow-none">
                       <CardContent className="space-y-3 text-sm">
@@ -161,7 +161,7 @@ export function CartSheet() {
                     </Card>
                     <SheetTrigger asChild>
                       <Link
-                        aria-label="Continue to checkout"
+                        aria-label="Go to checkout"
                         href="/checkout"
                         className={cn(
                           buttonVariants({
@@ -170,7 +170,7 @@ export function CartSheet() {
                           }),
                         )}
                       >
-                        Continue to checkout
+                        Go to checkout
                       </Link>
                     </SheetTrigger>
                   </SheetFooter>

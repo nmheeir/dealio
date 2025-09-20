@@ -14,7 +14,8 @@ export const useCartCheckoutPhysical = createMutation<Response, Variables, Axios
   mutationFn: async variables =>
     apiClient({
       url: 'carts/checkout-physical',
-      params: {
+      method: 'POST',
+      data: {
         addressId: variables.addressId,
         paymentMethod: variables.paymentMethod,
       },

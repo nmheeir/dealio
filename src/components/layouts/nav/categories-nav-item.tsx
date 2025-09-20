@@ -52,7 +52,7 @@ export function CategoriesNavItem() {
             <li key={cat.id}>
               <NavigationMenuLink asChild>
                 <Link
-                  href={`/category/${cat.slug}`}
+                  href={`search?category=${cat.slug}`}
                   className={cn(
                     'block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground',
                   )}
