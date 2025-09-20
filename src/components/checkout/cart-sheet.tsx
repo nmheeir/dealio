@@ -2,6 +2,7 @@
 
 import type { CartItem } from '@/api/schemas/cart/cart.schema';
 import Link from 'next/link';
+import { useAuth } from '@/api/auth/auth-context';
 import { useGetCarts } from '@/api/cart/use-get-cart';
 import { CartLineItems } from '@/components/checkout/cart-line-items';
 import { Icons } from '@/components/icons';
@@ -23,14 +24,29 @@ import { cn, formatPrice } from '@/libs/utils';
 import { Card, CardContent } from '../ui/card';
 
 export function CartSheet() {
+  const { isAuthenticated } = useAuth();
   const isMobile = useIsMobile();
 
-  const digital = useGetCarts({ variables: {
-    cartType: 'DIGITAL',
-  } });
-  const physical = useGetCarts({ variables: {
-    cartType: 'PHYSICAL',
-  } });
+  const digital = useGetCarts(
+    {
+      variables: {
+        cartType: 'DIGITAL',
+      },
+      enabled: isAuthenticated,
+    },
+  );
+  const physical = useGetCarts(
+    {
+      variables: {
+        cartType: 'PHYSICAL',
+      },
+      enabled: isAuthenticated,
+    },
+  );
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const isLoading = digital.isLoading || physical.isLoading;
   const error = digital.error || physical.error;

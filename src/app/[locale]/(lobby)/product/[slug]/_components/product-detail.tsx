@@ -16,6 +16,7 @@ import { useFindVariantsByProductSlug } from '@/api/product-variant/use-find-var
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icons } from '@/components/icons';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
@@ -85,11 +86,11 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
     };
 
     await digitalBuyNow(payload, {
-      onSuccess: (res) => {
-        if (res?.statusCode === 201 && res?.data?.orderId) {
-          const orderId = res.data.orderId;
-
+      onSuccess: async (res) => {
+        if (res?.statusCode === 201 && res?.data?.id) {
+          const orderId = res.data.id;
           // Sau khi tạo order thành công → gọi API lấy link thanh toán
+          await new Promise(resolve => setTimeout(resolve, 500));
           paymentGetLink(
             { orderId },
             {
@@ -192,14 +193,10 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
 
   if (isDigital) {
     return (
-      <Button
-        className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-        onClick={handleDigitalBuyNow}
+      <DigitalBuyNowDialog
+        onConfirm={handleDigitalBuyNow}
         disabled={!productActive || !inStock || isSubmitting}
-        aria-label="Mua ngay"
-      >
-        Mua ngay
-      </Button>
+      />
     );
   }
 
@@ -262,20 +259,20 @@ function BuyNowButton({ variant, quantity }: { variant: ProductVariant; quantity
               ? (
                   <div className="space-y-3">
                     <RadioGroup value={selectedAddressId || ''} onValueChange={setSelectedAddressId}>
-                      {addresses.map((addr: any) => (
+                      {addresses.map(addr => (
                         <div key={addr.id} className="flex items-start gap-2">
                           <RadioGroupItem value={addr.id} id={addr.id} />
                           <Label htmlFor={addr.id} className="text-sm">
                             <div className="font-medium">
-                              {addr.full_name}
+                              {addr.to_name}
                               {' '}
                               —
-                              {addr.phone}
+                              {addr.to_phone}
                             </div>
                             <div className="text-muted-foreground">
-                              {addr.detail}
+                              {addr.to_address}
                               ,
-                              {addr.city}
+                              {addr.to_province_name}
                             </div>
                           </Label>
                         </div>
@@ -533,5 +530,51 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
         </div>
       </div>
     </main>
+  );
+}
+
+type DigitalBuyNowDialogProps = {
+  onConfirm: () => Promise<void>;
+  disabled?: boolean;
+};
+
+function DigitalBuyNowDialog({ onConfirm, disabled }: DigitalBuyNowDialogProps) {
+  const [loading, setLoading] = useState(false);
+
+  async function handleConfirm() {
+    try {
+      setLoading(true);
+      await onConfirm();
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button
+          className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          disabled={disabled || loading}
+        >
+          {loading ? 'Đang xử lý...' : 'Mua ngay'}
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Xác nhận mua ngay</AlertDialogTitle>
+          <AlertDialogDescription>
+            Bạn có chắc chắn muốn mua sản phẩm digital này không?
+            Sau khi xác nhận, đơn hàng sẽ được tạo và chuyển đến cổng thanh toán.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Hủy</AlertDialogCancel>
+          <AlertDialogAction onClick={handleConfirm}>
+            Xác nhận
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

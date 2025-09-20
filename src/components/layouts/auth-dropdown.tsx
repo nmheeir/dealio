@@ -29,7 +29,12 @@ export function AuthDropdown({
   ...props
 }: AuthDropdownProps) {
   const { loading, logout, isAuthenticated } = useAuth();
-  const { data, isLoading } = useProfile();
+
+  const { data, isLoading } = useProfile(
+    {
+      enabled: isAuthenticated,
+    },
+  );
   if (loading || isLoading) {
     return null;
   }
@@ -98,8 +103,6 @@ export function AuthDropdown({
     </DropdownMenu>
   );
 }
-
-// TODO: show billing, history, ....
 
 function AuthDropdownGroup() {
   return (

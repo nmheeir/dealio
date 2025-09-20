@@ -17,14 +17,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['profiles'],
+    queryKey: ['auth/role'],
     queryFn: () => authService.checkAuthenticated(),
     staleTime: 1000 * 60 * 5,
     retry: false,
   });
 
-  const user: User | null = data ?? null;
-  const isAuthenticated = !!user;
+  const isAuthenticated = data ?? false;
 
   const login = React.useCallback(
     async (credentials: LoginCredentials): Promise<LoginResult> => {
@@ -60,35 +59,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     [router, queryClient],
   );
 
-  const refreshToken = React.useCallback(
-    async (): Promise<boolean> => {
-      console.log('[AuthProvider] refreshToken called');
-      try {
-        const ok = await authService.refreshToken();
-        console.log('[AuthProvider] refreshToken result:', ok);
-        if (ok) {
-          console.log('[AuthProvider] getCurrentUser after refresh:', user);
-          await queryClient.invalidateQueries({ queryKey: ['profiles'] });
-        }
-        return ok;
-      } catch (err) {
-        console.error('[AuthProvider] refreshToken error:', err);
-        return false;
-      }
-    },
-    [user],
-  );
-
   const value = React.useMemo<AuthContextType>(() => {
     return {
-      user,
       login,
       logout,
       loading: isLoading,
       isAuthenticated,
-      refreshToken,
     };
-  }, [user, isLoading, login, logout, refreshToken, isAuthenticated]);
+  }, [isLoading, login, logout, isAuthenticated]);
 
   return <AuthContext value={value}>{children}</AuthContext>;
 }

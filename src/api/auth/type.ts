@@ -49,12 +49,10 @@ export type RefreshTokenResponse = {
 };
 
 export type AuthContextType = {
-  user: User | null;
   login: (credentials: LoginCredentials) => Promise<LoginResult>;
   logout: () => Promise<void>;
   loading: boolean;
   isAuthenticated: boolean;
-  refreshToken: () => Promise<boolean>;
 };
 
 export type ApiError = {
