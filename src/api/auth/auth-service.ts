@@ -72,10 +72,8 @@ export class AuthService {
       return false;
     } catch (error: any) {
       console.log(error);
-
-      if (error.response?.status === 401) {
-        this.clearTokens();
-      }
+      console.log('Check authenticated error', error);
+      await this.logout();
       return false;
     }
   }

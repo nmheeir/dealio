@@ -99,10 +99,6 @@ apiClient.interceptors.response.use(
         console.warn('[INTERCEPTOR] No refresh token, redirecting to /signin');
         processQueue(error, null);
         isRefreshing = false;
-
-        if (typeof window !== 'undefined') {
-          // window.location.href = '/signin';
-        }
         return Promise.reject(error);
       }
 
