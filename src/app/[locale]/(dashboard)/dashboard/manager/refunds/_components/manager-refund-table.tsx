@@ -6,13 +6,7 @@ import { DataTableLoading } from '@/components/dashboard/data-table/data-table-l
 import { managerRefundColumns } from './manager-refund-columns';
 
 export function ManagerRefundTable() {
-  const { data, isLoading, error } = useRefundRequestGetAll(
-    {
-      variables: {
-        status: 'PENDING',
-      },
-    },
-  );
+  const { data, isLoading, error } = useRefundRequestGetAll();
 
   if (isLoading) {
     return <DataTableLoading />;

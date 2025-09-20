@@ -87,8 +87,6 @@ const baseMenus: Record<string, NavItem[]> = {
       icon: Users,
       items: [
         { title: 'Danh sách khách hàng', url: '/dashboard/customers' },
-        { title: 'Khách hàng hoạt động', url: '/manager/customers?status=active' },
-        { title: 'Lịch sử đơn hàng', url: '/manager/customers/orders' },
       ],
     },
   ],
@@ -101,8 +99,6 @@ const baseMenus: Record<string, NavItem[]> = {
       icon: Users,
       items: [
         { title: 'Danh sách tài khoản', url: '/dashboard/admin/users' },
-        { title: 'Nâng cấp quyền', url: '/dashboard/admin/users/roles' },
-        { title: 'Khóa / mở tài khoản', url: '/dashboard/admin/users/status' },
       ],
     },
     {

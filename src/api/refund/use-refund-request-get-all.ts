@@ -5,16 +5,14 @@ import type { PaginationResponse } from '../types';
 import { createQuery } from 'react-query-kit';
 import apiClient from '@/api/common/client';
 
-type Variables = {
-  status: 'PENDING' | 'COMPLETED' | 'REJECTED' | 'APPROVED';
-};
+type Variables = void;
 type Response = PaginationResponse<RefundRequest>;
 
 export const useRefundRequestGetAll = createQuery<Response, Variables, AxiosError>({
   queryKey: ['refunds/admin-manager'],
-  fetcher: (variables) => {
+  fetcher: () => {
     return apiClient
-      .get(`refunds/admin-manager?status=${variables.status}`)
+      .get(`refunds/admin-manager`)
       .then(response => response.data);
   },
 });

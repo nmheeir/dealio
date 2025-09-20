@@ -1,3 +1,4 @@
+// --- manager-refund-columns.tsx ---
 import type { ColumnDef } from '@tanstack/react-table';
 import type { RefundRequest } from '@/api/schemas/refund/refund-request.schema';
 import { Badge } from '@/components/ui/badge';
@@ -5,12 +6,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { formatDate } from '@/libs/utils';
 import ManagerRefundRowActions from './manager-refund-row-actions';
 
-// Lấy type từ schema
-
 const refundStatusColor: Record<RefundRequest['status'], string> = {
   PENDING: 'bg-yellow-100 text-yellow-800',
   APPROVED: 'bg-green-100 text-green-800',
   REJECTED: 'bg-red-100 text-red-800',
+  COMPLETED: 'bg-blue-100 text-blue-800',
 };
 
 export const managerRefundColumns: ColumnDef<RefundRequest>[] = [
@@ -41,44 +41,25 @@ export const managerRefundColumns: ColumnDef<RefundRequest>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-
-  // Refund ID
-  // {
-  //   accessorKey: 'id',
-  //   header: () => <div className="text-center">Mã yêu cầu</div>,
-  //   cell: ({ row }) => (
-  //     <div className="text-center font-medium">{row.original.id}</div>
-  //   ),
-  // },
-
-  // Order code
-  {
-    id: 'orderCode',
-    header: () => <div className="text-center">Mã đơn hàng</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        {row.original.order?.order_code ?? '-'}
-      </div>
-    ),
-  },
-
-  // User (customer)
-  {
-    id: 'customer',
-    header: () => <div className="text-center">Khách hàng</div>,
-    cell: ({ row }) => (
-      <div className="text-center">
-        {row.original.user?.email ?? row.original.user?.id ?? '-'}
-      </div>
-    ),
-  },
-
   // Reason
   {
     accessorKey: 'reason',
     header: () => <div className="text-center">Lý do</div>,
     cell: ({ row }) => (
       <div className="text-center text-sm">{row.original.reason}</div>
+    ),
+  },
+
+  // Order total amount
+  {
+    id: 'totalAmount',
+    header: () => <div className="text-center">Số tiền đơn hàng</div>,
+    cell: ({ row }) => (
+      <div className="text-center">
+        {row.original.order?.total_amount
+          ? `${row.original.order.total_amount} VND`
+          : '-'}
+      </div>
     ),
   },
 
@@ -105,6 +86,28 @@ export const managerRefundColumns: ColumnDef<RefundRequest>[] = [
     cell: ({ row }) => (
       <div className="text-center text-sm">
         {formatDate(row.original.createdAt)}
+      </div>
+    ),
+  },
+
+  // Reviewed date
+  {
+    id: 'reviewedAt',
+    header: () => <div className="text-center">Ngày duyệt</div>,
+    cell: ({ row }) => (
+      <div className="text-center text-sm">
+        {row.original.reviewedAt ? formatDate(row.original.reviewedAt) : '-'}
+      </div>
+    ),
+  },
+
+  // Finalized date
+  {
+    id: 'finalizedAt',
+    header: () => <div className="text-center">Ngày hoàn tất</div>,
+    cell: ({ row }) => (
+      <div className="text-center text-sm">
+        {row.original.finalizedAt ? formatDate(row.original.finalizedAt) : '-'}
       </div>
     ),
   },
