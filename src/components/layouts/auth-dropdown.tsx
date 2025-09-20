@@ -29,19 +29,15 @@ export function AuthDropdown({
   ...props
 }: AuthDropdownProps) {
   const { loading, logout, isAuthenticated } = useAuth();
+  const { data, isLoading } = useProfile({ enabled: isAuthenticated });
 
-  const { data, isLoading } = useProfile(
-    {
-      enabled: isAuthenticated,
-    },
-  );
   if (loading || isLoading) {
     return null;
   }
 
   const user = data?.data;
 
-  if (!isAuthenticated || !user) {
+  if (!isAuthenticated) {
     return (
       <Button size="sm" className={cn(className)} {...props} asChild>
         <Link href="/signin">
@@ -52,12 +48,59 @@ export function AuthDropdown({
     );
   }
 
-  const initials = `${user.fullname.charAt(0) ?? ''}`;
+  // Nếu không có profile, chỉ hiển thị avatar fallback
+  if (!user) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div
+            className={cn(
+              'flex cursor-pointer items-center gap-3 rounded p-2 hover:bg-accent',
+              className,
+            )}
+          >
+            <Avatar className="size-8 rounded-sm">
+              <AvatarFallback className="size-8 rounded-sm">?</AvatarFallback>
+            </Avatar>
+          </div>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <AuthDropdownGroup />
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <Link
+              href=""
+              onClick={(e) => {
+                e.preventDefault();
+                logout();
+              }}
+            >
+              <Icons.logout
+                className="mr-2 size-4 shrink-0"
+                aria-hidden="true"
+              />
+              <span className="flex-1 text-left">Logout</span>
+              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
+
+  // Trường hợp có profile
+  const initials = `${user.fullname?.charAt(0) ?? ''}`;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className={cn('flex cursor-pointer items-center gap-3 rounded p-2 hover:bg-accent', className)}>
+        <div
+          className={cn(
+            'flex cursor-pointer items-center gap-3 rounded p-2 hover:bg-accent',
+            className,
+          )}
+        >
           {/* Avatar */}
           <Avatar className="size-8 rounded-sm">
             <AvatarImage src={user.avatar_url ?? ''} alt={user.avatar_url ?? ''} />
@@ -70,11 +113,12 @@ export function AuthDropdown({
               {user.fullname}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user.role ?? 'conc cac'}
+              {user.role ?? 'User'}
             </p>
           </div>
         </div>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <div className="block px-2 py-1.5 sm:hidden">
           <div className="flex items-center justify-between gap-2">
@@ -84,7 +128,6 @@ export function AuthDropdown({
         </div>
         <AuthDropdownGroup />
         <DropdownMenuSeparator />
-        {/* Logout button */}
         <DropdownMenuItem asChild>
           <Link
             href=""
@@ -98,7 +141,6 @@ export function AuthDropdown({
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </Link>
         </DropdownMenuItem>
-
       </DropdownMenuContent>
     </DropdownMenu>
   );

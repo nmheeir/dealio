@@ -80,7 +80,7 @@ export default async function middleware(request: NextRequest) {
 
       console.log('[MIDDLEWARE] userRole:', userRole);
 
-      if (!userRole || !['ADMIN', 'USER', 'MANAGER'].includes(userRole)) {
+      if (!userRole || !['ADMIN', 'CUSTOMER', 'MANAGER'].includes(userRole)) {
         console.log('[MIDDLEWARE] → Invalid role, redirect signin');
         const loginUrl = new URL('/signin', request.url);
         loginUrl.searchParams.set('from', pathname);
