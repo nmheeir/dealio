@@ -2,12 +2,11 @@ import type { Metadata } from 'next';
 import { getProduct } from '@/api/seo/get-product';
 
 type ProductProps = {
-  params: { slug: string; locale: string };
+  params: Promise<{ slug: string; locale: string }>;
 };
 
 export async function generateMetadata({ params }: ProductProps): Promise<Metadata> {
-  // eslint-disable-next-line unused-imports/no-unused-vars
-  const { slug, locale } = params;
+  const { slug } = await params;
 
   const product = await getProduct(slug);
 

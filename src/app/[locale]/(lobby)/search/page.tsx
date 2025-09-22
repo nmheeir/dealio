@@ -11,10 +11,6 @@ type SearchPageProps = {
   searchParams: { q?: string };
 };
 
-export default function ProductsPage({
-  searchParams,
-}: SearchPageProps) {
-  return (
-    <SearchView query={searchParams.q} />
-  );
+export default function ProductsPage({ searchParams }: SearchPageProps) {
+  return <SearchView query={searchParams.q} />;
 }

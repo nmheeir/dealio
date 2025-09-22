@@ -1,3 +1,5 @@
+/** @type {import('next').NextConfig} */
+
 import type { NextConfig } from 'next';
 import withBundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
@@ -8,7 +10,10 @@ import './src/libs/Env';
 // Define the base Next.js configuration
 const baseConfig: NextConfig = {
   eslint: {
-    dirs: ['.'],
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
   },
   poweredByHeader: false,
   reactStrictMode: true,

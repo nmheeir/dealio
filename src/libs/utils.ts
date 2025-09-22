@@ -1,14 +1,9 @@
 import type { ClassValue } from 'clsx';
-import { env } from 'node:process';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export function absoluteUrl(path: string) {
-  return `${env.NEXT_PUBLIC_APP_URL}${path}`;
 }
 
 export function formatPrice(

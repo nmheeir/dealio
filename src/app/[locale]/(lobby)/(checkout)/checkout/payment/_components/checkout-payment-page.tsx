@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 
-export default function CheckoutPaymentPage() {
+export default function CheckoutPaymentPageClient() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <CheckoutPaymentPage />
+      <CheckoutPaymentPageClient />
     </Suspense>
   );
 }
