@@ -47,9 +47,9 @@ export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sideb
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link href="/manager/dashboard">
+              <Link href="/dashboard">
                 <Building2 className="!size-5" />
-                <span className="text-base font-semibold">Manager Portal</span>
+                <span className="text-base font-semibold">Dashboard</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
