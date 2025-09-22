@@ -63,10 +63,7 @@ const baseMenus: Record<string, NavItem[]> = {
       url: '/manager/sales',
       icon: BarChart3,
       items: [
-        { title: 'Doanh số theo ngày', url: '/manager/sales/daily' },
-        { title: 'Doanh số theo tháng', url: '/manager/sales/monthly' },
-        { title: 'Doanh số theo năm', url: '/manager/sales/yearly' },
-        { title: 'Top sản phẩm bán chạy', url: '/manager/sales/top-products' },
+        { title: 'Báo cáo', url: '/dashboard/reports' },
       ],
     },
     {

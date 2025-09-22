@@ -16,8 +16,8 @@ export const useReportTopProduct = createQuery<Response, Variables, AxiosError>(
   queryKey: ['reports/sales/top-products'],
   fetcher: (variables) => {
     const urlParams = new URLSearchParams();
-    urlParams.set('startDate', String(variables.startDate));
-    urlParams.set('endDate', String(variables.endDate));
+    urlParams.set('startDate', variables.startDate.toISOString());
+    urlParams.set('endDate', variables.endDate.toISOString());
     urlParams.set('limit', String(1000));
     return apiClient
       .get(`reports/sales/top-products?${urlParams}`)
