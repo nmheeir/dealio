@@ -5,6 +5,7 @@ export const ReportOverallSchema = z.object({
   totalRevenue: z.number().nonnegative(),
   totalProductsSold: z.number().int().nonnegative(),
   period: z.string(),
+  orderType: z.string().optional(),
 });
 
 export type ReportOverall = z.infer<typeof ReportOverallSchema>;

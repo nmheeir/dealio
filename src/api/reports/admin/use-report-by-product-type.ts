@@ -6,7 +6,7 @@ import { createQuery } from 'react-query-kit';
 import apiClient from '@/api/common/client';
 
 type Variables = {
-  productType: 'CARD_DIGITAL_KEY' | 'DEVICE' | 'PHYSICAL';
+  productType?: 'CARD_DIGITAL_KEY' | 'DEVICE' | 'CARD_PHYSICAL';
 };
 type Response = PaginationResponse<ReportByProductType>;
 
@@ -14,7 +14,9 @@ export const useReportByProductType = createQuery<Response, Variables, AxiosErro
   queryKey: ['reports/admin/sales-by-product'],
   fetcher: (variables) => {
     const urlParams = new URLSearchParams();
-    urlParams.set('productType', variables.productType);
+    if (variables?.productType) {
+      urlParams.set('productType', variables.productType);
+    }
     return apiClient
       .get(`reports/admin/sales-by-product?${urlParams}`)
       .then(response => response.data);

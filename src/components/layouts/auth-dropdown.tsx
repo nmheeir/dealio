@@ -150,7 +150,7 @@ function AuthDropdownGroup() {
   return (
     <DropdownMenuGroup>
       <DropdownMenuItem asChild>
-        <Link href="/dashboard">
+        <Link href="/dashboard/profile">
           <Icons.layoutDashboard className="mr-2 size-4" aria-hidden="true" />
           Dashboard
           <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>

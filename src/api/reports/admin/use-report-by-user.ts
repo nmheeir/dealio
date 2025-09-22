@@ -6,7 +6,7 @@ import { createQuery } from 'react-query-kit';
 import apiClient from '@/api/common/client';
 
 type Variables = {
-  customerId: string;
+  customerId?: string;
 };
 type Response = PaginationResponse<ReportByUser>;
 
@@ -14,7 +14,9 @@ export const useReportByUser = createQuery<Response, Variables, AxiosError>({
   queryKey: ['reports/admin/sales-by-customer'],
   fetcher: (variables) => {
     const urlParams = new URLSearchParams();
-    urlParams.set('customerId', variables.customerId);
+    if (variables?.customerId) {
+      urlParams.set('customerId', variables.customerId);
+    }
     return apiClient
       .get(`reports/admin/sales-by-customer?${urlParams}`)
       .then(response => response.data);

@@ -6,7 +6,7 @@ import { createQuery } from 'react-query-kit';
 import apiClient from '@/api/common/client';
 
 type Variables = {
-  orderType: 'DIGITAL' | 'PHYSICAL';
+  orderType?: 'DIGITAL' | 'PHYSICAL';
 };
 type Response = ApiResponse<ReportOverall>;
 
@@ -14,7 +14,9 @@ export const useReportOverallSales = createQuery<Response, Variables, AxiosError
   queryKey: ['reports/admin/overall-sales'],
   fetcher: (variables) => {
     const urlParams = new URLSearchParams();
-    urlParams.set('orderType', String(variables.orderType));
+    if (variables?.orderType) {
+      urlParams.set('orderType', String(variables.orderType));
+    }
 
     return apiClient
       .get(`reports/admin/overall-sales?${urlParams}`)

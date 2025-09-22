@@ -103,20 +103,14 @@ const baseMenus: Record<string, NavItem[]> = {
       url: '/admin/reports',
       icon: BarChart3,
       items: [
-        { title: 'Doanh số tổng thể', url: '/admin/reports/overview' },
-        { title: 'Doanh số theo sản phẩm', url: '/admin/reports/products' },
-        { title: 'Doanh số theo khách hàng', url: '/admin/reports/customers' },
-        { title: 'Doanh số theo thời gian', url: '/admin/reports/time' },
-        { title: 'Xem lợi nhuận', url: '/admin/reports/profit' },
-        { title: 'Xuất báo cáo', url: '/admin/reports/export' },
+        { title: 'Báo cáo', url: '/dashboard/admin/reports' },
+        { title: 'Xem lợi nhuận', url: '/dashboard/admin/profit' },
       ],
     },
   ],
 };
 
 export function getSidebarItems(role: UserRole): NavItem[] {
-  console.log('getSidebarItems', role);
-
   const customer = baseMenus.customer ?? [];
   const managerCommon = baseMenus.managerCommon ?? [];
   const managerCustomer = baseMenus.managerCustomer ?? [];

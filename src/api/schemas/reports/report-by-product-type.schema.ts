@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 export const ReportByProductTypeSchema = z.object({
-  productId: z.string().uuid(),
+  productId: z.uuid(),
   productName: z.string(),
-  variantId: z.string().uuid(),
+  variantId: z.uuid(),
   variantName: z.string(),
   sku: z.string(),
   productType: z.string(),
