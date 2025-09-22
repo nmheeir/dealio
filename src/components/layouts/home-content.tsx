@@ -48,7 +48,7 @@ const productsByBrand: { [key: string]: Product[] } = {
 
 export function HomeContent() {
   return (
-    <main className="min-h-screen bg-gray-100 text-gray-900">
+    <main className="min-h-screen text-gray-900">
 
       {/* Feature Product */}
       <FeatureProductSection />
@@ -193,7 +193,9 @@ function CategoryProductSection() {
       {/* Category 1 */}
       {cat1Products.length > 0 && (
         <div>
-          <h2 className="mb-4 text-xl font-semibold">{categories[0]?.title}</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">
+            {categories[0]?.title}
+          </h2>
           <div className="grid grid-cols-3 gap-6">
             {cat1Products.map((product: any) => (
               <ProductCard key={product.id} product={product} />
@@ -205,7 +207,7 @@ function CategoryProductSection() {
       {/* Category 2 */}
       {cat2Products.length > 0 && (
         <div>
-          <h2 className="mb-4 text-xl font-semibold">{categories[1]?.title}</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">{categories[1]?.title}</h2>
           <div className="grid grid-cols-3 gap-6">
             {cat2Products.map((product: any) => (
               <ProductCard key={product.id} product={product} />
@@ -303,7 +305,7 @@ function BrandProductSection() {
       {/* Brand 1 */}
       {brand1Products.length > 0 && (
         <div>
-          <h2 className="mb-4 text-xl font-semibold">{brands[0]?.title}</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">{brands[0]?.title}</h2>
           <div className="grid grid-cols-3 gap-6">
             {brand1Products.map((product: any) => (
               <ProductCard key={product.id} product={product} />
@@ -315,7 +317,7 @@ function BrandProductSection() {
       {/* Brand 2 */}
       {brand2Products.length > 0 && (
         <div>
-          <h2 className="mb-4 text-xl font-semibold">{brands[1]?.title}</h2>
+          <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">{brands[1]?.title}</h2>
           <div className="grid grid-cols-3 gap-6">
             {brand2Products.map((product: any) => (
               <ProductCard key={product.id} product={product} />

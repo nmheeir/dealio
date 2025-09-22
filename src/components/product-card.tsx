@@ -20,7 +20,9 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Card className="mx-auto flex h-full w-full max-w-sm flex-col py-0 pb-6 transition-shadow hover:shadow-lg">
+    <Card className="mx-auto flex h-full w-full max-w-sm flex-col border bg-white py-0 pb-6
+                transition-shadow hover:shadow-lg dark:border-gray-700 dark:bg-gray-900"
+    >
       <CardHeader className="p-0">
         <div className="relative h-48 w-full">
           {product.image
@@ -34,17 +36,22 @@ export function ProductCard({ product }: ProductCardProps) {
                 />
               )
             : (
-                <div className="flex h-full w-full items-center justify-center rounded-t-lg bg-gray-200">
-                  <span className="text-gray-500">No Image</span>
+                <div className="flex h-full w-full items-center justify-center rounded-t-lg bg-gray-200 dark:bg-gray-800">
+                  <span className="text-gray-500 dark:text-gray-400">No Image</span>
                 </div>
               )}
         </div>
       </CardHeader>
+
       <CardContent className="flex flex-grow flex-col px-4">
-        <CardTitle className="line-clamp-2 text-lg font-semibold">{product.name}</CardTitle>
-        <p className="mt-2 line-clamp-3 min-h-[60px] text-sm text-gray-600">
+        <CardTitle className="line-clamp-2 text-lg font-semibold text-gray-900 dark:text-gray-100">
+          {product.name}
+        </CardTitle>
+
+        <p className="mt-2 line-clamp-3 min-h-[60px] text-sm text-gray-600 dark:text-gray-400">
           {truncateDescription(product.description)}
         </p>
+
         <div className="mt-2">
           <Badge
             variant={getProductTypeStyle(product.product_type).variant}
@@ -53,18 +60,25 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.product_type}
           </Badge>
         </div>
-        <p className="mt-2 text-lg font-bold text-gray-900">
+
+        <p className="mt-2 text-lg font-bold text-gray-900 dark:text-gray-100">
           {product.price ? `$${product.price.toFixed(2)}` : 'Price not available'}
         </p>
       </CardContent>
+
       <CardFooter className="pt-0">
         <Link href={`/product/${product.slug}`} className="w-full">
-          <Button variant="outline" className="w-full">
+          <Button
+            variant="outline"
+            className="w-full border-gray-300 text-gray-700 hover:bg-gray-100
+                   dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800"
+          >
             View Details
           </Button>
         </Link>
       </CardFooter>
     </Card>
+
   );
 }
 // Map màu cho từng loại product

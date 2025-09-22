@@ -371,7 +371,10 @@ export default function CheckoutPaymentPage() {
           </Button>
           <Button
             onClick={handleCheckout}
-            disabled={isSubmitting || (!isDigital && (!paymentMethod || (paymentMethod === 'COD' && !selectedAddress)))}
+            disabled={
+              isSubmitting
+              || (!isDigital && (!paymentMethod || !selectedAddress))
+            }
           >
             {isSubmitting
               ? (

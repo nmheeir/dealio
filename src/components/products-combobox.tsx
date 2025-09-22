@@ -210,11 +210,11 @@ function ProductSearchResponse({
           {searchResponse.variants.map(variant => (
             <CommandItem asChild key={variant.id} value={variant.variant_name}>
               <a
-                href={`/product/${variant.slug}`}
+                href={`/product/${variant.product.slug}?variant=${variant.slug}`}
                 onClick={(e) => {
                   e.preventDefault();
                   onSelectAction?.();
-                  router.push(`/product/${variant.slug}`);
+                  router.push(`/product/${variant.product.slug}?variant=${variant.slug}`);
                 }}
                 className="flex h-9 items-center"
               >

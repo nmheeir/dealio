@@ -17,6 +17,7 @@ import { AuthRequiredDialog } from '@/components/auth-required-dialog';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icons } from '@/components/icons';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -349,7 +350,7 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
   const { data, isLoading, error } = useFindVariantsByProductSlug({ variables: { slug } });
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [_variantChoose, setVariantChoose] = useQueryState('variant', {
-    defaultValue: '',
+    defaultValue: slug,
     clearOnDefault: true,
     shallow: true,
     history: 'push',
@@ -439,7 +440,13 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
               })}
             </div>
             {maxStock === 0 && (
-              <p className="text-sm text-red-500">Hết hàng</p>
+              <Alert variant="destructive" className="mt-4 rounded-2xl  ">
+                <Icons.alertCircle className="h-5 w-5" />
+                <AlertTitle className="font-semibold">Hết hàng</AlertTitle>
+                <AlertDescription>
+                  Sản phẩm này hiện không còn trong kho.
+                </AlertDescription>
+              </Alert>
             )}
           </div>
 
@@ -502,7 +509,7 @@ export default function ProductDetailSection({ slug }: ProductDetailProps) {
                 )}
 
             <div className="flex gap-2">
-              <AddToCartButton variant={variant} quantity={quantity} />
+              <AddToCartButton variant={variant} quantity={quantity} maxStock={maxStock} />
               <BuyNowButton variant={variant} quantity={quantity} />
             </div>
           </div>
@@ -606,7 +613,7 @@ export function DigitalBuyNowDialog({ onConfirmAction: onConfirm, disabled }: Di
   );
 }
 
-function AddToCartButton({ variant, quantity }: { variant: ProductVariant; quantity: number }) {
+function AddToCartButton({ variant, quantity, maxStock }: { variant: ProductVariant; quantity: number; maxStock: number }) {
   const { isAuthenticated } = useAuth();
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const { mutateAsync: addToCart } = useAddVariantToCart();
@@ -648,6 +655,7 @@ function AddToCartButton({ variant, quantity }: { variant: ProductVariant; quant
       <Button
         className="rounded-full bg-green-600 px-4 py-2 text-white hover:bg-green-700"
         onClick={handleAddToCart}
+        disabled={maxStock === 0}
       >
         Thêm vào giỏ hàng
       </Button>

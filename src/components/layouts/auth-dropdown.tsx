@@ -156,20 +156,6 @@ function AuthDropdownGroup() {
           <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
         </Link>
       </DropdownMenuItem>
-      <DropdownMenuItem asChild>
-        <Link href="/dashboard/billing">
-          <Icons.creditCard className="mr-2 size-4" aria-hidden="true" />
-          Billing
-          <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-        </Link>
-      </DropdownMenuItem>
-      <DropdownMenuItem asChild>
-        <Link href="/dashboard/settings">
-          <Icons.settings className="mr-2 size-4" aria-hidden="true" />
-          Settings
-          <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-        </Link>
-      </DropdownMenuItem>
     </DropdownMenuGroup>
   );
 }

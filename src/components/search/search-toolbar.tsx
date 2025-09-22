@@ -33,19 +33,26 @@ export default function SearchToolbar() {
       <DropdownMenu>
         <DropdownMenuTrigger
           asChild
-          className="group inline-flex items-center justify-center text-sm font-medium text-gray-700 hover:text-gray-900"
+          className="group inline-flex items-center justify-center text-sm font-medium
+                 text-gray-700 hover:text-gray-900
+                 dark:text-gray-200 dark:hover:text-gray-100"
         >
           <div>
-            <Button variant="outline">
+            <Button
+              variant="outline"
+              className="dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800"
+            >
               {selectedOption ? selectedOption.name : 'Sort'}
               <Icons.chevronDown className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </DropdownMenuTrigger>
+
         <DropdownMenuContent
           align="end"
           className={cn(
-            'z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in',
+            'z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden',
+            'dark:bg-gray-900 dark:ring-white/10',
           )}
         >
           <DropdownMenuGroup className="py-1">
@@ -54,9 +61,9 @@ export default function SearchToolbar() {
                 key={option.slug}
                 className={cn(
                   orderBy === option.slug
-                    ? 'font-medium text-gray-900'
-                    : 'text-gray-500',
-                  'block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden',
+                    ? 'font-medium text-gray-900 dark:text-gray-100'
+                    : 'text-gray-500 dark:text-gray-400',
+                  'block px-4 py-2 text-sm data-focus:bg-gray-100 dark:data-focus:bg-gray-800 data-focus:outline-hidden',
                 )}
                 onClick={() => setOrderBy(option.slug)}
               >
@@ -69,12 +76,15 @@ export default function SearchToolbar() {
 
       <button
         type="button"
-        className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7"
+        className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7
+               dark:text-gray-400 dark:hover:text-gray-300"
       >
         <span className="sr-only">View grid</span>
         <Icons.grid2x2 aria-hidden="true" className="size-5" />
       </button>
+
       <FacetsMobile />
     </div>
+
   );
 }

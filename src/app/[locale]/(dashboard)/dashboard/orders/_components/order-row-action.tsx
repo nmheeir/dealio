@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CancelOrder } from './actions/cancel-order';
+import { OrderTrackingUrl } from './actions/order-tracking-url';
 import { RefundOrder } from './actions/refund-order';
 import { ResendPaymentLink } from './actions/resend-payment-link';
 import { UpdateAddress } from './actions/update-order-address';
@@ -49,6 +50,7 @@ export default function OrderRowAction({ item }: { item: Order }) {
         <ViewGameCode item={item} />
         <UpdateAddress item={item} />
         <RefundOrder item={item} />
+        <OrderTrackingUrl item={item} />
 
         {/* Nếu không có action nào khả dụng */}
         {!(
@@ -57,6 +59,7 @@ export default function OrderRowAction({ item }: { item: Order }) {
           || <ViewGameCode item={item} />
           || <UpdateAddress item={item} />
           || <RefundOrder item={item} />
+          || <OrderTrackingUrl item={item} />
         ) && <DropdownMenuItem disabled>Không có hành động</DropdownMenuItem>}
       </DropdownMenuContent>
     </DropdownMenu>

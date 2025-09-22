@@ -22,6 +22,7 @@ export default function RefundActionHandler({ item }: RefundActionHandlerProps) 
   const [refundAmount, setRefundAmount] = useState('');
   const [actionType, setActionType] = useState<'APPROVED' | 'REJECTED' | 'CONFIRMED' | null>(null);
   const queryClient = useQueryClient();
+  const isRequestPending = item.status === 'PENDING';
   const { mutate: reviewRefundRequest, isPending: isMutatePending } = useRefundRequestReview({
     onSuccess: () => {
       const statusMessage
@@ -35,9 +36,14 @@ export default function RefundActionHandler({ item }: RefundActionHandlerProps) 
       setRefundAmount('');
     },
     onError: (error) => {
-      toast.error('Đã xảy ra lỗi khi xử lý yêu cầu hoàn tiền.', {
-        description: error.message,
-      });
+      const description
+    = Array.isArray(error.response?.data?.errors)
+      ? error.response.data.errors.join(', ')
+      : error.response?.data?.message
+        || error.message
+        || 'Không thể hoàn tiền, xảy ra lỗi. Vui lòng thử lại sau';
+
+      toast.error('Đã xảy ra lỗi khi xử lý yêu cầu hoàn tiền.', { description });
     },
   });
 
@@ -56,9 +62,14 @@ export default function RefundActionHandler({ item }: RefundActionHandlerProps) 
       setActionType(null);
     },
     onError: (error) => {
-      toast.error('Đã xảy ra lỗi khi xử lý hoàn tiền.', {
-        description: error.message,
-      });
+      const description
+    = Array.isArray(error.response?.data?.errors)
+      ? error.response.data.errors.join(', ')
+      : error.response?.data?.message
+        || error.message
+        || 'Không thể hoàn tiền, xảy ra lỗi. Vui lòng thử lại sau';
+
+      toast.error('Đã xảy ra lỗi khi xử lý yêu cầu hoàn tiền.', { description });
     },
   });
 
@@ -115,9 +126,9 @@ export default function RefundActionHandler({ item }: RefundActionHandlerProps) 
 
   return (
     <>
-      {(isMutatePending || isApproved) && (
+      {(isRequestPending || isApproved) && (
         <>
-          {isMutatePending && (
+          {isRequestPending && (
             <>
               <DropdownMenuItem
                 onSelect={(e) => {

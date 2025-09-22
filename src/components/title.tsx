@@ -21,18 +21,21 @@ export function Title({
   return (
     <div className="flex items-center justify-center gap-6 text-center">
       <div>
-        <h2 className="text-2xl font-semibold text-slate-800">{title}</h2>
-        <p className="text-sm text-slate-600">{description}</p>
+        <h2 className="text-2xl font-semibold text-slate-800 dark:text-slate-200">{title}</h2>
+        <p className="text-sm text-slate-600 dark:text-slate-300">{description}</p>
       </div>
       {visibleButton && (
         <Link href={href}>
           <Button
             variant="ghost"
-            className="flex items-center gap-1 border-green-600 text-green-600 hover:bg-green-50"
+            className="flex items-center gap-1
+             border-green-600 text-green-600 hover:bg-green-50
+             dark:border-green-400 dark:text-green-400 dark:hover:bg-green-950"
           >
             View more
             <ArrowRight size={14} />
           </Button>
+
         </Link>
       )}
     </div>

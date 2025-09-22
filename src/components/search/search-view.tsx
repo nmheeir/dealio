@@ -21,13 +21,13 @@ export default function SearchView({ query }: SearchViewProps) {
         </div>
         <div className="flex items-center justify-between border-b border-gray-200 pt-6 pb-6">
           {/* Base on url */}
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
             {query
               ? (
                   <>
                     Search results for
                     {' '}
-                    <span className="text-blue-600">
+                    <span className="text-blue-600 dark:text-blue-400">
                       "
                       {query}
                       "

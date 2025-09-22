@@ -3,7 +3,7 @@
 import type { Order } from '@/api/schemas/order/order.schema';
 import { AlertCircle, AlertTriangle, CircleCheck, Package, RotateCcw, ShoppingCart, Truck, XCircle } from 'lucide-react';
 import { useState } from 'react';
-import { useGetOrderDetail } from '@/api/order/use-order-detail';
+import { useOrderFindById } from '@/api/order/admin-manger/use-order-find-by-id';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -25,7 +25,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export function ViewOrderDetail({ item }: { item: Order }) {
-  const { data, isLoading, error, refetch } = useGetOrderDetail({
+  const { data, isLoading, error, refetch } = useOrderFindById({
     variables: {
       orderId: item.id,
     },

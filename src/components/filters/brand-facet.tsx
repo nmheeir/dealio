@@ -64,12 +64,11 @@ function BrandFacetContent({ onCheckedChangeAction, isCheckedAction }: Omit<Bran
             'before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-500 before:to-purple-500 before:transition-transform before:duration-500 before:z-0',
             isCheckedAction(brand.slug)
               ? 'before:translate-x-0 text-white font-semibold'
-              : 'before:-translate-x-full text-gray-800 hover:before:translate-x-0 hover:text-white',
+              : 'before:-translate-x-full text-gray-800 hover:before:translate-x-0 hover:text-white dark:text-gray-200 dark:hover:text-white',
           )}
         >
           <span className="relative z-10">{brand.name}</span>
         </Badge>
-
       ))}
     </AccordionContent>
   );
